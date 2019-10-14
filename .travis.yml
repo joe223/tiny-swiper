@@ -6,7 +6,6 @@ cache:
 node_js:
   - stable
   - '8'
-  - '6'
 install:
   - yarn
 script:
