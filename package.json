@@ -1,0 +1,37 @@
+{
+  "name": "tiny-swiper",
+  "version": "0.0.1",
+  "description": "2kb gzipped library alternate to Swiper with same API.",
+  "main": "lib/index.js",
+  "repository": "https://github.com/joe223/tiny-swiper.git",
+  "author": "joe223",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "rollup -wc",
+    "build": "rollup -c"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "rollup": "^1.23.1",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-uglify": "^6.0.3"
+  },
+  "browserslist": [
+    "Android >= 7",
+    "IOS >= 11",
+    "Safari >= 11",
+    "Chrome >= 49",
+    "Firefox >= 31",
+    "Samsung >= 5"
+  ],
+  "keywords": [
+    "swiper",
+    "swipe",
+    "slider",
+    "touch",
+    "ios",
+    "mobile"
+  ]
+}
