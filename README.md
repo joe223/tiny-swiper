@@ -9,7 +9,7 @@
 	</a>
 </p>
 
-2kb gzipped library alternate to Swiper with same API.
+📦 2 kb gzipped library alternative to swiper with same api.
 
 ## Getting start
 
@@ -94,6 +94,7 @@ var mySwiper = new Swiper('.swiper-container', {
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
+| clickable | boolean | false | If true then clicking on pagination button will cause transition to appropriate slide |
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
 

@@ -51,6 +51,7 @@ export default class Swiper {
         }
         if (config.pagination) {
             config.pagination = {
+                clickable: false,
                 bulletClass: 'swiper-pagination-bullet',
                 bulletActiveClass: 'swiper-pagination-bullet-active',
                 ...config.pagination
@@ -228,7 +229,7 @@ export default class Swiper {
             const swipTime = Date.now() - touchStartTime
             const offset = (touchEnd - touchStart) * this.config.touchRatio
 
-            this.$wrapper.style.transition = `transform ease-in-out ${config.speed}ms`
+            this.$wrapper.style.transition = `transform ease ${config.speed}ms`
 
             // long swip
             if (swipTime > this.config.longSwipesMs) {
@@ -309,7 +310,7 @@ export default class Swiper {
                 item.style.height = `${this.boxSize}px`
             }
         })
-        this.$wrapper.style.transition = `transform ease-in-out ${this.config.speed}ms`
+        this.$wrapper.style.transition = `transform ease ${this.config.speed}ms`
         if (this.isHorizontal) {
             this.$wrapper.style.width = `${this.boxSize * this.$list.length}px`
         } else {
