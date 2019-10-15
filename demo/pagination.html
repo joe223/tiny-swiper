@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Demo</title>
     <style>
+        :root {
+            --theme-color: rgb(205, 138, 50);
+        }
         body {
             font-family: Arial, Helvetica, sans-serif;
         }
@@ -23,9 +26,6 @@
         .b {
             background: lightblue;
         }
-        .c {
-            height: 100%;
-        }
         .a,
         .b {
             display: flex;
@@ -39,12 +39,35 @@
             height: 100%;
         }
         .swiper-container {
-            height: 50%;
+            height: 100%;
             margin-bottom: 1rem;
             /* touch-action: none; */
         }
-        .swiper-wrapper {
-            flex-direction: column
+        .t-ScrollBar {
+            display: block;
+            position: fixed;
+            top: 50%;
+            right: 2.2rem;
+            width: 0.5rem;
+            transform: translateY(-50%);
+        }
+        .t-ScrollBar__item {
+            display: block;
+            margin: 100% 0;
+            width: 100%;
+            padding-top: 100%;
+            height: 0;
+            box-shadow: 0 0 0 0.1rem #22216D inset;
+            box-shadow: 0 0 0 0.1rem var(--theme-color) inset;
+            border-radius: 50% !important;
+            border: none;
+            background: #FFF;
+            transition: background ease 0.2s;
+            cursor: pointer;
+        }
+        .t-ScrollBar__item.is-active {
+            background: #22216D;
+            background: var(--theme-color);
         }
     </style>
 </head>
@@ -62,7 +85,7 @@
             <div class="b swiper-slide">4</div>
         </div>
         <!-- If we need pagination -->
-        <div class="swiper-pagination"></div>
+        <div class="t-ScrollBar"></div>
     </div>
 
     <script>
@@ -71,35 +94,13 @@
             cssMode: true,
             direction: 'vertical',
             spaceBetween: 100,
-            mousewheel: true
+            mousewheel: true,
+            pagination: {
+                el: '.t-ScrollBar',
+                bulletClass: 't-ScrollBar__item',
+                bulletActiveClass: 'is-active'
+            }
         });
     </script>
-
-    <!-- Slider main container -->
-    <div class="swiper-container" id="swiper2">
-        <!-- Additional required wrapper -->
-        <div class="swiper-wrapper">
-            <!-- Slides -->
-            <div class="a swiper-slide">1</div>
-            <div class="b swiper-slide">2</div>
-            <div class="a swiper-slide">3</div>
-            <div class="b swiper-slide">4</div>
-        </div>
-        <!-- If we need pagination -->
-        <div class="swiper-pagination"></div>
-    </div>
-
-    <script>
-        var mySwiper = new Swiper('#swiper2', {
-            speed: 300,
-            cssMode: true,
-            direction: 'horizontal',
-            spaceBetween: 100,
-            mousewheel: true
-        });
-    </script>
-
-    <div class="c"></div>
-
 </body>
 

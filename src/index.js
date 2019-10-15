@@ -4,7 +4,7 @@ import {
 } from './lib'
 
 /**
- * Swiper Clas
+ * Swiper Class
  */
 export default class Swiper {
     constructor (el, config) {
@@ -19,6 +19,7 @@ export default class Swiper {
         this.$el.style.overflow = 'hidden'
         this.$wrapper = el.getElementsByClassName(config.wrapperClass)[0]
         this.$list = Array.from(el.getElementsByClassName(config.slideClass))
+        this.formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO']
         this.update()
         this.initPagination()
         this.scroll(this.config.initialSlide)
@@ -28,12 +29,17 @@ export default class Swiper {
     static formatConfig (config) {
         const defaultConfig = {
             direction: 'horizontal',
+            touchRatio: 1,
             longSwipesRatio: 0.5,
             initialSlide: 0,
             loop: false,
             mousewheel: false,
             pagination: false,
+            passiveListeners: true,
+            resistance: true,
+            resistanceRatio: 0.85,
             speed: 300,
+            longSwipesMs: 300,
             spaceBetween: 100,
             slidePrevClass: 'swiper-slide-prev',
             slideNextClass: 'swiper-slide-next',
@@ -72,6 +78,14 @@ export default class Swiper {
         return this.direction === 'screenX'
     }
 
+    get maxIndex () {
+        return this.$list.length - 1
+    }
+
+    get minIndex () {
+        return 0
+    }
+
     getTransform (offset) {
         return this.isHorizontal ? `translate3d(${offset}px, 0, 0)` : `translate3d(0, ${offset}px, 0)`
     }
@@ -79,9 +93,11 @@ export default class Swiper {
     scroll (index = 0, force = false) {
         if (this.scrolling && !force) return
 
-        const { config } = this
-        const minIndex = 0
-        const maxIndex = this.$list.length - 1
+        const {
+            config,
+            minIndex,
+            maxIndex
+        } = this
 
         index = index < minIndex ? minIndex : index > maxIndex ? maxIndex : index
 
@@ -125,7 +141,17 @@ export default class Swiper {
     }
 
     scrollPixel (px) {
-        const oldTransform = parseInt(this.$wrapper.style.transform.split(/(,|\(|\))/)[this.isHorizontal ? 2 : 4], 10)
+        px *= this.config.touchRatio
+
+        if (this.config.resistance) {
+            if (px > 0 && this.index === 0) {
+                px = px ** this.config.resistanceRatio
+            } else if (px < 0 && this.index === this.maxIndex) {
+                px = -1 * (Math.abs(px) ** this.config.resistanceRatio)
+            }
+        }
+
+        const oldTransform = -this.index * this.boxSize
 
         this.$wrapper.style.transform = this.getTransform(oldTransform + px)
     }
@@ -173,46 +199,67 @@ export default class Swiper {
 
     initWheel () {
         const { config } = this
-        let touchMove = 0
+        let touchEnd = 0
         let touchStart = 0
+        let touchStartTime = 0
 
+        const handleTouchStart = e => {
+            const shouldPreventDefault =
+                (this.config.touchStartPreventDefault && this.formEls.indexOf(e.target.nodeName) === -1)
+                || this.config.touchStartForcePreventDefault
+
+            this.$wrapper.style.transition = 'none'
+
+            touchStartTime = Date.now()
+            touchEnd = e.touches[0][this.direction]
+            touchStart = e.touches[0][this.direction]
+            if (shouldPreventDefault && !this.config.passiveListeners) e.preventDefault()
+        }
         const handleTouchMove = e => {
-            const offset = e.targetTouches[0][this.direction] - touchMove
+            e.preventDefault()
+            e.stopPropagation()
+            touchEnd = e.targetTouches[0][this.direction]
 
-            touchMove = e.targetTouches[0][this.direction]
+            const offset = touchEnd - touchStart
+
             this.scrollPixel(offset)
         }
         const handleTouchEnd = e => {
-            const offset = touchMove - touchStart
+            const swipTime = Date.now() - touchStartTime
+            const offset = (touchEnd - touchStart) * this.config.touchRatio
 
             this.$wrapper.style.transition = `transform ease-in-out ${config.speed}ms`
 
-            if (Math.abs(offset) >= this.boxSize * this.config.longSwipesRatio) {
-                if (offset > 0) {
-                    this.scroll(this.index - 1, true)
+            // long swip
+            if (swipTime > this.config.longSwipesMs) {
+                if (Math.abs(offset) >= this.boxSize * this.config.longSwipesRatio) {
+                    if (offset > 0) {
+                        this.scroll(this.index - 1, true)
+                    } else {
+                        this.scroll(this.index + 1, true)
+                    }
                 } else {
-                    this.scroll(this.index + 1, true)
+                    this.scroll(this.index, true)
                 }
             } else {
-                this.scroll(this.index, true)
+                // short swip
+                if (offset > 0) {
+                    this.scroll(this.index - 1, true)
+                } else if (offset < 0) {
+                    this.scroll(this.index + 1, true)
+                }
             }
-            touchMove = 0
+            touchEnd = 0
             touchStart = 0
-            this.$el.removeEventListener('touchmove', handleTouchMove)
         }
 
-        this.$el.addEventListener('touchstart', e => {
-            const shouldPreventDefault = this.config.touchStartPreventDefault || this.config.touchStartForcePreventDefault
-
-            this.$wrapper.style.transition = 'none'
-            touchMove = e.touches[0][this.direction]
-            touchStart = e.touches[0][this.direction]
-
-            this.$el.addEventListener('touchmove', handleTouchMove)
-            shouldPreventDefault && e.preventDefault()
-        })
+        this.$el.addEventListener('touchstart', handleTouchStart, {
+            passive: this.config.passiveListeners,
+            capture: false
+        }, false)
 
         this.$el.addEventListener('touchend', handleTouchEnd)
+        this.$el.addEventListener('touchmove', handleTouchMove)
         this.$el.addEventListener('touchcancel', handleTouchEnd)
 
         if (!config.mousewheel) return
