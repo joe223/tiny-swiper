@@ -1,6 +1,7 @@
 import {
     addClassName,
-    removeClassName
+    removeClassName,
+    detectTouch
 } from './lib'
 
 /**
@@ -12,6 +13,7 @@ export default class Swiper {
         this.index = 0
         this.scrolling = false
         this.config = config
+        this.supportTouch = detectTouch()
         if (typeof el === 'string') {
             el = document.body.querySelector(el)
         }
@@ -73,11 +75,11 @@ export default class Swiper {
     }
 
     get direction () {
-        return this.config.direction === 'horizontal' ? 'screenX' : 'screenY'
+        return this.config.direction === 'horizontal' ? 'pageX' : 'pageY'
     }
 
     get isHorizontal () {
-        return this.direction === 'screenX'
+        return this.config.direction === 'horizontal'
     }
 
     get maxIndex () {
@@ -204,10 +206,14 @@ export default class Swiper {
     }
 
     initWheel () {
-        const { config } = this
+        const {
+            config,
+            supportTouch
+        } = this
         let touchEnd = 0
         let touchStart = 0
         let touchStartTime = 0
+        let isTouchStart = false
 
         const handleTouchStart = e => {
             const shouldPreventDefault =
@@ -216,21 +222,25 @@ export default class Swiper {
 
             this.$wrapper.style.transition = 'none'
 
+            isTouchStart = true
             touchStartTime = Date.now()
-            touchEnd = e.touches[0][this.direction]
-            touchStart = e.touches[0][this.direction]
+            touchStart = supportTouch ? e.touches[0][this.direction] : e[this.direction]
+            touchEnd = touchStart
+
             if (shouldPreventDefault && !this.config.passiveListeners) e.preventDefault()
         }
         const handleTouchMove = e => {
+            if (!isTouchStart) return
+
             e.preventDefault()
             e.stopPropagation()
-            touchEnd = e.targetTouches[0][this.direction]
+            touchEnd = supportTouch ? e.touches[0][this.direction] : e[this.direction]
 
             const offset = touchEnd - touchStart
 
             this.scrollPixel(offset)
         }
-        const handleTouchEnd = e => {
+        const handleTouchEnd = () => {
             const swipTime = Date.now() - touchStartTime
             const offset = (touchEnd - touchStart) * this.config.touchRatio
 
@@ -257,16 +267,22 @@ export default class Swiper {
             }
             touchEnd = 0
             touchStart = 0
+            isTouchStart = false
         }
 
-        this.$el.addEventListener('touchstart', handleTouchStart, {
-            passive: this.config.passiveListeners,
-            capture: false
-        }, false)
-
-        this.$el.addEventListener('touchend', handleTouchEnd)
-        this.$el.addEventListener('touchmove', handleTouchMove)
-        this.$el.addEventListener('touchcancel', handleTouchEnd)
+        if (supportTouch) {
+            this.$el.addEventListener('touchstart', handleTouchStart, {
+                passive: this.config.passiveListeners,
+                capture: false
+            }, false)
+            this.$el.addEventListener('touchmove', handleTouchMove)
+            this.$el.addEventListener('touchend', handleTouchEnd)
+            this.$el.addEventListener('touchcancel', handleTouchEnd)
+        } else {
+            this.$el.addEventListener('mousedown', handleTouchStart)
+            document.addEventListener('mousemove', handleTouchMove)
+            document.addEventListener('mouseup', handleTouchEnd)
+        }
 
         if (!config.mousewheel) return
 
