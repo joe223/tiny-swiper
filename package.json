@@ -1,7 +1,7 @@
 {
   "name": "tiny-swiper",
   "version": "0.0.4",
-  "description": "📦 2 kb gzipped library alternative to swiper with same api.",
+  "description": "📦 2 kb gzipped library alternative to Swiper with same api.",
   "main": "lib/index.js",
   "repository": "https://github.com/joe223/tiny-swiper.git",
   "author": "joe223",

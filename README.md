@@ -1,15 +1,9 @@
 # Tiny-Swiper
 
-<p>
-	<a href="https://www.npmjs.com/package/tiny-swiper">
-		<img src="https://badge.fury.io/js/tiny-swiper.svg"/>
-	</a>
-	<a href="https://travis-ci.com/joe223/tiny-swiper">
-		<img src="https://travis-ci.com/joe223/tiny-swiper.svg?branch=master"/>
-	</a>
-</p>
+[![](https://badge.fury.io/js/tiny-swiper.svg)](https://www.npmjs.com/package/tiny-swiper)
+[![](https://travis-ci.com/joe223/tiny-swiper.svg?branch=master)](https://travis-ci.com/joe223/tiny-swiper)
 
-📦 2 kb gzipped library alternative to swiper with same api.
+📦 2kb gzipped library alternative to Swiper with same api.
 
 ## Getting start
 
@@ -65,7 +59,7 @@ var mySwiper = new Swiper('.swiper-container', {
 |---|---|---|---|
 | direction | string | 'horizontal' | Could be 'horizontal' or 'vertical' (for vertical slider). |
 | speed | number | 300 | Duration of transition between slides (in ms) |
-| intermittent | number | 0 | Time to suspend between two swip actions. |
+| intermittent | number | 0 | Time to suspend between two swip actions. Only for mousewheel mode. |
 | initialSlide | number | 0 | Index number of initial slide. |
 | spaceBetween | number | 0 | Distance between slides in px. |
 | longSwipesMs | number | 300 | Minimal duration (in ms) to trigger swipe to next/previous slide during long swipes |
