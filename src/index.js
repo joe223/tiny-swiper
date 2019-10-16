@@ -40,7 +40,8 @@ export default class Swiper {
             resistanceRatio: 0.85,
             speed: 300,
             longSwipesMs: 300,
-            spaceBetween: 100,
+            intermittent: 0,
+            spaceBetween: 0,
             slidePrevClass: 'swiper-slide-prev',
             slideNextClass: 'swiper-slide-next',
             slideActiveClass: 'swiper-slide-active',
@@ -85,6 +86,10 @@ export default class Swiper {
 
     get minIndex () {
         return 0
+    }
+
+    get boxSize () {
+        return this.slideSize + this.config.spaceBetween
     }
 
     getTransform (offset) {
@@ -138,7 +143,7 @@ export default class Swiper {
         }, this.config.speed)
         setTimeout(() => {
             this.scrolling = false
-        }, this.config.speed + this.config.spaceBetween)
+        }, this.config.speed + this.config.intermittent)
     }
 
     scrollPixel (px) {
@@ -233,7 +238,7 @@ export default class Swiper {
 
             // long swip
             if (swipTime > this.config.longSwipesMs) {
-                if (Math.abs(offset) >= this.boxSize * this.config.longSwipesRatio) {
+                if (Math.abs(offset) >= this.slideSize * this.config.longSwipesRatio) {
                     if (offset > 0) {
                         this.scroll(this.index - 1, true)
                     } else {
@@ -301,13 +306,14 @@ export default class Swiper {
     }
 
     update () {
-        this.boxSize = this.isHorizontal ? this.$el.offsetWidth : this.$el.offsetHeight
-        this.limit = this.boxSize / 2
+        this.slideSize = this.isHorizontal ? this.$el.offsetWidth : this.$el.offsetHeight
         this.$list.forEach(item => {
             if (this.isHorizontal) {
-                item.style.width = `${this.boxSize}px`
+                item.style.width = `${this.slideSize}px`
+                item.style['margin-right'] = `${this.config.spaceBetween}px`
             } else {
-                item.style.height = `${this.boxSize}px`
+                item.style.height = `${this.slideSize}px`
+                item.style['margin-bottom'] = `${this.config.spaceBetween}px`
             }
         })
         this.$wrapper.style.transition = `transform ease ${this.config.speed}ms`
