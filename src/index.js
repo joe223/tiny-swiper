@@ -22,6 +22,7 @@ export default class Swiper {
         this.$wrapper = el.getElementsByClassName(config.wrapperClass)[0]
         this.$list = Array.from(el.getElementsByClassName(config.slideClass))
         this.formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO']
+        this.initStatus()
         this.update()
         this.initPagination()
         this.scroll(this.config.initialSlide)
@@ -32,6 +33,7 @@ export default class Swiper {
         const defaultConfig = {
             direction: 'horizontal',
             touchRatio: 1,
+            touchAngle: 45,
             longSwipesRatio: 0.5,
             initialSlide: 0,
             loop: false,
@@ -50,7 +52,8 @@ export default class Swiper {
             slideClass: 'swiper-slide',
             wrapperClass: 'swiper-wrapper',
             touchStartPreventDefault: true,
-            touchStartForcePreventDefault: false
+            touchStartForcePreventDefault: false,
+            touchMoveStopPropagation: false
         }
         if (config.pagination) {
             config.pagination = {
@@ -149,8 +152,6 @@ export default class Swiper {
     }
 
     scrollPixel (px) {
-        px *= this.config.touchRatio
-
         if (this.config.resistance) {
             if (px > 0 && this.index === 0) {
                 px = px ** this.config.resistanceRatio
@@ -205,51 +206,94 @@ export default class Swiper {
         }
     }
 
+    initStatus () {
+        this.touchStatus = {
+            touchTracks: [],
+            offset: 0,
+            touchStartTime: 0,
+            isTouchStart: false,
+            isScrolling: false,
+            isTouching: false
+        }
+    }
+
     initWheel () {
         const {
             config,
             supportTouch
         } = this
-        let touchEnd = 0
-        let touchStart = 0
-        let touchStartTime = 0
-        let isTouchStart = false
 
         const handleTouchStart = e => {
+            const { touchStatus } = this
             const shouldPreventDefault =
                 (this.config.touchStartPreventDefault && this.formEls.indexOf(e.target.nodeName) === -1)
                 || this.config.touchStartForcePreventDefault
 
             this.$wrapper.style.transition = 'none'
 
-            isTouchStart = true
-            touchStartTime = Date.now()
-            touchStart = supportTouch ? e.touches[0][this.direction] : e[this.direction]
-            touchEnd = touchStart
+            touchStatus.isTouchStart = true
+            touchStatus.touchStartTime = Date.now()
+
+            touchStatus.touchTracks.push({
+                x: supportTouch ? e.touches[0].pageX : e.pageX,
+                y: supportTouch ? e.touches[0].pageY : e.pageY,
+            })
 
             if (shouldPreventDefault && !this.config.passiveListeners) e.preventDefault()
         }
         const handleTouchMove = e => {
-            if (!isTouchStart) return
+            const {
+                config,
+                touchStatus
+            } = this
 
-            e.preventDefault()
-            e.stopPropagation()
-            touchEnd = supportTouch ? e.touches[0][this.direction] : e[this.direction]
+            if (!touchStatus.isTouchStart || touchStatus.isScrolling) return
+            if (config.touchMoveStopPropagation) e.stopPropagation()
 
-            const offset = touchEnd - touchStart
+            const currentPosition = {
+                x: supportTouch ? e.touches[0].pageX : e.pageX,
+                y: supportTouch ? e.touches[0].pageY : e.pageY,
+            }
+            const diff = {
+                x: currentPosition.x - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].x,
+                y: currentPosition.y - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].y
+            }
 
-            this.scrollPixel(offset)
+            touchStatus.touchTracks.push(currentPosition)
+
+            const touchAngle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * 180 / Math.PI
+
+            if (this.isHorizontal) {
+                if (touchAngle < config.touchAngle || touchStatus.isTouching) {
+                    touchStatus.isTouching = true
+                    touchStatus.offset += diff.x
+                    e.preventDefault()
+                } else {
+                    touchStatus.isScrolling = true
+                }
+            } else {
+                if ((90 - touchAngle) < config.touchAngle || touchStatus.isTouching) {
+                    touchStatus.isTouching = true
+                    touchStatus.offset += diff.y
+                    e.preventDefault()
+                } else {
+                    touchStatus.isScrolling = true
+                }
+            }
+
+            this.scrollPixel(touchStatus.offset * config.touchRatio)
         }
         const handleTouchEnd = () => {
-            const swipTime = Date.now() - touchStartTime
-            const offset = (touchEnd - touchStart) * this.config.touchRatio
+            const { touchStatus } = this
+            const swipTime = Date.now() - touchStatus.touchStartTime
+            const computedOffset = touchStatus.offset * this.config.touchRatio
 
             this.$wrapper.style.transition = `transform ease ${config.speed}ms`
 
             // long swip
             if (swipTime > this.config.longSwipesMs) {
-                if (Math.abs(offset) >= this.slideSize * this.config.longSwipesRatio) {
-                    if (offset > 0) {
+                if (Math.abs(computedOffset) >= this.slideSize * this.config.longSwipesRatio) {
+                    if (computedOffset > 0) {
                         this.scroll(this.index - 1, true)
                     } else {
                         this.scroll(this.index + 1, true)
@@ -259,15 +303,13 @@ export default class Swiper {
                 }
             } else {
                 // short swip
-                if (offset > 0) {
+                if (computedOffset > 0) {
                     this.scroll(this.index - 1, true)
-                } else if (offset < 0) {
+                } else if (computedOffset < 0) {
                     this.scroll(this.index + 1, true)
                 }
             }
-            touchEnd = 0
-            touchStart = 0
-            isTouchStart = false
+            this.initStatus()
         }
 
         if (supportTouch) {

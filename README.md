@@ -70,8 +70,10 @@ var mySwiper = new Swiper('.swiper-container', {
 | slideClass | string | 'swiper-slide' | CSS class name of slide |
 | wrapperClass | string | 'swiper-wrapper' | CSS class name of slides' wrapper |
 | touchRatio | number | 1 | Touch ratio |
+| touchAngle | number | 45 | Allowable angle (in degrees) to trigger touch move |
 | touchStartPreventDefault | boolean | true | If disabled, `touchstart` (`mousedown`) event won't be prevented |
 | touchStartForcePreventDefault | boolean | false | Force to always prevent default for `touchstart` (`mousedown`) event |
+| touchMoveStopPropagation | boolean | false | If enabled, then propagation of "touchmove" will be stopped |
 | mousewheel | object/boolean | false | Enables navigation through slides using mouse wheel. Object with mousewheel parameters or boolean true to enable with default settings. |
 | pagination | object/boolean | false | Object with navigation parameters. |
 | passiveListeners | boolean | true | Passive event listeners will be used by default where possible to improve scrolling performance on mobile devices. But if you need to use `e.preventDefault` and you have conflict with it, then you should disable this parameter |
