@@ -70,7 +70,7 @@ var mySwiper = new Swiper('.swiper-container', {
 | slideClass | string | 'swiper-slide' | CSS class name of slide |
 | wrapperClass | string | 'swiper-wrapper' | CSS class name of slides' wrapper |
 | touchRatio | number | 1 | Touch ratio |
-| touchAngle | number | 45 | Allowable angle (in degrees) to trigger touch move |
+| touchAngle | number | 45 | Allowable angle (in degrees) to trigger touch move. Range of values: `[0, 90]`.|
 | touchStartPreventDefault | boolean | true | If disabled, `touchstart` (`mousedown`) event won't be prevented |
 | touchStartForcePreventDefault | boolean | false | Force to always prevent default for `touchstart` (`mousedown`) event |
 | touchMoveStopPropagation | boolean | false | If enabled, then propagation of "touchmove" will be stopped |
@@ -96,4 +96,4 @@ var mySwiper = new Swiper('.swiper-container', {
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
 
 ## License
-Tiny-Swiper is licensed under a MIT License.
+Tiny-Swiper is licensed under a [MIT License](./LICENSE).
