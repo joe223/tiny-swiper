@@ -1,14 +1,16 @@
 export function addClassName (el, list = []) {
     if (!Array.isArray(list)) list = [list]
 
-    el.className = `${el.className} ${list.join(' ')}`
+    const newClassList = list.filter(claz => !new RegExp(`\\b${claz}\\b`).test(el.className))
+
+    el.className = `${el.className} ${newClassList.join(' ')}`
 }
 
 export function removeClassName (el, list = []) {
     if (!Array.isArray(list)) list = [list]
 
     el.className = el.className.replace(
-        new RegExp(`${list.map(item => `((\\s+|^)${item}(\\s+|$))`).join('|')}`), ' ')
+        new RegExp(`${list.map(item => `(\\b${item}\\b)`).join('|')}|(\\s+)`, 'g'), ' ')
 }
 
 export function detectTouch () {

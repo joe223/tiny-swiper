@@ -18,3 +18,6 @@
 # v0.0.5 - Released on 2019/10/17
 - Add Swiper parameter `touchAngle`
 - Add Swiper parameter `touchMoveStopPropagation`
+
+# v0.0.6 - Released on 2019/10/17
+- Fix: `removeClassName`
