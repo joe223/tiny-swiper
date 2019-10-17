@@ -9,7 +9,7 @@
 
 - [Getting Started Guide](#guide-to-usage)
 - [API](#swiper-parameters)
-- [Demos](./demo)
+- [Demos](https://joe223.github.io/tiny-swiper)
 - [Changelog](./CHANGELOG.md)
 
 ### Guide to usage
