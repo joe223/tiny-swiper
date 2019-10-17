@@ -20,4 +20,4 @@
 - Add Swiper parameter `touchMoveStopPropagation`
 
 # v0.0.6 - Released on 2019/10/17
-- Fix: `removeClassName`
+- Fix: `removeClassName` and `addClassName`
