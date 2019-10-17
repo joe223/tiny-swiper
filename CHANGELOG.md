@@ -14,3 +14,7 @@
 
 # v0.0.4 - Released on 2019/10/16
 - Add: simulate touch on desktop device
+
+# v0.0.5 - Released on 2019/10/17
+- Add Swiper parameter `touchAngle`
+- Add Swiper parameter `touchMoveStopPropagation`
