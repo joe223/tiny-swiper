@@ -1,6 +1,7 @@
 # Tiny-Swiper
 
 [![](https://badge.fury.io/js/tiny-swiper.svg)](https://www.npmjs.com/package/tiny-swiper)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/tiny-swiper)](https://www.npmjs.com/package/tiny-swiper)
 [![](https://travis-ci.com/joe223/tiny-swiper.svg?branch=master)](https://travis-ci.com/joe223/tiny-swiper)
 
 📦 2kb gzipped library alternative to SwiperJS with the same modern API.
@@ -11,14 +12,21 @@
 - [API](#swiper-parameters)
 - [Demos](https://joe223.github.io/tiny-swiper)
 - [Changelog](./CHANGELOG.md)
+- [Q&A](#qa)
 
 ### Guide to usage
 
 Install Swiper via npm or yarn:
 
 ```shell
-npm install tiny-swiper
-yarn add tiny-swiper
+$ npm install tiny-swiper --save
+$ yarn add tiny-swiper
+```
+
+If you prefer CDN, just make sure constructor `Swiper` is defined in browser global environment.
+
+```html
+<script src="https://unpkg.com/tiny-swiper@latest/lib/index.js"></script>
 ```
 
 Html code:
@@ -39,19 +47,17 @@ Html code:
 </div>
 ```
 
-`new Swiper(swiperContainer: HTMLElement | string, parameters: object)` - initialize swiper with options.
-
-`swiperContainer` HTMLElement or string (with CSS Selector) of swiper container HTML element. Required.
-`parameters` object with Swiper parameters. Optional.
-
-For example:
+JavaScript/TypeScript code:
 
 ```javascript
-var mySwiper = new Swiper('.swiper-container', {
-    speed: 400,
-    spaceBetween: 100
-})
+const swiper = new Swiper(swiperContainer: HTMLElement | string, parameters?: TinySwiperParameters)
 ```
+
+- `new Swiper()` - initialize swiper with options.
+- `swiperContainer` - HTMLElement or string (with CSS Selector) of swiper container HTML element. Required.
+- `parameters` - object with Swiper parameters. Optional.
+
+Looking for exact example and demonstrations? [👉click me](https://joe223.github.io/tiny-swiper)
 
 ### Swiper parameters
 
@@ -95,5 +101,14 @@ var mySwiper = new Swiper('.swiper-container', {
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
 
+## Q&A
+
+#### 1. Should I use Tiny-Swiper?
+
+Tiny-Swiper keeps the core functions likes Touch/Resistance/Intermittent control, we usually did not use many features on mobile side after all. That the reason why it is smaller and the purpose I wrote it.
+
+If you are looking for some feature special or going to create a complicate slide project. Please check [APIs](#swiper-parameters) before importing to ensure the feature you want is supported. Full-featured SwiperJS should be a better choice sometimes.
+
 ## License
+
 Tiny-Swiper is licensed under a [MIT License](./LICENSE).

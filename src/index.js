@@ -77,10 +77,6 @@ export default class Swiper {
         }
     }
 
-    get direction () {
-        return this.config.direction === 'horizontal' ? 'pageX' : 'pageY'
-    }
-
     get isHorizontal () {
         return this.config.direction === 'horizontal'
     }
