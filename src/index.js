@@ -2,14 +2,14 @@ import {
     addClassName,
     removeClassName,
     detectTouch
-} from './lib'
+} from './lib.js'
 
 /**
  * Swiper Class
  */
 export default class Swiper {
     constructor (el, config) {
-        config = Swiper.formatConfig(config)
+        config = Swiper.formatConfig(config || {})
         this.index = 0
         this.scrolling = false
         this.config = config

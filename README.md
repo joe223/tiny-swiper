@@ -3,6 +3,7 @@
 [![](https://badge.fury.io/js/tiny-swiper.svg)](https://www.npmjs.com/package/tiny-swiper)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/tiny-swiper)](https://www.npmjs.com/package/tiny-swiper)
 [![](https://travis-ci.com/joe223/tiny-swiper.svg?branch=master)](https://travis-ci.com/joe223/tiny-swiper)
+[![codecov](https://codecov.io/gh/joe223/tiny-swiper/branch/dev/graph/badge.svg)](https://codecov.io/gh/joe223/tiny-swiper)
 
 📦 2kb gzipped library alternative to SwiperJS with the same modern API.
 

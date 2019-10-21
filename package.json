@@ -2,21 +2,32 @@
   "name": "tiny-swiper",
   "version": "0.0.6",
   "description": "📦 2kb gzipped library alternative to SwiperJS with the same modern API.",
-  "main": "lib/index.js",
+  "main": "lib/index.min.js",
   "repository": "https://github.com/joe223/tiny-swiper.git",
   "author": "joe223",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "rollup -wc",
-    "build": "rollup -c"
+    "dev": "cross-env NODE_ENV=development rollup -wc",
+    "build": "cross-env NODE_ENV=production rollup -c",
+    "test": "nyc mocha test/setup.js test/**/*.spec.js",
+    "coverage": "nyc report && codecov"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
+    "codecov": "^3.6.1",
+    "expect": "^24.9.0",
+    "finalhandler": "^1.1.2",
+    "husky": "^3.0.9",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1",
+    "puppeteer": "^1.20.0",
+    "puppeteer-to-istanbul": "^1.2.2",
     "rollup": "^1.23.1",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-uglify": "^6.0.3"
+    "rollup-plugin-uglify": "^6.0.3",
+    "serve-static": "^1.14.1"
   },
   "browserslist": [
     "Android >= 7",
@@ -33,5 +44,36 @@
     "touch",
     "ios",
     "mobile"
-  ]
+  ],
+  "nyc": {
+    "report-dir": "./coverage",
+    "reporter": [
+      "lcov",
+      "html",
+      "text-summary"
+    ],
+    "watermarks": {
+      "lines": [
+        70,
+        90
+      ],
+      "functions": [
+        70,
+        90
+      ],
+      "branches": [
+        70,
+        90
+      ],
+      "statements": [
+        70,
+        90
+      ]
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test"
+    }
+  }
 }

@@ -5,8 +5,10 @@ cache:
     - node_modules
 node_js:
   - stable
-  - '8'
+  - '10'
 install:
   - yarn
 script:
+  - npm run test
+  - npm run coverage
   - npm run build
