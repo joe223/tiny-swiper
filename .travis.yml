@@ -13,6 +13,6 @@ before_install:
 install:
   - yarn
 script:
+  - npm run build
   - npm run test
   - npm run coverage
-  - npm run build

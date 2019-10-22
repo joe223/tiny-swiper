@@ -11,11 +11,11 @@ const globalVariables = {
 }
 const opts = {
     headless: true,
-    timeout: 10000,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    timeout: 10000
 }
 
 before (async function () {
+    this.timeout(10000)
     global.expect = expect
     global.browser = await puppeteer.launch(opts)
     global.entryPath = `http://localhost:${server.address().port}/test/index.html`
