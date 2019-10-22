@@ -11,12 +11,12 @@
     "dev": "cross-env NODE_ENV=development rollup -wc",
     "build": "cross-env NODE_ENV=production rollup -c",
     "test": "nyc mocha test/setup.js test/**/*.spec.js",
-    "coverage": "nyc report && codecov"
+    "report": "nyc npm run test && nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
-    "codecov": "^3.6.1",
+    "coveralls": "^3.0.7",
     "cross-env": "^6.0.3",
     "expect": "^24.9.0",
     "finalhandler": "^1.1.2",
@@ -50,8 +50,14 @@
     "report-dir": "./coverage",
     "reporter": [
       "lcov",
-      "html",
       "text-summary"
+    ],
+    "include": [
+      "**/*.js"
+    ],
+    "exclude": [
+      "test",
+      "node_modules"
     ],
     "watermarks": {
       "lines": [
