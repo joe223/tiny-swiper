@@ -11,7 +11,8 @@ const globalVariables = {
 }
 const opts = {
     headless: true,
-    timeout: 10000
+    timeout: 10000,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
 }
 
 before (async function () {
