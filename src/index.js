@@ -1,7 +1,8 @@
 import {
     addClassName,
     removeClassName,
-    detectTouch
+    detectTouch,
+    getTranslate
 } from './lib.js'
 
 /**
@@ -156,7 +157,7 @@ export default class Swiper {
             }
         }
 
-        const oldTransform = -this.index * this.boxSize
+        const oldTransform = getTranslate(this.$wrapper, this.isHorizontal)
 
         this.$wrapper.style.transform = this.getTransform(oldTransform + px)
     }
@@ -205,7 +206,7 @@ export default class Swiper {
     initStatus () {
         this.touchStatus = {
             touchTracks: [],
-            offset: 0,
+            startOffset: 0,
             touchStartTime: 0,
             isTouchStart: false,
             isScrolling: false,
@@ -220,11 +221,13 @@ export default class Swiper {
         } = this
 
         const handleTouchStart = e => {
+            this.initStatus()
             const { touchStatus } = this
             const shouldPreventDefault =
                 (this.config.touchStartPreventDefault && this.formEls.indexOf(e.target.nodeName) === -1)
                 || this.config.touchStartForcePreventDefault
-
+            touchStatus.startOffset = getTranslate(this.$wrapper, this.isHorizontal)
+            this.$wrapper.style.transform = this.getTransform(touchStatus.startOffset)
             this.$wrapper.style.transition = 'none'
 
             touchStatus.isTouchStart = true
@@ -259,10 +262,12 @@ export default class Swiper {
 
             const touchAngle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * 180 / Math.PI
 
+            let offset = 0
+
             if (this.isHorizontal) {
                 if (touchAngle < config.touchAngle || touchStatus.isTouching) {
                     touchStatus.isTouching = true
-                    touchStatus.offset += diff.x
+                    offset = diff.x
                     e.preventDefault()
                 } else {
                     touchStatus.isScrolling = true
@@ -270,19 +275,19 @@ export default class Swiper {
             } else {
                 if ((90 - touchAngle) < config.touchAngle || touchStatus.isTouching) {
                     touchStatus.isTouching = true
-                    touchStatus.offset += diff.y
+                    offset = diff.y
                     e.preventDefault()
                 } else {
                     touchStatus.isScrolling = true
                 }
             }
 
-            this.scrollPixel(touchStatus.offset * config.touchRatio)
+            this.scrollPixel(offset * config.touchRatio)
         }
         const handleTouchEnd = () => {
             const { touchStatus } = this
             const swipTime = Date.now() - touchStatus.touchStartTime
-            const computedOffset = touchStatus.offset * this.config.touchRatio
+            const computedOffset = getTranslate(this.$wrapper, this.isHorizontal) - touchStatus.startOffset
 
             this.$wrapper.style.transition = `transform ease ${config.speed}ms`
 

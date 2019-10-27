@@ -1,4 +1,6 @@
-# Tiny-Swiper
+<p>
+    <a href="./docs/logo.png" target="_blank"><img width="240" src="./docs/logo.png"></a>
+</p>
 
 [![](https://badge.fury.io/js/tiny-swiper.svg)](https://www.npmjs.com/package/tiny-swiper)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/tiny-swiper)](https://www.npmjs.com/package/tiny-swiper)
@@ -6,6 +8,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/joe223/tiny-swiper/badge.svg?branch=dev)](https://coveralls.io/github/joe223/tiny-swiper?branch=dev)
 
 📦 2kb gzipped library alternative to SwiperJS with the same modern API.
+
+***
 
 ## Getting start
 
