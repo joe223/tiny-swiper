@@ -21,7 +21,7 @@ export default class Swiper {
         this.$el = el
         this.$el.style.overflow = 'hidden'
         this.$wrapper = el.getElementsByClassName(config.wrapperClass)[0]
-        this.$list = Array.from(el.getElementsByClassName(config.slideClass))
+        this.$list = [].slice.call(el.getElementsByClassName(config.slideClass))
         this.formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO']
         this.initStatus()
         this.update()
@@ -308,6 +308,8 @@ export default class Swiper {
                     this.scroll(this.index - 1, true)
                 } else if (computedOffset < 0) {
                     this.scroll(this.index + 1, true)
+                } else {
+                    this.scroll(this.index, true)
                 }
             }
             this.initStatus()
@@ -389,3 +391,4 @@ export default class Swiper {
         this.$wrapper.style.transform = this.getTransform(-offset)
     }
 }
+// Try to keep it less than 400 lines.
