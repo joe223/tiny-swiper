@@ -5,6 +5,8 @@ import {
     getTranslate
 } from './lib.js'
 
+const formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO']
+
 /**
  * Swiper Class
  */
@@ -19,15 +21,203 @@ export default class Swiper {
             el = document.body.querySelector(el)
         }
         this.$el = el
-        this.$el.style.overflow = 'hidden'
-        this.$wrapper = el.getElementsByClassName(config.wrapperClass)[0]
-        this.$list = [].slice.call(el.getElementsByClassName(config.slideClass))
-        this.formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO']
-        this.initStatus()
+        this.$wrapper = el.querySelector(`.${config.wrapperClass}`)
+        this.initListener()
+        this.initTouchStatus()
+        this.initWheelStatus()
         this.update()
+        this.attachListener()
         this.initPagination()
-        this.scroll(this.config.initialSlide)
-        this.initWheel()
+        this.scroll(config.initialSlide)
+    }
+
+    initListener () {
+        const {
+            $wrapper,
+            config,
+            supportTouch
+        } = this
+
+        this.listeners = {
+            handleTouchStart: e => {
+                if (this.$pagination && this.$pagination.contains(e.target)) return
+
+                this.initTouchStatus()
+                const { touchStatus } = this
+                const shouldPreventDefault =
+                    (config.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1)
+                    || config.touchStartForcePreventDefault
+                touchStatus.startOffset = getTranslate($wrapper, this.isHorizontal)
+                this.transform(touchStatus.startOffset)
+                $wrapper.style.transition = 'none'
+
+                touchStatus.isTouchStart = true
+                touchStatus.touchStartTime = Date.now()
+
+                touchStatus.touchTracks.push({
+                    x: supportTouch ? e.touches[0].pageX : e.pageX,
+                    y: supportTouch ? e.touches[0].pageY : e.pageY,
+                })
+
+                if (shouldPreventDefault && !config.passiveListeners) e.preventDefault()
+            },
+
+            handleTouchMove: e => {
+                const {
+                    touchStatus
+                } = this
+
+                if (!touchStatus.isTouchStart || touchStatus.isScrolling) return
+                if (config.touchMoveStopPropagation) e.stopPropagation()
+
+                const currentPosition = {
+                    x: supportTouch ? e.touches[0].pageX : e.pageX,
+                    y: supportTouch ? e.touches[0].pageY : e.pageY,
+                }
+                const diff = {
+                    x: currentPosition.x - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].x,
+                    y: currentPosition.y - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].y
+                }
+
+                touchStatus.touchTracks.push(currentPosition)
+
+                const touchAngle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * 180 / Math.PI
+
+                let offset = 0
+
+                if (this.isHorizontal) {
+                    if (touchAngle < config.touchAngle || touchStatus.isTouching) {
+                        touchStatus.isTouching = true
+                        offset = diff.x
+                        e.preventDefault()
+                    } else {
+                        touchStatus.isScrolling = true
+                    }
+                } else {
+                    if ((90 - touchAngle) < config.touchAngle || touchStatus.isTouching) {
+                        touchStatus.isTouching = true
+                        offset = diff.y
+                        e.preventDefault()
+                    } else {
+                        touchStatus.isScrolling = true
+                    }
+                }
+
+                this.scrollPixel(offset * config.touchRatio)
+            },
+
+            handleTouchEnd: e => {
+                if (!this.touchStatus.isTouchStart) return
+
+                const {
+                    index,
+                    slideSize,
+                    touchStatus
+                } = this
+                const swipTime = Date.now() - touchStatus.touchStartTime
+                const computedOffset = getTranslate($wrapper, this.isHorizontal) - touchStatus.startOffset
+
+                $wrapper.style.transition = `transform ease ${config.speed}ms`
+
+                // long swip
+                if (swipTime > this.config.longSwipesMs) {
+                    if (Math.abs(computedOffset) >= slideSize * config.longSwipesRatio) {
+                        if (computedOffset > 0) {
+                            this.scroll(index - 1, true)
+                        } else {
+                            this.scroll(index + 1, true)
+                        }
+                    } else {
+                        this.scroll(index, true)
+                    }
+                } else {
+                    // short swip
+                    if (computedOffset > 0) {
+                        this.scroll(index - 1, true)
+                    } else if (computedOffset < 0) {
+                        this.scroll(index + 1, true)
+                    } else {
+                        this.scroll(index, true)
+                    }
+                }
+                this.initTouchStatus()
+            },
+
+            handleWheel: e => {
+                const {
+                    index,
+                    wheelStatus
+                } = this
+                const deltaY = e.deltaY
+
+                if ((Math.abs(deltaY) - Math.abs(wheelStatus.wheelDelta) > 0 || !wheelStatus.wheeling)
+                    && Math.abs(deltaY) >= config.mousewheel.sensitivity) {
+                    this.scroll(deltaY > 0 ? index - 1 : index + 1)
+                }
+                wheelStatus.wheelDelta = deltaY
+                clearTimeout(wheelStatus.wheelingTimer)
+                wheelStatus.wheeling = true
+                wheelStatus.wheelingTimer = setTimeout(() => {
+                    wheelStatus.wheeling = false
+                }, 200)
+                e.preventDefault()
+                e.stopPropagation()
+            }
+        }
+    }
+
+    attachListener () {
+        const {
+            $el,
+            config,
+            supportTouch
+        } = this
+        const {
+            handleTouchStart,
+            handleTouchMove,
+            handleTouchEnd,
+            handleWheel
+        } = this.listeners
+
+        if (supportTouch) {
+            $el.addEventListener('touchstart', handleTouchStart, {
+                passive: config.passiveListeners,
+                capture: false
+            }, false)
+            $el.addEventListener('touchmove', handleTouchMove)
+            $el.addEventListener('touchend', handleTouchEnd)
+            $el.addEventListener('touchcancel', handleTouchEnd)
+        } else {
+            $el.addEventListener('mousedown', handleTouchStart)
+            document.addEventListener('mousemove', handleTouchMove)
+            document.addEventListener('mouseup', handleTouchEnd)
+        }
+
+        if (config.mousewheel) {
+            $el.addEventListener('wheel', handleWheel)
+        }
+    }
+
+    detachListener () {
+        const {
+            $el
+        } = this
+        const {
+            handleTouchStart,
+            handleTouchMove,
+            handleTouchEnd,
+            handleWheel
+        } = this.listeners
+
+        $el.removeEventListener('touchstart', handleTouchStart)
+        $el.removeEventListener('touchmove', handleTouchMove)
+        $el.removeEventListener('touchend', handleTouchEnd)
+        $el.removeEventListener('touchcancel', handleTouchEnd)
+        $el.removeEventListener('mousedown', handleTouchStart)
+        document.removeEventListener('mousemove', handleTouchMove)
+        document.removeEventListener('mouseup', handleTouchEnd)
+
+        $el.removeEventListener('wheel', handleWheel)
     }
 
     static formatConfig (config) {
@@ -94,8 +284,8 @@ export default class Swiper {
         return this.slideSize + this.config.spaceBetween
     }
 
-    getTransform (offset) {
-        return this.isHorizontal ? `translate3d(${offset}px, 0, 0)` : `translate3d(0, ${offset}px, 0)`
+    transform (offset) {
+        this.$wrapper.style.transform = this.isHorizontal ? `translate3d(${offset}px, 0, 0)` : `translate3d(0, ${offset}px, 0)`
     }
 
     scroll (index = 0, force = false) {
@@ -112,7 +302,7 @@ export default class Swiper {
         const offset = index * this.boxSize
 
         this.scrolling = true
-        this.$wrapper.style.transform = this.getTransform(-offset)
+        this.transform(-offset)
 
         const $current = this.$list[index]
         const $prev = this.$list[index - 1]
@@ -159,7 +349,7 @@ export default class Swiper {
 
         const oldTransform = getTranslate(this.$wrapper, this.isHorizontal)
 
-        this.$wrapper.style.transform = this.getTransform(oldTransform + px)
+        this.transform(oldTransform + px)
     }
 
     initPagination () {
@@ -175,6 +365,7 @@ export default class Swiper {
         const $pageList = []
         const $group = document.createDocumentFragment()
 
+        this.$pagination = $pagination
         this.$pageList = $pageList
 
         this.$list.forEach((item, index) => {
@@ -199,11 +390,20 @@ export default class Swiper {
 
                 if (index < 0) return
                 this.scroll(index)
+                e.stopPropagation()
             })
         }
     }
 
-    initStatus () {
+    destroyPagination () {
+        const { config } = this
+
+        if (!config.pagination) return
+        this.$pagination.innerHTML = ''
+        this.$pageList = []
+    }
+
+    initTouchStatus () {
         this.touchStatus = {
             touchTracks: [],
             startOffset: 0,
@@ -214,181 +414,74 @@ export default class Swiper {
         }
     }
 
-    initWheel () {
-        const {
-            config,
-            supportTouch
-        } = this
-
-        const handleTouchStart = e => {
-            this.initStatus()
-            const { touchStatus } = this
-            const shouldPreventDefault =
-                (this.config.touchStartPreventDefault && this.formEls.indexOf(e.target.nodeName) === -1)
-                || this.config.touchStartForcePreventDefault
-            touchStatus.startOffset = getTranslate(this.$wrapper, this.isHorizontal)
-            this.$wrapper.style.transform = this.getTransform(touchStatus.startOffset)
-            this.$wrapper.style.transition = 'none'
-
-            touchStatus.isTouchStart = true
-            touchStatus.touchStartTime = Date.now()
-
-            touchStatus.touchTracks.push({
-                x: supportTouch ? e.touches[0].pageX : e.pageX,
-                y: supportTouch ? e.touches[0].pageY : e.pageY,
-            })
-
-            if (shouldPreventDefault && !this.config.passiveListeners) e.preventDefault()
+    initWheelStatus () {
+        this.wheelStatus = {
+            wheeling: false,
+            wheelDelta: 0,
+            wheelingTimer: false
         }
-        const handleTouchMove = e => {
-            const {
-                config,
-                touchStatus
-            } = this
-
-            if (!touchStatus.isTouchStart || touchStatus.isScrolling) return
-            if (config.touchMoveStopPropagation) e.stopPropagation()
-
-            const currentPosition = {
-                x: supportTouch ? e.touches[0].pageX : e.pageX,
-                y: supportTouch ? e.touches[0].pageY : e.pageY,
-            }
-            const diff = {
-                x: currentPosition.x - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].x,
-                y: currentPosition.y - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].y
-            }
-
-            touchStatus.touchTracks.push(currentPosition)
-
-            const touchAngle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * 180 / Math.PI
-
-            let offset = 0
-
-            if (this.isHorizontal) {
-                if (touchAngle < config.touchAngle || touchStatus.isTouching) {
-                    touchStatus.isTouching = true
-                    offset = diff.x
-                    e.preventDefault()
-                } else {
-                    touchStatus.isScrolling = true
-                }
-            } else {
-                if ((90 - touchAngle) < config.touchAngle || touchStatus.isTouching) {
-                    touchStatus.isTouching = true
-                    offset = diff.y
-                    e.preventDefault()
-                } else {
-                    touchStatus.isScrolling = true
-                }
-            }
-
-            this.scrollPixel(offset * config.touchRatio)
-        }
-        const handleTouchEnd = () => {
-            const { touchStatus } = this
-            const swipTime = Date.now() - touchStatus.touchStartTime
-            const computedOffset = getTranslate(this.$wrapper, this.isHorizontal) - touchStatus.startOffset
-
-            this.$wrapper.style.transition = `transform ease ${config.speed}ms`
-
-            // long swip
-            if (swipTime > this.config.longSwipesMs) {
-                if (Math.abs(computedOffset) >= this.slideSize * this.config.longSwipesRatio) {
-                    if (computedOffset > 0) {
-                        this.scroll(this.index - 1, true)
-                    } else {
-                        this.scroll(this.index + 1, true)
-                    }
-                } else {
-                    this.scroll(this.index, true)
-                }
-            } else {
-                // short swip
-                if (computedOffset > 0) {
-                    this.scroll(this.index - 1, true)
-                } else if (computedOffset < 0) {
-                    this.scroll(this.index + 1, true)
-                } else {
-                    this.scroll(this.index, true)
-                }
-            }
-            this.initStatus()
-        }
-
-        if (supportTouch) {
-            this.$el.addEventListener('touchstart', handleTouchStart, {
-                passive: this.config.passiveListeners,
-                capture: false
-            }, false)
-            this.$el.addEventListener('touchmove', handleTouchMove)
-            this.$el.addEventListener('touchend', handleTouchEnd)
-            this.$el.addEventListener('touchcancel', handleTouchEnd)
-        } else {
-            this.$el.addEventListener('mousedown', handleTouchStart)
-            document.addEventListener('mousemove', handleTouchMove)
-            document.addEventListener('mouseup', handleTouchEnd)
-        }
-
-        if (!config.mousewheel) return
-
-        let wheeling = false
-        let wheelDelta = 0
-        let wheelingTimer = false
-
-        this.$el.addEventListener('wheel', e => {
-            const deltaY = e.deltaY
-
-            if ((Math.abs(deltaY) - Math.abs(wheelDelta) > 0 || !wheeling)
-                && Math.abs(e.deltaY) >= config.mousewheel.sensitivity) {
-                this.scroll(e.deltaY > 0
-                    ? this.index - 1 : this.index + 1)
-            }
-            wheelDelta = deltaY
-            clearInterval(wheelingTimer)
-            wheeling = true
-            wheelingTimer = setTimeout(() => {
-                wheeling = false
-            }, 200)
-            e.preventDefault()
-            e.stopPropagation()
-        })
     }
 
     updatePagination () {
-        const { config } = this
+        const {
+            bulletClass,
+            bulletActiveClass
+        } = this.config.pagination
+
 
         this.$pageList && this.$pageList.forEach(($page, index) => {
             if (index === this.index) {
-                $page.className = `${config.pagination.bulletClass} ${config.pagination.bulletActiveClass}`
+                addClassName($page, [bulletClass, bulletActiveClass])
             } else {
-                $page.className = `${config.pagination.bulletClass}`
+                removeClassName($page, bulletActiveClass)
             }
         })
     }
 
     update () {
-        this.slideSize = this.isHorizontal ? this.$el.offsetWidth : this.$el.offsetHeight
+        const {
+            $el,
+            $wrapper,
+            index,
+            config,
+            isHorizontal
+        } = this
+        const wrapperStyle = $wrapper.style
+
+        this.$list = [].slice.call($el.getElementsByClassName(config.slideClass))
+        this.slideSize = isHorizontal ? $el.offsetWidth : $el.offsetHeight
         this.$list.forEach(item => {
-            if (this.isHorizontal) {
-                item.style.width = `${this.slideSize}px`
-                item.style['margin-right'] = `${this.config.spaceBetween}px`
-            } else {
-                item.style.height = `${this.slideSize}px`
-                item.style['margin-bottom'] = `${this.config.spaceBetween}px`
-            }
+            item.style[isHorizontal ? 'width' : 'height'] = `${this.slideSize}px`
+            item.style[isHorizontal ? 'margin-right' : 'margin-bottom'] = `${config.spaceBetween}px`
         })
-        this.$wrapper.style.transition = `transform ease ${this.config.speed}ms`
-        if (this.isHorizontal) {
-            this.$wrapper.style.width = `${this.boxSize * this.$list.length}px`
-        } else {
-            this.$wrapper.style.height = `${this.boxSize * this.$list.length}px`
-        }
-        this.$wrapper.style.display = 'flex'
-        this.$wrapper.style['flex-direction'] = this.isHorizontal ? 'row' : 'column'
+        $el.style.overflow = 'hidden'
+        wrapperStyle['will-change'] = 'transform'
+        wrapperStyle.transition = `transform ease ${this.config.speed}ms`
+        wrapperStyle[isHorizontal ? 'width' : 'height'] = `${this.boxSize * this.$list.length}px`
+        wrapperStyle.display = 'flex'
+        wrapperStyle['flex-direction'] = this.isHorizontal ? 'row' : 'column'
+        this.transform(-index * this.boxSize)
+    }
 
-        const offset = this.index * this.boxSize
+    destroy () {
+        const {
+            $el,
+            $wrapper,
+            config
+        } = this
+        const {
+            slideActiveClass
+        } = config
 
-        this.$wrapper.style.transform = this.getTransform(-offset)
+        this.$list.forEach(item => {
+            item.removeAttribute('style')
+            removeClassName(item, [slideActiveClass])
+        })
+        this.$list = []
+        $wrapper.removeAttribute('style')
+        $el.removeAttribute('style')
+        this.detachListener()
+        this.destroyPagination()
     }
 }
 // Try to keep it less than 400 lines.
