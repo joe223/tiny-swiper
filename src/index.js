@@ -158,7 +158,7 @@ export default class Swiper {
                 clearTimeout(wheelStatus.wheelingTimer)
                 wheelStatus.wheeling = true
                 wheelStatus.wheelingTimer = setTimeout(() => {
-                    wheelStatus.wheeling = false
+                    this.initWheelStatus()
                 }, 200)
                 e.preventDefault()
                 e.stopPropagation()
@@ -329,10 +329,8 @@ export default class Swiper {
                 config.slidePrevClass
             ])
         }
-        setTimeout(() => {
-            this.index = index
-            this.updatePagination()
-        }, this.config.speed)
+        this.index = index
+        this.updatePagination()
         setTimeout(() => {
             this.scrolling = false
         }, this.config.speed + this.config.intermittent)
@@ -360,8 +358,6 @@ export default class Swiper {
         const $pagination = typeof config.pagination.el === 'string'
             ? document.body.querySelector(config.pagination.el)
             : config.pagination.el
-
-        $pagination.innerHTML = ''
         const $pageList = []
         const $group = document.createDocumentFragment()
 

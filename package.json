@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development rollup -wc",
     "build": "cross-env NODE_ENV=production rollup -c",
-    "test": "nyc mocha test/setup.js test/**/*.spec.js",
+    "test": "nyc mocha test/**/*.spec.js --config test/.mocharc.js",
+    "test:local": "cross-env TEST_MODE=local npm run test",
     "report": "nyc npm run test && nyc report --reporter=text-lcov | coveralls"
   },
   "devDependencies": {

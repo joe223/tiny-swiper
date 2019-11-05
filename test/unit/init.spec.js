@@ -15,7 +15,10 @@ describe('Initialization', function () {
         ])
 
         pti.write([...jsCoverage])
-        await page.close()
+
+        if (process.env.TEST_MODE !== 'local') {
+            await page.close()
+        }
     })
 
     beforeEach(async function () {

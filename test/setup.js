@@ -10,8 +10,15 @@ const globalVariables = {
     entryPath: global.entryPath
 }
 const opts = {
-    headless: true,
-    timeout: 10000
+    devtools: process.env.TEST_MODE === 'local' ? true : false,
+    timeout: 10000,
+    slowMo: 10,
+    defaultViewport: {
+        width: 400,
+        height: 770,
+        isMobile: true,
+        // isLandscape: true
+    },
 }
 
 before (async function () {
@@ -21,9 +28,11 @@ before (async function () {
     global.entryPath = `http://localhost:${server.address().port}/test/index.html`
 })
 
-after (function () {
-    server.close()
-    browser.close()
+after (async function () {
+    if (process.env.TEST_MODE !== 'local') {
+        server.close()
+        await browser.close()
+    }
     global.browser = globalVariables.browser
     global.expect = globalVariables.expect
     global.entryPath = globalVariables.entryPath
