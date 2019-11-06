@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://github.com/joe223/tiny-swiper" target="_blank"><img width="240" src="https://user-images.githubusercontent.com/10026019/67656978-59e07580-f990-11e9-8baa-63c65b1d5f0a.png"></a>
+    <a href="https://github.com/joe223/tiny-swiper" target="_blank"><img width="240" src="https://user-images.githubusercontent.com/10026019/67691474-9edcca00-f9d9-11e9-9542-5b330cfcc975.png"></a>
 </p>
 <p align="center">📦 2kb gzipped library alternative to SwiperJS with the same modern API.</p>
 <p align="center">
