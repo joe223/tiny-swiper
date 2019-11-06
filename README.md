@@ -4,7 +4,7 @@
 <p align="center">📦 2kb gzipped library alternative to SwiperJS with the same modern API.</p>
 <p align="center">
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="npm" src="https://img.shields.io/npm/v/tiny-swiper"></a>
-    <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img src="https://img.shields.io/bundlephobia/minzip/tiny-swiper"></a>
+    <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img src="https://badgen.net/bundlephobia/minzip/tiny-swiper"></a>
     <a href="https://travis-ci.com/joe223/tiny-swiper" target="_blank"><img src="https://travis-ci.com/joe223/tiny-swiper.svg?branch=master"></a>
     <a href="https://coveralls.io/github/joe223/tiny-swiper?branch=dev" target="_blank"><img src="https://coveralls.io/repos/github/joe223/tiny-swiper/badge.svg?branch=dev"></a>
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="NPM" src="https://img.shields.io/npm/l/tiny-swiper"></a>
@@ -24,7 +24,7 @@
 ## Getting start
 
 - [Getting Started Guide](#guide-to-usage)
-- [API](#swiper-parameters)
+- [API](#api)
 - [Demos](https://joe223.github.io/tiny-swiper)
 - [Changelog](./CHANGELOG.md)
 - [Q&A](#qa)
@@ -74,7 +74,12 @@ const swiper = new Swiper(swiperContainer: HTMLElement | string, parameters?: Ti
 
 Looking for exact example and demonstrations? [👉click me](https://joe223.github.io/tiny-swiper)
 
-### Swiper parameters
+### API
+
+- [Config parameters](#swiper-parameters)
+- [Instance methods](#methods)
+
+#### Swiper parameters
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
@@ -101,20 +106,28 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | resistance | boolean | true | Set to false if you want to disable resistant bounds |
 | resistanceRatio | number | 0.85 | This option allows you to control resistance ratio |
 
-#### Mousewheel Control Parameters
+##### Mousewheel Control Parameters
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
 | sensitivity | number | 1 | Multiplier of mousewheel data, allows to tweak mouse wheel sensitivity |
 | invert | boolean | false | Set to true to invert sliding direction |
 
-#### Pagination Parameters
+##### Pagination Parameters
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
 | clickable | boolean | false | If true then clicking on pagination button will cause transition to appropriate slide |
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
+
+### Methods
+
+| Method | Description |
+|---|---|
+| update | Update instance status if you changed DOM manually. |
+| scroll(index: number, force?: boolean) | Slide to specific index. scroll will not work when instance's `scrolling` is `true` and `force` is `false`. |
+| destroy | Destroy slider instance, detach all events listeners and reset style. |
 
 ## Q&A
 

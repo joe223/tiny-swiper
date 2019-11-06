@@ -66,6 +66,9 @@ export default class Swiper {
                 const {
                     touchStatus
                 } = this
+                const {
+                    touchTracks
+                } = touchStatus
 
                 if (!touchStatus.isTouchStart || touchStatus.isScrolling) return
                 if (config.touchMoveStopPropagation) e.stopPropagation()
@@ -75,11 +78,11 @@ export default class Swiper {
                     y: supportTouch ? e.touches[0].pageY : e.pageY,
                 }
                 const diff = {
-                    x: currentPosition.x - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].x,
-                    y: currentPosition.y - touchStatus.touchTracks[touchStatus.touchTracks.length - 1].y
+                    x: currentPosition.x - touchTracks[touchTracks.length - 1].x,
+                    y: currentPosition.y - touchTracks[touchTracks.length - 1].y
                 }
 
-                touchStatus.touchTracks.push(currentPosition)
+                touchTracks.push(currentPosition)
 
                 const touchAngle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * 180 / Math.PI
 
@@ -122,22 +125,16 @@ export default class Swiper {
                 // long swip
                 if (swipTime > this.config.longSwipesMs) {
                     if (Math.abs(computedOffset) >= slideSize * config.longSwipesRatio) {
-                        if (computedOffset > 0) {
-                            this.scroll(index - 1, true)
-                        } else {
-                            this.scroll(index + 1, true)
-                        }
+                        this.scroll(computedOffset > 0 ? index - 1 : index + 1, true)
                     } else {
                         this.scroll(index, true)
                     }
                 } else {
                     // short swip
-                    if (computedOffset > 0) {
-                        this.scroll(index - 1, true)
-                    } else if (computedOffset < 0) {
-                        this.scroll(index + 1, true)
-                    } else {
+                    if (computedOffset === 0) {
                         this.scroll(index, true)
+                    } else {
+                        this.scroll(computedOffset > 0 ? index - 1 : index + 1, true)
                     }
                 }
                 this.initTouchStatus()
@@ -338,10 +335,13 @@ export default class Swiper {
 
     scrollPixel (px) {
         if (this.config.resistance) {
-            if (px > 0 && this.index === 0) {
-                px = px ** this.config.resistanceRatio
-            } else if (px < 0 && this.index === this.maxIndex) {
-                px = -1 * (Math.abs(px) ** this.config.resistanceRatio)
+            // if (px > 0 && this.index === 0) {
+            //     px = px ** this.config.resistanceRatio
+            // } else if (px < 0 && this.index === this.maxIndex) {
+            //     px = -1 * (Math.abs(px) ** this.config.resistanceRatio)
+            // }
+            if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
+                px = px * Math.pow(this.config.resistanceRatio, 2)
             }
         }
 
@@ -354,6 +354,10 @@ export default class Swiper {
         const { config } = this
 
         if (!config.pagination) return
+        const {
+            bulletClass,
+            bulletActiveClass
+        } = config.pagination
 
         const $pagination = typeof config.pagination.el === 'string'
             ? document.body.querySelector(config.pagination.el)
@@ -367,11 +371,7 @@ export default class Swiper {
         this.$list.forEach((item, index) => {
             const $page = document.createElement('div')
 
-            if (index === this.index) {
-                $page.className = `${config.pagination.bulletClass} ${config.pagination.bulletActiveClass}`
-            } else {
-                $page.className = `${config.pagination.bulletClass}`
-            }
+            addClassName($page, index === this.index ? [bulletClass, bulletActiveClass] : bulletClass)
             $pageList.push($page)
             $group.appendChild($page)
         })
@@ -380,12 +380,7 @@ export default class Swiper {
 
         if (config.pagination.clickable) {
             $pagination.addEventListener('click', e => {
-                if (this.scrolling) return
-
-                const index = $pageList.indexOf(e.target)
-
-                if (index < 0) return
-                this.scroll(index)
+                this.scroll($pageList.indexOf(e.target))
                 e.stopPropagation()
             })
         }
@@ -419,15 +414,11 @@ export default class Swiper {
     }
 
     updatePagination () {
-        const {
-            bulletClass,
-            bulletActiveClass
-        } = this.config.pagination
-
+        const { bulletActiveClass } = this.config.pagination
 
         this.$pageList && this.$pageList.forEach(($page, index) => {
             if (index === this.index) {
-                addClassName($page, [bulletClass, bulletActiveClass])
+                addClassName($page, bulletActiveClass)
             } else {
                 removeClassName($page, bulletActiveClass)
             }
@@ -451,11 +442,11 @@ export default class Swiper {
             item.style[isHorizontal ? 'margin-right' : 'margin-bottom'] = `${config.spaceBetween}px`
         })
         $el.style.overflow = 'hidden'
-        wrapperStyle['will-change'] = 'transform'
+        wrapperStyle.willChange = 'transform'
         wrapperStyle.transition = `transform ease ${this.config.speed}ms`
         wrapperStyle[isHorizontal ? 'width' : 'height'] = `${this.boxSize * this.$list.length}px`
         wrapperStyle.display = 'flex'
-        wrapperStyle['flex-direction'] = this.isHorizontal ? 'row' : 'column'
+        wrapperStyle.flexDirection = this.isHorizontal ? 'row' : 'column'
         this.transform(-index * this.boxSize)
     }
 
