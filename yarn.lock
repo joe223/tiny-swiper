@@ -2949,10 +2949,9 @@ punycode@^2.1.0:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-puppeteer-to-istanbul@^1.2.2:
+"puppeteer-to-istanbul@https://github.com/joe223/puppeteer-to-istanbul#master":
   version "1.2.2"
-  resolved "https://registry.npmjs.org/puppeteer-to-istanbul/-/puppeteer-to-istanbul-1.2.2.tgz#e25d89b2ebe772ca731d8306b9a04e9c0a006bfa"
-  integrity sha512-uXj2WKvcrszD0BHBp6Ht3FDed4Kfzvzn1fP4IdrYLjZ9Gbxc/YRhT1JBdTz1TMHZVs+HHT/Bbwz3KwSLLK4UBg==
+  resolved "https://github.com/joe223/puppeteer-to-istanbul#cfc8283da488cc3fe4f6c2b20be706d58b32db2c"
   dependencies:
     clone "^2.1.1"
     mkdirp "^0.5.1"

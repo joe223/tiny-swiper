@@ -25,7 +25,7 @@
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
     "puppeteer": "^1.20.0",
-    "puppeteer-to-istanbul": "^1.2.2",
+    "puppeteer-to-istanbul": "https://github.com/joe223/puppeteer-to-istanbul#master",
     "rollup": "^1.23.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-uglify": "^6.0.3",
