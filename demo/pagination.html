@@ -73,6 +73,7 @@
 </head>
 <body>
     <script src="/lib/index.js"></script>
+    <script src="/lib/modules/pagination.js"></script>
 
     <!-- Slider main container -->
     <div class="swiper-container" id="swiper1">
@@ -102,7 +103,10 @@
                 bulletClass: 't-ScrollBar__item',
                 bulletActiveClass: 'is-active',
                 clickable: true
-            }
+            },
+            plugins: [
+                SwiperPluginPagiantion
+            ]
         });
     </script>
 </body>

@@ -5,7 +5,22 @@ import {
     getTranslate
 } from './lib.js'
 
-const formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO']
+const formEls = [
+    'INPUT',
+    'SELECT',
+    'OPTION',
+    'TEXTAREA',
+    'BUTTON',
+    'VIDEO'
+]
+const hooks = [
+    'before-init',
+    'after-init',
+    'before-slide',
+    'after-slide',
+    'before-destroy',
+    'after-destroy'
+]
 
 /**
  * Swiper Class
@@ -22,13 +37,48 @@ export default class Swiper {
         }
         this.$el = el
         this.$wrapper = el.querySelector(`.${config.wrapperClass}`)
+        this.eventHub = {}
+        this.initPlugins(config.plugins)
+        this.emit('before-init', this)
         this.initListener()
         this.initTouchStatus()
         this.initWheelStatus()
         this.update()
         this.attachListener()
-        this.initPagination()
+        this.emit('after-init', this)
         this.scroll(config.initialSlide)
+    }
+
+    initPlugins (plugins) {
+        (plugins || []).forEach(plugin => plugin(this))
+    }
+
+    on (evtName, cb) {
+        const { eventHub } = this
+
+        if (!eventHub[evtName]) {
+            eventHub[evtName] = [cb]
+        } else {
+            eventHub[evtName].push(cb)
+        }
+    }
+
+    off (evtName, cb) {
+        const { eventHub } = this
+
+        if (eventHub[evtName]) {
+            const index = eventHub[evtName].indexOf(cb)
+
+            index > -1 && eventHub[evtName].splice(index, 1)
+        }
+    }
+
+    emit (evtName, ...data) {
+        const { eventHub } = this
+
+        if (eventHub[evtName]) {
+            eventHub[evtName].forEach(cb => cb(...data))
+        }
     }
 
     initListener () {
@@ -243,14 +293,6 @@ export default class Swiper {
             touchStartForcePreventDefault: false,
             touchMoveStopPropagation: false
         }
-        if (config.pagination) {
-            config.pagination = {
-                clickable: false,
-                bulletClass: 'swiper-pagination-bullet',
-                bulletActiveClass: 'swiper-pagination-bullet-active',
-                ...config.pagination
-            }
-        }
         if (config.mousewheel) {
             config.mousewheel = {
                 invert: false,
@@ -287,6 +329,8 @@ export default class Swiper {
 
     scroll (index = 0, force = false) {
         if (this.scrolling && !force) return
+
+        this.emit('before-slide', this.index, this)
 
         const {
             config,
@@ -327,9 +371,9 @@ export default class Swiper {
             ])
         }
         this.index = index
-        this.updatePagination()
         setTimeout(() => {
             this.scrolling = false
+            this.emit('after-slide', index, this)
         }, this.config.speed + this.config.intermittent)
     }
 
@@ -350,50 +394,6 @@ export default class Swiper {
         this.transform(oldTransform + px)
     }
 
-    initPagination () {
-        const { config } = this
-
-        if (!config.pagination) return
-        const {
-            bulletClass,
-            bulletActiveClass
-        } = config.pagination
-
-        const $pagination = typeof config.pagination.el === 'string'
-            ? document.body.querySelector(config.pagination.el)
-            : config.pagination.el
-        const $pageList = []
-        const $group = document.createDocumentFragment()
-
-        this.$pagination = $pagination
-        this.$pageList = $pageList
-
-        this.$list.forEach((item, index) => {
-            const $page = document.createElement('div')
-
-            addClassName($page, index === this.index ? [bulletClass, bulletActiveClass] : bulletClass)
-            $pageList.push($page)
-            $group.appendChild($page)
-        })
-
-        $pagination.appendChild($group)
-
-        if (config.pagination.clickable) {
-            $pagination.addEventListener('click', e => {
-                this.scroll($pageList.indexOf(e.target))
-                e.stopPropagation()
-            })
-        }
-    }
-
-    destroyPagination () {
-        const { config } = this
-
-        if (!config.pagination) return
-        this.$pagination.innerHTML = ''
-        this.$pageList = []
-    }
-
     initTouchStatus () {
         this.touchStatus = {
             touchTracks: [],
@@ -411,18 +411,6 @@ export default class Swiper {
             wheelDelta: 0,
             wheelingTimer: false
         }
-    }
-
-    updatePagination () {
-        const { bulletActiveClass } = this.config.pagination
-
-        this.$pageList && this.$pageList.forEach(($page, index) => {
-            if (index === this.index) {
-                addClassName($page, bulletActiveClass)
-            } else {
-                removeClassName($page, bulletActiveClass)
-            }
-        })
     }
 
     update () {
@@ -460,15 +448,16 @@ export default class Swiper {
             slideActiveClass
         } = config
 
+        this.emit('before-destroy', this)
         this.$list.forEach(item => {
             item.removeAttribute('style')
             removeClassName(item, [slideActiveClass])
         })
         this.$list = []
+        this.eventHub = {}
         $wrapper.removeAttribute('style')
         $el.removeAttribute('style')
         this.detachListener()
-        this.destroyPagination()
+        this.emit('after-destroy', this)
     }
 }
-// Try to keep it less than 400 lines.
