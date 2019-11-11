@@ -30,3 +30,9 @@
 
 - Changes: pause scrolling on touch
 - Fix: click action stop scrolling while Swiper is scrolling
+
+# v1.0.0 - Released on 2019/11/11
+
+- **Breaking Change**: extract pagination plugin
+- Add: destory method
+- Add: life hooks
