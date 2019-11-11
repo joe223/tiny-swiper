@@ -78,6 +78,9 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 
 - [Config parameters](#swiper-parameters)
 - [Instance methods](#methods)
+- [Life hooks](#life-hooks)
+- [Using Plugins](#using-plugins)
+- [Plugin List](#plugin-list)
 
 #### Swiper parameters
 
@@ -101,10 +104,10 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | touchStartForcePreventDefault | boolean | false | Force to always prevent default for `touchstart` (`mousedown`) event |
 | touchMoveStopPropagation | boolean | false | If enabled, then propagation of "touchmove" will be stopped |
 | mousewheel | object/boolean | false | Enables navigation through slides using mouse wheel. Object with mousewheel parameters or boolean true to enable with default settings. |
-| pagination | object/boolean | false | Object with navigation parameters. |
 | passiveListeners | boolean | true | Passive event listeners will be used by default where possible to improve scrolling performance on mobile devices. But if you need to use `e.preventDefault` and you have conflict with it, then you should disable this parameter |
 | resistance | boolean | true | Set to false if you want to disable resistant bounds |
 | resistanceRatio | number | 0.85 | This option allows you to control resistance ratio |
+| plugins | TinySwiperPlugins[] | undefined | Plugins for Tiny-Swiper instance. |
 
 ##### Mousewheel Control Parameters
 
@@ -113,7 +116,93 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | sensitivity | number | 1 | Multiplier of mousewheel data, allows to tweak mouse wheel sensitivity |
 | invert | boolean | false | Set to true to invert sliding direction |
 
-##### Pagination Parameters
+
+#### Methods
+
+| Method | Description |
+|---|---|
+| update | Update instance status if you changed DOM manually. |
+| scroll(index: number, force?: boolean) | Slide to specific index. scroll will not work when instance's `scrolling` is `true` and `force` is `false`. |
+| destroy | Destroy slider instance, detach all events listeners and reset style. |
+
+#### Life Hooks
+
+You can do something at special moments by registering Tiny-Swiper instance life hooks. Such as create a plugin.
+
+| HookName | Parameters | Description |
+|---|---|---|
+| `before-init` | `instance: TinySwiper` | Before Tiny-Swiper instance initialize. |
+| `after-init` |  `instance: TinySwiper` | After Tiny-Swiper instance initialize. |
+| `before-slide` | `currentIndex: number, instance: TinySwiper` | Before Tiny-Swiper instance slide changes. |
+| `after-slide` | `newIndex: number, instance: TinySwiper` | After Tiny-Swiper instance slide changes.  |
+| `before-destroy` | `instance: TinySwiper` | Before Tiny-Swiper instance is destroyed. |
+| `after-destroy` | `instance: TinySwiper` | After Tiny-Swiper instance is destroyed, every thing is restored. |
+
+#### Using Plugins
+
+Tiny-Swiper instance only reserve core functions such as `init` `destroy` `LifeHooks`. So, You should load specific plugin if you need something special likes pagination.
+
+Plugin is under `lib/modules` folder. You could import theme as ES modules:
+
+```javascript
+import SwiperPluginPagination 'tiny-swiper/modules/pagination.js'
+```
+
+or via CDN:
+
+```html
+<script src="https://unpkg.com/tiny-swiper@latest/lib/modules/pagination.min.js"></script>
+```
+
+And the most important —— initialization:
+
+```javascript
+const swiper = new Swiper(
+    swiperContainerElement,
+    {
+        // SwiperPluginPagination configuration.
+        pagination: {
+            clickable: true
+        },
+
+        // Add SwiperPluginPagination plugin.
+        plugin: [ SwiperPluginPagination ]
+    }
+)
+```
+
+Do not forget, just keep Plugin parameter at the **first level** of configuration.
+
+#### Plugin List
+
+- [Pagination](#pagination)
+
+##### Pagination
+
+Pagination is the indicator of siwper for indicating current `index`.
+
+###### Usage
+
+```javascript
+import SwiperPluginPagination 'tiny-swiper/modules/pagination.js'
+
+const swiper = new Swiper(
+    swiperContainerElement,
+    {
+        // SwiperPluginPagination configuration.
+        pagination: {
+            clickable: true
+        },
+
+        // Add SwiperPluginPagination plugin.
+        plugin: [ SwiperPluginPagination ]
+    }
+)
+```
+
+Global name on `window`: `SwiperPluginPagination`.
+
+###### Pagination Parameters
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
@@ -121,13 +210,6 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
 
-### Methods
-
-| Method | Description |
-|---|---|
-| update | Update instance status if you changed DOM manually. |
-| scroll(index: number, force?: boolean) | Slide to specific index. scroll will not work when instance's `scrolling` is `true` and `force` is `false`. |
-| destroy | Destroy slider instance, detach all events listeners and reset style. |
 
 ## Q&A
 

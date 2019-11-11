@@ -63,6 +63,8 @@ describe('Pagination', function () {
             type: 'module',
             content: `
             import Swiper from '/src/index.js'
+            import SwiperPluginPagination from '/src/modules/pagination.js'
+
             const mySwiper = new Swiper('#swiper1', {
                 speed: 0,
                 pagination: {
@@ -70,7 +72,10 @@ describe('Pagination', function () {
                     bulletClass: 't-ScrollBar__item',
                     bulletActiveClass: 'is-active',
                     clickable: true
-                }
+                },
+                plugins: [
+                    SwiperPluginPagination
+                ]
             })
 
             window.Swiper = Swiper
@@ -89,6 +94,8 @@ describe('Pagination', function () {
             type: 'module',
             content: `
             import Swiper from '/src/index.js'
+            import SwiperPluginPagination from '/src/modules/pagination.js'
+
             const paginationSwiper1 = new Swiper('#swiper1', {
                 speed: 0,
                 pagination: {
@@ -96,7 +103,10 @@ describe('Pagination', function () {
                     bulletClass: 't-ScrollBar__item',
                     bulletActiveClass: 'is-active',
                     clickable: true
-                }
+                },
+                plugins: [
+                    SwiperPluginPagination
+                ]
             })
 
             window.Swiper = Swiper
@@ -121,6 +131,8 @@ describe('Pagination', function () {
             type: 'module',
             content: `
             import Swiper from '/src/index.js'
+            import SwiperPluginPagination from '/src/modules/pagination.js'
+
             const paginationSwiper2 = new Swiper('#swiper1', {
                 speed: 0,
                 pagination: {
@@ -128,7 +140,10 @@ describe('Pagination', function () {
                     bulletClass: 't-ScrollBar__item',
                     bulletActiveClass: 'is-active',
                     clickable: true
-                }
+                },
+                plugins: [
+                    SwiperPluginPagination
+                ]
             })
 
             window.Swiper = Swiper
