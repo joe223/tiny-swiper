@@ -36,3 +36,7 @@
 - **Breaking Change**: extract pagination plugin
 - Add: destory method
 - Add: life hooks
+
+# v1.0.1 - Released on 2019/11/12
+
+- Fix: SwiperPluginPagination plugin name
