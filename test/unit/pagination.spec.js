@@ -88,7 +88,6 @@ describe('Pagination', function () {
         expect(await className.jsonValue()).toEqual('t-ScrollBar__item is-active')
     })
 
-
     it('update active pagination item', async function () {
         await page.addScriptTag({
             type: 'module',
@@ -108,14 +107,14 @@ describe('Pagination', function () {
                     SwiperPluginPagination
                 ]
             })
-
-            window.Swiper = Swiper
             window.paginationSwiper1 = paginationSwiper1
+            window.Swiper = Swiper
+            window.SwiperPluginPagination = SwiperPluginPagination
             `
         })
 
         await page.evaluate(function () {
-            paginationSwiper1.scroll(paginationSwiper1.index + 1)
+            paginationSwiper1.scroll(paginationSwiper1.index + 1, true)
         })
 
         await helper.wait(async function () {
@@ -145,9 +144,9 @@ describe('Pagination', function () {
                     SwiperPluginPagination
                 ]
             })
-
-            window.Swiper = Swiper
             window.paginationSwiper2 = paginationSwiper2
+            window.Swiper = Swiper
+            window.SwiperPluginPagination = SwiperPluginPagination
             `
         })
 
@@ -166,5 +165,39 @@ describe('Pagination', function () {
             })
             expect(await className.jsonValue()).toEqual('t-ScrollBar__item is-active')
         }, 100)
+    })
+
+    it('pagination destroyed', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import Swiper from '/src/index.js'
+            import SwiperPluginPagination from '/src/modules/pagination.js'
+
+            const paginationSwiper3 = new Swiper('#swiper1', {
+                speed: 0,
+                pagination: {
+                    el: '.t-ScrollBar',
+                    bulletClass: 't-ScrollBar__item',
+                    bulletActiveClass: 'is-active',
+                    clickable: true
+                },
+                plugins: [
+                    SwiperPluginPagination
+                ]
+            })
+
+            window.Swiper = Swiper
+            window.paginationSwiper3 = paginationSwiper3
+            `
+        })
+
+        const swiper = await page.evaluate(function () {
+            paginationSwiper3.destroy()
+            return paginationSwiper3
+        })
+
+        expect(swiper.$pagination).toEqual(null)
+        expect(swiper.$pageList ).toEqual([])
     })
 })

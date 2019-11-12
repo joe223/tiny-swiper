@@ -59,6 +59,7 @@ export default function TinySwiperPluginPagination (tinyswiper) {
         if (!config.pagination) return
         tinyswiper.$pagination.innerHTML = ''
         tinyswiper.$pageList = []
+        tinyswiper.$pagination = null
     })
 
     tinyswiper.on('after-slide', (currentIndex, tinyswiper) => {

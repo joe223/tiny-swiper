@@ -453,11 +453,13 @@ export default class Swiper {
             item.removeAttribute('style')
             removeClassName(item, [slideActiveClass])
         })
-        this.$list = []
-        this.eventHub = {}
         $wrapper.removeAttribute('style')
         $el.removeAttribute('style')
         this.detachListener()
         this.emit('after-destroy', this)
+        this.$el = null
+        this.$list = []
+        this.$wrapper = null
+        this.eventHub = {}
     }
 }

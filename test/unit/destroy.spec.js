@@ -40,11 +40,13 @@ describe('Destroy', function () {
             `
         })
 
-        const slideList = await page.evaluate(function () {
+        const swiper = await page.evaluate(function () {
             mySwiper.destroy()
-            return mySwiper.$list
+            return mySwiper
         })
 
-        expect(slideList).toEqual([])
+        expect(swiper.$list).toEqual([])
+        expect(swiper.$el).toEqual(null)
+        expect(swiper.$wrapper).toEqual(null)
     })
 })
