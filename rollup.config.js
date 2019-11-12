@@ -9,7 +9,7 @@ const entries = [
     },
     {
         input: 'modules/pagination.js',
-        name: 'SwiperPluginPagiantion'
+        name: 'SwiperPluginPagination'
     }
 ]
 const plugins = [

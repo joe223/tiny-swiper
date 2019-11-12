@@ -1,7 +1,7 @@
 <p align="center">
     <a href="https://github.com/joe223/tiny-swiper" target="_blank"><img width="240" src="https://user-images.githubusercontent.com/10026019/67691474-9edcca00-f9d9-11e9-9542-5b330cfcc975.png"></a>
 </p>
-<p align="center">📦 2kb modular JS library alternative to Swiper.js with the same modern API for creating html slideshow.</p>
+<p align="center">2kb modular JS library alternative to Swiper.js for creating html slideshow.</p>
 <p align="center">
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="npm" src="https://img.shields.io/npm/v/tiny-swiper"></a>
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img src="https://badgen.net/bundlephobia/minzip/tiny-swiper"></a>
@@ -145,10 +145,10 @@ Tiny-Swiper instance only reserve core functions such as `init` `destroy` `LifeH
 Plugin is under `lib/modules` folder. You could import theme as ES modules:
 
 ```javascript
-import SwiperPluginPagination 'tiny-swiper/modules/pagination.js'
+import SwiperPluginPagination from 'tiny-swiper/lib/modules/pagination.min.js'
 ```
 
-or via CDN:
+Or via CDN:
 
 ```html
 <script src="https://unpkg.com/tiny-swiper@latest/lib/modules/pagination.min.js"></script>
