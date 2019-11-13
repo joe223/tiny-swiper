@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://github.com/joe223/tiny-swiper" target="_blank"><img width="240" src="https://user-images.githubusercontent.com/10026019/67691474-9edcca00-f9d9-11e9-9542-5b330cfcc975.png"></a>
+    <a href="https://github.com/joe223/tiny-swiper" target="_blank"><img width="220" src="https://user-images.githubusercontent.com/10026019/67691474-9edcca00-f9d9-11e9-9542-5b330cfcc975.png"></a>
 </p>
 <p align="center">2kb modular JS library alternative to Swiper.js for creating html slideshow.</p>
 <p align="center">
@@ -124,6 +124,8 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | update | Update instance status if you changed DOM manually. |
 | scroll(index: number, force?: boolean) | Slide to specific index. scroll will not work when instance's `scrolling` is `true` and `force` is `false`. |
 | destroy | Destroy slider instance, detach all events listeners and reset style. |
+| on(eventName: string, cb: function) | Register life hooks callback function. |
+| off(eventName: string, cb: function) | Cancel life hooks callback function. |
 
 #### Life Hooks
 
@@ -133,7 +135,7 @@ You can do something at special moments by registering Tiny-Swiper instance life
 |---|---|---|
 | `before-init` | `instance: TinySwiper` | Before Tiny-Swiper instance initialize. |
 | `after-init` |  `instance: TinySwiper` | After Tiny-Swiper instance initialize. |
-| `before-slide` | `currentIndex: number, instance: TinySwiper` | Before Tiny-Swiper instance slide changes. |
+| `before-slide` | `currentIndex: number, instance: TinySwiper` | Before Tiny-Swiper instance slide changes. `index` does not change yet. |
 | `after-slide` | `newIndex: number, instance: TinySwiper` | After Tiny-Swiper instance slide changes.  |
 | `before-destroy` | `instance: TinySwiper` | Before Tiny-Swiper instance is destroyed. |
 | `after-destroy` | `instance: TinySwiper` | After Tiny-Swiper instance is destroyed, every thing is restored. |
@@ -166,7 +168,7 @@ const swiper = new Swiper(
         },
 
         // Add SwiperPluginPagination plugin.
-        plugin: [ SwiperPluginPagination ]
+        plugins: [ SwiperPluginPagination ]
     }
 )
 ```
@@ -195,12 +197,15 @@ const swiper = new Swiper(
         },
 
         // Add SwiperPluginPagination plugin.
-        plugin: [ SwiperPluginPagination ]
+        plugins: [ SwiperPluginPagination ]
     }
 )
 ```
 
 Global name on `window`: `SwiperPluginPagination`.
+Configuration name: `pagination`.
+
+**Notice**: Tiny-Swiper does not provide default CSS file. You have to define style yourself.
 
 ###### Pagination Parameters
 
