@@ -32,6 +32,7 @@ export default function TinySwiperPluginPagination (tinyswiper) {
         const $pageList = []
         const $group = document.createDocumentFragment()
 
+        config.excludeElements.push($pagination)
         tinyswiper.$pagination = $pagination
         tinyswiper.$pageList = $pageList
 

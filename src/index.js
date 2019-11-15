@@ -27,7 +27,7 @@ const hooks = [
  */
 export default class Swiper {
     constructor (el, config) {
-        config = Swiper.formatConfig(config || {})
+        config = Swiper.formatConfig(config)
         this.index = 0
         this.scrolling = false
         this.config = config
@@ -90,7 +90,9 @@ export default class Swiper {
 
         this.listeners = {
             handleTouchStart: e => {
-                if (this.$pagination && this.$pagination.contains(e.target)) return
+                for (let i = 0; i < config.excludeElements.length; i++) {
+                    if (config.excludeElements[i].contains(e.target)) return
+                }
 
                 this.initTouchStatus()
                 const { touchStatus } = this
@@ -267,7 +269,7 @@ export default class Swiper {
         $el.removeEventListener('wheel', handleWheel)
     }
 
-    static formatConfig (config) {
+    static formatConfig (config = {}) {
         const defaultConfig = {
             direction: 'horizontal',
             touchRatio: 1,
@@ -291,7 +293,8 @@ export default class Swiper {
             wrapperClass: 'swiper-wrapper',
             touchStartPreventDefault: true,
             touchStartForcePreventDefault: false,
-            touchMoveStopPropagation: false
+            touchMoveStopPropagation: false,
+            excludeElements: []
         }
         if (config.mousewheel) {
             config.mousewheel = {
@@ -449,5 +452,6 @@ export default class Swiper {
         this.$list = []
         this.$wrapper = null
         this.eventHub = {}
+        this.config = Swiper.formatConfig()
     }
 }

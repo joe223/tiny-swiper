@@ -108,6 +108,7 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | resistance | boolean | true | Set to false if you want to disable resistant bounds |
 | resistanceRatio | number | 0.85 | This option allows you to control resistance ratio |
 | plugins | TinySwiperPlugins[] | undefined | Plugins for Tiny-Swiper instance. |
+| excludeElements | HTMLElements[] | `[]` | An HTMLElement array which contains all elements that do not trigger swipe. |
 
 ##### Mousewheel Control Parameters
 
