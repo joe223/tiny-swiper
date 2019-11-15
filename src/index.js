@@ -307,22 +307,6 @@ export default class Swiper {
         }
     }
 
-    get isHorizontal () {
-        return this.config.direction === 'horizontal'
-    }
-
-    get maxIndex () {
-        return this.$list.length - 1
-    }
-
-    get minIndex () {
-        return 0
-    }
-
-    get boxSize () {
-        return this.slideSize + this.config.spaceBetween
-    }
-
     transform (offset) {
         this.$wrapper.style.transform = this.isHorizontal ? `translate3d(${offset}px, 0, 0)` : `translate3d(0, ${offset}px, 0)`
     }
@@ -418,13 +402,17 @@ export default class Swiper {
             $el,
             $wrapper,
             index,
-            config,
-            isHorizontal
+            config
         } = this
         const wrapperStyle = $wrapper.style
+        const isHorizontal = config.direction === 'horizontal'
 
+        this.isHorizontal = isHorizontal
         this.$list = [].slice.call($el.getElementsByClassName(config.slideClass))
+        this.minIndex = 0
+        this.maxIndex = this.$list.length - 1
         this.slideSize = isHorizontal ? $el.offsetWidth : $el.offsetHeight
+        this.boxSize = this.slideSize + config.spaceBetween
         this.$list.forEach(item => {
             item.style[isHorizontal ? 'width' : 'height'] = `${this.slideSize}px`
             item.style[isHorizontal ? 'margin-right' : 'margin-bottom'] = `${config.spaceBetween}px`
@@ -434,7 +422,7 @@ export default class Swiper {
         wrapperStyle.transition = `transform ease ${this.config.speed}ms`
         wrapperStyle[isHorizontal ? 'width' : 'height'] = `${this.boxSize * this.$list.length}px`
         wrapperStyle.display = 'flex'
-        wrapperStyle.flexDirection = this.isHorizontal ? 'row' : 'column'
+        wrapperStyle.flexDirection = isHorizontal ? 'row' : 'column'
         this.transform(-index * this.boxSize)
     }
 

@@ -1,7 +1,7 @@
 {
   "name": "tiny-swiper",
   "version": "1.0.1",
-  "description": "📦 2kb modular JS library alternative to Swiper.js for creating html slideshow.",
+  "description": "2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.",
   "main": "lib/index.min.js",
   "repository": "https://github.com/joe223/tiny-swiper.git",
   "author": "joe223",
