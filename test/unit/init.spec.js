@@ -77,4 +77,30 @@ describe('Initialization', function () {
 
         expect(initialSlideTransform).toBeTruthy()
     })
+
+    it('excludeElements parameter', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import Swiper from '/src/index.js'
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                excludeElements: Array.from(document.body.querySelectorAll('.swiper-slide'))
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            `
+        })
+        await page.mouse.move(100, 0)
+        await page.mouse.down()
+        await page.mouse.move(0, 0)
+        await page.mouse.up()
+
+        const swiperIndex = await page.evaluate(function () {
+            return mySwiper.index
+        })
+
+        expect(swiperIndex).toEqual(0)
+    })
 })
