@@ -187,7 +187,7 @@ Pagination is the indicator of siwper for indicating current `index`.
 ###### Usage
 
 ```javascript
-import SwiperPluginPagination 'tiny-swiper/modules/pagination.js'
+import SwiperPluginPagination from 'tiny-swiper/lib/modules/pagination.min.js'
 
 const swiper = new Swiper(
     swiperContainerElement,
