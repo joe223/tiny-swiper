@@ -365,15 +365,18 @@ export default class Swiper {
     }
 
     scrollPixel (px) {
+        const ratio = px.toExponential().split('e')[1]
+        const expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1
+
         if (this.config.resistance) {
-            // if (px > 0 && this.index === 0) {
-            //     px = px ** this.config.resistanceRatio
-            // } else if (px < 0 && this.index === this.maxIndex) {
-            //     px = -1 * (Math.abs(px) ** this.config.resistanceRatio)
-            // }
-            if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
-                px = px * Math.pow(this.config.resistanceRatio, 2)
+            if (px > 0 && this.index === 0) {
+                px = px - (px * expand) ** this.config.resistanceRatio / expand
+            } else if (px < 0 && this.index === this.maxIndex) {
+                px = px + ((-px * expand) ** this.config.resistanceRatio) / expand
             }
+            // if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
+            //     px = px * Math.pow(this.config.resistanceRatio, 4)
+            // }
         }
 
         const oldTransform = getTranslate(this.$wrapper, this.isHorizontal)
