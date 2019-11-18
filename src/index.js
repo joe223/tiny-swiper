@@ -27,7 +27,7 @@ const hooks = [
  */
 export default class Swiper {
     constructor (el, config) {
-        config = Swiper.formatConfig(config || {})
+        config = Swiper.formatConfig(config)
         this.index = 0
         this.scrolling = false
         this.config = config
@@ -90,7 +90,9 @@ export default class Swiper {
 
         this.listeners = {
             handleTouchStart: e => {
-                if (this.$pagination && this.$pagination.contains(e.target)) return
+                for (let i = 0; i < config.excludeElements.length; i++) {
+                    if (config.excludeElements[i].contains(e.target)) return
+                }
 
                 this.initTouchStatus()
                 const { touchStatus } = this
@@ -267,7 +269,7 @@ export default class Swiper {
         $el.removeEventListener('wheel', handleWheel)
     }
 
-    static formatConfig (config) {
+    static formatConfig (config = {}) {
         const defaultConfig = {
             direction: 'horizontal',
             touchRatio: 1,
@@ -291,7 +293,8 @@ export default class Swiper {
             wrapperClass: 'swiper-wrapper',
             touchStartPreventDefault: true,
             touchStartForcePreventDefault: false,
-            touchMoveStopPropagation: false
+            touchMoveStopPropagation: false,
+            excludeElements: []
         }
         if (config.mousewheel) {
             config.mousewheel = {
@@ -305,22 +308,6 @@ export default class Swiper {
             ...defaultConfig,
             ...config
         }
-    }
-
-    get isHorizontal () {
-        return this.config.direction === 'horizontal'
-    }
-
-    get maxIndex () {
-        return this.$list.length - 1
-    }
-
-    get minIndex () {
-        return 0
-    }
-
-    get boxSize () {
-        return this.slideSize + this.config.spaceBetween
     }
 
     transform (offset) {
@@ -378,15 +365,18 @@ export default class Swiper {
     }
 
     scrollPixel (px) {
+        const ratio = px.toExponential().split('e')[1]
+        const expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1
+
         if (this.config.resistance) {
-            // if (px > 0 && this.index === 0) {
-            //     px = px ** this.config.resistanceRatio
-            // } else if (px < 0 && this.index === this.maxIndex) {
-            //     px = -1 * (Math.abs(px) ** this.config.resistanceRatio)
-            // }
-            if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
-                px = px * Math.pow(this.config.resistanceRatio, 2)
+            if (px > 0 && this.index === 0) {
+                px = px - (px * expand) ** this.config.resistanceRatio / expand
+            } else if (px < 0 && this.index === this.maxIndex) {
+                px = px + ((-px * expand) ** this.config.resistanceRatio) / expand
             }
+            // if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
+            //     px = px * Math.pow(this.config.resistanceRatio, 4)
+            // }
         }
 
         const oldTransform = getTranslate(this.$wrapper, this.isHorizontal)
@@ -418,13 +408,17 @@ export default class Swiper {
             $el,
             $wrapper,
             index,
-            config,
-            isHorizontal
+            config
         } = this
         const wrapperStyle = $wrapper.style
+        const isHorizontal = config.direction === 'horizontal'
 
+        this.isHorizontal = isHorizontal
         this.$list = [].slice.call($el.getElementsByClassName(config.slideClass))
+        this.minIndex = 0
+        this.maxIndex = this.$list.length - 1
         this.slideSize = isHorizontal ? $el.offsetWidth : $el.offsetHeight
+        this.boxSize = this.slideSize + config.spaceBetween
         this.$list.forEach(item => {
             item.style[isHorizontal ? 'width' : 'height'] = `${this.slideSize}px`
             item.style[isHorizontal ? 'margin-right' : 'margin-bottom'] = `${config.spaceBetween}px`
@@ -434,7 +428,7 @@ export default class Swiper {
         wrapperStyle.transition = `transform ease ${this.config.speed}ms`
         wrapperStyle[isHorizontal ? 'width' : 'height'] = `${this.boxSize * this.$list.length}px`
         wrapperStyle.display = 'flex'
-        wrapperStyle.flexDirection = this.isHorizontal ? 'row' : 'column'
+        wrapperStyle.flexDirection = isHorizontal ? 'row' : 'column'
         this.transform(-index * this.boxSize)
     }
 
@@ -461,5 +455,6 @@ export default class Swiper {
         this.$list = []
         this.$wrapper = null
         this.eventHub = {}
+        this.config = Swiper.formatConfig()
     }
 }
