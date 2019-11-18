@@ -40,3 +40,9 @@
 # v1.0.1 - Released on 2019/11/12
 
 - Fix: SwiperPluginPagination plugin name
+
+# v1.0.2 - Released on 2019/11/18
+
+- Add: excludeElements configuration
+- Changes: update resistance calculate
+- Changes: optimize package size
