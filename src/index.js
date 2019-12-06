@@ -38,7 +38,7 @@ export default class Swiper {
         this.$el = el
         this.$wrapper = el.querySelector(`.${config.wrapperClass}`)
         this.eventHub = {}
-        this.initPlugins(config.plugins)
+        this.initPlugins(config.plugins || Swiper.plugins)
         this.emit('before-init', this)
         this.initListener()
         this.initTouchStatus()
@@ -47,6 +47,51 @@ export default class Swiper {
         this.attachListener()
         this.emit('after-init', this)
         this.scroll(config.initialSlide)
+    }
+
+    static use (plugins) {
+        Swiper.plugins = plugins
+    }
+
+    static formatConfig (config = {}) {
+        const defaultConfig = {
+            direction: 'horizontal',
+            touchRatio: 1,
+            touchAngle: 45,
+            longSwipesRatio: 0.5,
+            initialSlide: 0,
+            loop: false,
+            mousewheel: false,
+            pagination: false,
+            passiveListeners: true,
+            resistance: true,
+            resistanceRatio: 0.85,
+            speed: 300,
+            longSwipesMs: 300,
+            intermittent: 0,
+            spaceBetween: 0,
+            slidePrevClass: 'swiper-slide-prev',
+            slideNextClass: 'swiper-slide-next',
+            slideActiveClass: 'swiper-slide-active',
+            slideClass: 'swiper-slide',
+            wrapperClass: 'swiper-wrapper',
+            touchStartPreventDefault: true,
+            touchStartForcePreventDefault: false,
+            touchMoveStopPropagation: false,
+            excludeElements: []
+        }
+        if (config.mousewheel) {
+            config.mousewheel = {
+                invert: false,
+                sensitivity: 1,
+                ...config.mousewheel
+            }
+        }
+
+        return {
+            ...defaultConfig,
+            ...config
+        }
     }
 
     initPlugins (plugins) {
@@ -267,47 +312,6 @@ export default class Swiper {
         document.removeEventListener('mouseup', handleTouchEnd)
 
         $el.removeEventListener('wheel', handleWheel)
-    }
-
-    static formatConfig (config = {}) {
-        const defaultConfig = {
-            direction: 'horizontal',
-            touchRatio: 1,
-            touchAngle: 45,
-            longSwipesRatio: 0.5,
-            initialSlide: 0,
-            loop: false,
-            mousewheel: false,
-            pagination: false,
-            passiveListeners: true,
-            resistance: true,
-            resistanceRatio: 0.85,
-            speed: 300,
-            longSwipesMs: 300,
-            intermittent: 0,
-            spaceBetween: 0,
-            slidePrevClass: 'swiper-slide-prev',
-            slideNextClass: 'swiper-slide-next',
-            slideActiveClass: 'swiper-slide-active',
-            slideClass: 'swiper-slide',
-            wrapperClass: 'swiper-wrapper',
-            touchStartPreventDefault: true,
-            touchStartForcePreventDefault: false,
-            touchMoveStopPropagation: false,
-            excludeElements: []
-        }
-        if (config.mousewheel) {
-            config.mousewheel = {
-                invert: false,
-                sensitivity: 1,
-                ...config.mousewheel
-            }
-        }
-
-        return {
-            ...defaultConfig,
-            ...config
-        }
     }
 
     transform (offset) {

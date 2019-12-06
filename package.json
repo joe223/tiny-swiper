@@ -47,7 +47,8 @@
     "ios",
     "mobile",
     "tiny-swiper",
-    "tinyswiper"
+    "tinyswiper",
+    "carousel"
   ],
   "nyc": {
     "report-dir": "./coverage",
