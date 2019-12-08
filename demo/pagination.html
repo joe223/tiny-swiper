@@ -90,6 +90,8 @@
     </div>
 
     <script>
+        Swiper.use([ SwiperPluginPagination ])
+
         var mySwiper = new Swiper('#swiper1', {
             speed: 300,
             cssMode: true,
@@ -103,10 +105,7 @@
                 bulletClass: 't-ScrollBar__item',
                 bulletActiveClass: 'is-active',
                 clickable: true
-            },
-            plugins: [
-                SwiperPluginPagination
-            ]
+            }
         });
     </script>
 </body>

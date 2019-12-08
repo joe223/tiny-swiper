@@ -66,19 +66,19 @@
     "watermarks": {
       "lines": [
         70,
-        90
+        85
       ],
       "functions": [
         70,
-        90
+        85
       ],
       "branches": [
         70,
-        90
+        85
       ],
       "statements": [
         70,
-        90
+        85
       ]
     }
   },

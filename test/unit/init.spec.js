@@ -103,4 +103,54 @@ describe('Initialization', function () {
 
         expect(swiperIndex).toEqual(0)
     })
+
+    it('plugins parameter', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import Swiper from '/src/index.js'
+
+            window.count = 0
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                plugins: [() => window.count++]
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            `
+        })
+
+        const count = await page.evaluate(function () {
+            return window.count
+        })
+
+        expect(count).toEqual(1)
+    })
+
+    it('use plugins', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import Swiper from '/src/index.js'
+
+            Swiper.use([() => window.count++])
+            window.count = 0
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            `
+        })
+
+        const count = await page.evaluate(function () {
+            return window.count
+        })
+
+        expect(count).toEqual(1)
+    })
 })

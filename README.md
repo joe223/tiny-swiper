@@ -27,7 +27,7 @@
 - [API](#api)
 - [Demos](https://joe223.github.io/tiny-swiper)
 - [Changelog](./CHANGELOG.md)
-- [Q&A](#qa)
+- [FAQ](#faq)
 
 ### Guide to usage
 
@@ -127,6 +127,7 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | destroy | Destroy slider instance, detach all events listeners and reset style. |
 | on(eventName: string, cb: function) | Register life hooks callback function. |
 | off(eventName: string, cb: function) | Cancel life hooks callback function. |
+| use(Array<TinySwiperPlugin>) | Register plugins globally. |
 
 #### Life Hooks
 
@@ -159,20 +160,42 @@ Or via CDN:
 
 And the most important —— initialization:
 
-```javascript
-const swiper = new Swiper(
-    swiperContainerElement,
-    {
-        // SwiperPluginPagination configuration.
-        pagination: {
-            clickable: true
-        },
+1. Register `SwiperPluginPagination` as default plugin, so every Swiper instance will be supported.
 
-        // Add SwiperPluginPagination plugin.
-        plugins: [ SwiperPluginPagination ]
-    }
-)
-```
+    ```javascript
+    // All intances instantiated with Swiper has pagination plugin
+    Swiper.use([ SwiperPluginPagination ])
+
+    const swiper = new Swiper(
+        swiperContainerElement,
+        {
+            // SwiperPluginPagination configuration,
+            // just make sure that pagination is not equal to false.
+            pagination: {
+                clickable: true
+            }
+        }
+    )
+    ```
+
+2.  Or just for current instance via the `plugin` parameter
+
+    ```javascript
+    const swiper = new Swiper(
+        swiperContainerElement,
+        {
+            // SwiperPluginPagination configuration.
+            pagination: {
+                clickable: true
+            },
+
+            // Add SwiperPluginPagination plugin.
+            plugins: [ SwiperPluginPagination ]
+        }
+    )
+    ```
+
+**Notice: Two configurations are mutually exclusive.**
 
 Do not forget, just keep Plugin parameter at the **first level** of configuration.
 
@@ -217,7 +240,7 @@ Configuration name: `pagination`.
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
 
 
-## Q&A
+## FAQ
 
 #### 1. Should I use Tiny-Swiper?
 
