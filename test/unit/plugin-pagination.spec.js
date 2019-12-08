@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer')
 const pti = require('puppeteer-to-istanbul')
 const helper = require('../helper')
 
-describe('Pagination', function () {
+describe('Plugin - Pagination', function () {
     let page = null
 
     before(async function () {
@@ -160,9 +160,6 @@ describe('Pagination', function () {
             const $bullets = await page.$$('.t-ScrollBar .t-ScrollBar__item')
             const className = await $bullets[1].getProperty('className')
 
-            await page.evaluate(function () {
-                console.log('paginationSwiper2', paginationSwiper2.index,new Date())
-            })
             expect(await className.jsonValue()).toEqual('t-ScrollBar__item is-active')
         }, 100)
     })

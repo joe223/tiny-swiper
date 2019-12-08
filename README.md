@@ -21,7 +21,7 @@
 | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
 | IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions
 
-## Getting start
+## Table of contents
 
 - [Getting Started Guide](#guide-to-usage)
 - [API](#api)
@@ -127,7 +127,7 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | destroy | Destroy slider instance, detach all events listeners and reset style. |
 | on(eventName: string, cb: function) | Register life hooks callback function. |
 | off(eventName: string, cb: function) | Cancel life hooks callback function. |
-| use(Array<TinySwiperPlugin>) | Register plugins globally. |
+| use(TinySwiperPlugin[]) | Register plugins globally. |
 
 #### Life Hooks
 
@@ -137,7 +137,7 @@ You can do something at special moments by registering Tiny-Swiper instance life
 |---|---|---|
 | `before-init` | `instance: TinySwiper` | Before Tiny-Swiper instance initialize. |
 | `after-init` |  `instance: TinySwiper` | After Tiny-Swiper instance initialize. |
-| `before-slide` | `currentIndex: number, instance: TinySwiper` | Before Tiny-Swiper instance slide changes. `index` does not change yet. |
+| `before-slide` | `currentIndex: number, instance: TinySwiper, newIndex: number` | Before Tiny-Swiper instance slide changes. `index` does not change yet. |
 | `after-slide` | `newIndex: number, instance: TinySwiper` | After Tiny-Swiper instance slide changes.  |
 | `before-destroy` | `instance: TinySwiper` | Before Tiny-Swiper instance is destroyed. |
 | `after-destroy` | `instance: TinySwiper` | After Tiny-Swiper instance is destroyed, every thing is restored. |
@@ -195,17 +195,21 @@ And the most important —— initialization:
     )
     ```
 
-**Notice: Two configurations are mutually exclusive.**
+**Notice: Two configurations are mutually exclusive. Plugin parameter gets higher priority.**
 
 Do not forget, just keep Plugin parameter at the **first level** of configuration.
 
 #### Plugin List
 
 - [Pagination](#pagination)
+- [Lazyload](#lazyload)
 
 ##### Pagination
 
 Pagination is the indicator of siwper for indicating current `index`.
+
+- Global name on `window`: `SwiperPluginPagination`.
+- Configuration name: `pagination`.
 
 ###### Usage
 
@@ -226,19 +230,81 @@ const swiper = new Swiper(
 )
 ```
 
-Global name on `window`: `SwiperPluginPagination`.
-Configuration name: `pagination`.
-
 **Notice**: Tiny-Swiper does not provide default CSS file. You have to define style yourself.
 
 ###### Pagination Parameters
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
+| pagination | Object/Boolean | undefined | Object with navigation parameters. |
+| {
 | clickable | boolean | false | If true then clicking on pagination button will cause transition to appropriate slide |
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
+| }
 
+##### Lazyload
+
+Try loading less images to reduce the number of HTTP requests.
+
+- Global name on `window`: `SwiperPluginLazyload`.
+- Configuration name: `lazyload`.
+
+###### Usage
+
+Using `data-src` attribute to enable lazyload. `.swiper-lazy-preloader` will keep display till image is loaded/error. Viewing the [demonstration](https://joe223.com/tiny-swiper/#plugins).
+
+```html
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+
+        <!-- Lazy image -->
+        <div class="swiper-slide">
+            <img data-src="path/to/picture-1.jpg" class="swiper-lazy">
+            <div class="swiper-lazy-preloader"></div>
+        </div>
+
+        <div class="swiper-slide">
+            <img data-src="path/to/picture-2.jpg" class="swiper-lazy">
+            <div class="swiper-lazy-preloader"></div>
+        </div>
+
+        <div class="swiper-slide">
+            <img data-src="path/to/picture-3.jpg" class="swiper-lazy">
+            <div class="swiper-lazy-preloader"></div>
+        </div>
+    </div>
+</div>
+```
+
+```javascript
+Swiper.use([ SwiperPluginLazyload ])
+
+var mySwiper = new Swiper('#swiper1', {
+    lazyload: {
+        loadPrevNext: false,
+        loadPrevNextAmount: 1,
+        loadOnTransitionStart: false,
+        elementClass: 'swiper-lazy',
+        loadingClass: 'swiper-lazy-loading',
+        loadedClass: 'swiper-lazy-loaded',
+        preloaderClass: 'swiper-lazy-preloader'
+    }
+})
+```
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| lazyload | Object/Boolean | undefined | Object with parameters. |
+| {
+| loadPrevNext | boolean | false | Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images) |
+| loadPrevNextAmount | number | 1 | Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView |
+| loadOnTransitionStart | boolean | false | Loading image on `before-slide` event. loading on `after-slide` if set to `false`. |
+| elementClass | string | 'swiper-lazy'	| CSS class name of lazy element |
+| loadingClass | string | 'swiper-lazy-loading' | CSS class name of lazy loading element |
+| loadedClass |	string | 'swiper-lazy-loaded' | CSS class name of lazy loaded element |
+| preloaderClass |	string | 'swiper-lazy-preloader' | CSS class name of lazy preloader |
+| }
 
 ## FAQ
 

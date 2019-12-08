@@ -321,8 +321,6 @@ export default class Swiper {
     scroll (index = 0, force = false) {
         if (this.scrolling && !force) return
 
-        this.emit('before-slide', this.index, this)
-
         const {
             config,
             minIndex,
@@ -330,6 +328,8 @@ export default class Swiper {
         } = this
 
         index = index < minIndex ? minIndex : index > maxIndex ? maxIndex : index
+
+        this.emit('before-slide', this.index, this, index)
 
         const offset = index * this.boxSize
 

@@ -25,6 +25,7 @@ before (async function () {
     this.timeout(10000)
     global.expect = expect
     global.browser = await puppeteer.launch(opts)
+    global.entryHost = `http://localhost:${server.address().port}/`
     global.entryPath = `http://localhost:${server.address().port}/test/index.html`
 })
 

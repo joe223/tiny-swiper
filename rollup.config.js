@@ -10,6 +10,10 @@ const entries = [
     {
         input: 'modules/pagination.js',
         name: 'SwiperPluginPagination'
+    },
+    {
+        input: 'modules/lazyload.js',
+        name: 'SwiperPluginLazyload'
     }
 ]
 const plugins = [
