@@ -26,7 +26,7 @@ before (async function () {
     global.expect = expect
     global.browser = await puppeteer.launch(opts)
     global.entryHost = `http://localhost:${server.address().port}/`
-    global.entryPath = `http://localhost:${server.address().port}/test/index.html`
+    global.entryPath = `http://localhost:${server.address().port}/test/fixtures/index.html`
 })
 
 after (async function () {

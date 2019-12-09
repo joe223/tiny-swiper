@@ -88,7 +88,7 @@ describe('Plugin - Lazyload', function () {
             return lazyloadSwiper3
         })
 
-        expect(swiper.lazyload).toEqual(undefined)
+        expect(swiper.lazyload).toBeUndefined()
     })
 
     it('lazyload loadOnTransitionStart: true', async function () {
