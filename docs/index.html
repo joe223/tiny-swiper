@@ -1,50 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="keywords" content="swiper,swipe,slider,carousel,slideshow,touch,ios,mobile,tiny-swiper,tinyswiper,swiperjs">
-    <meta name="description" content="2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.">
-    <title>Tiny-Swiper - 2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.</title>
+    <meta name="keywords"
+        content="swiper,swipe,slider,carousel,slideshow,touch,ios,mobile,tiny-swiper,tinyswiper,swiperjs">
+    <meta name="description"
+        content="2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.">
+    <title>Tiny-Swiper - 2kb modular JS library alternative to SwiperJS with same modern API for
+        carousel/slider/slideshow.</title>
     <style>
         body {
+            position: relative;
             padding: .8rem;
-            font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
             font-size: 14px;
             line-height: 1.5;
             color: #24292e;
             background-color: #fff;
         }
+
         .demo {
             margin-bottom: 3rem;
             max-width: 800px;
+        }
+
+        .logo {
+            display: none;
+            width: 180px;
         }
 
         @media screen and (min-width: 769px) {
             body {
                 padding: 1rem 2rem;
             }
+
+            .header {
+                margin-right: 230px;
+            }
+
+            .logo {
+                display: block;
+                position: absolute;
+                top: 1rem;
+                right: 2rem;
+            }
         }
     </style>
 </head>
+
 <body>
-    <h1>Tiny-Swiper@1.x&nbsp;
-        <a href="https://github.com/joe223/tiny-swiper">
-            <img alt="GitHub stars" src="https://img.shields.io/github/stars/joe223/tiny-swiper?style=social">
-        </a>
-    </h1>
+    <img class="logo"
+        src="https://user-images.githubusercontent.com/10026019/67691474-9edcca00-f9d9-11e9-9542-5b330cfcc975.png"
+        alt="Tiny-Swiper">
 
-    <hr>
+    <header class="header">
+        <h1>Tiny-Swiper@1.x&nbsp;
+            <a href="https://github.com/joe223/tiny-swiper">
+                <img alt="GitHub stars" src="https://img.shields.io/github/stars/joe223/tiny-swiper?style=social">
+            </a>
+        </h1>
 
-    <p>📦 2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.</p>
+        <hr>
+
+        <p>📦 2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.</p>
+    </header>
 
     <p>
         <h2>History version</h2>
         <a href="0.1.x/">v0.1.x</a>
     </p>
 
-    <h2>Routes</h2>
+    <h2>Table of contents</h2>
     <ul>
         <li><a href="https://github.com/joe223/tiny-swiper#getting-start">Getting Started Guide</a></li>
         <li><a href="https://github.com/joe223/tiny-swiper#swiper-parameters">API</a></li>
@@ -65,39 +94,53 @@
 
     <div class="demo">
         <h4>Default Setup</h4>
-        <iframe src="https://codier.io/embed/H1yWLWujS?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/H1yWLWujS?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <div class="demo">
         <h4>Vertical Slider</h4>
-        <iframe src="https://codier.io/embed/Byqb1D4YS?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/Byqb1D4YS?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <div class="demo">
         <h4>Space Between Slides</h4>
-        <iframe src="https://codier.io/embed/B1gHAUNFB?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/B1gHAUNFB?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <div class="demo">
         <h4>Mousewheel Control</h4>
-        <iframe src="https://codier.io/embed/BymYF8VYr?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/BymYF8VYr?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <div class="demo">
         <h4>Speed Control</h4>
-        <iframe src="https://codier.io/embed/r13VxPEYS?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/r13VxPEYS?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <div class="demo">
         <h4>Intermittent Control</h4>
         <p>Only for mousewheel mode.</p>
-        <iframe src="https://codier.io/embed/Hy4TxD4YS?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/Hy4TxD4YS?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <div class="demo">
         <h4>Resistance Control</h4>
         <p>With less <em>resistanceRatio</em> comes bigger <em>resistance</em>. </p>
-        <iframe src="https://codier.io/embed/SJz5_DVtS?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/SJz5_DVtS?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <h3 id="plugins">Plugins</h3>
@@ -105,18 +148,34 @@
     <div class="demo">
         <h4>Pagination</h4>
         <p>You need to implement CSS code yourself.</p>
-        <iframe src="https://codier.io/embed/r1agRINtr?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/r1agRINtr?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <div class="demo">
         <h4>Lazyload</h4>
         <p>You need to implement CSS code yourself.</p>
-        <iframe src="https://codier.io/embed/rks6smcTH?tab=javascript%2Cpreview" style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
+        <iframe src="https://codier.io/embed/rks6smcTH?tab=javascript%2Cpreview"
+            style="width: 100%; height: 400px; border: 1px solid #D3D3D3; border-radius: 5px;"
+            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
     </div>
 
     <footer>
-        Tiny-Swiper is licensed under a <a href="https://github.com/joe223/tiny-swiper/blob/master/LICENSE">MIT License</a>.
+        Tiny-Swiper is licensed under a <a href="https://github.com/joe223/tiny-swiper/blob/master/LICENSE">MIT
+            License</a>.
         Created by <a href="https://github.com/joe223">joe223</a>.
     </footer>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-153214295-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-153214295-1');
+    </script>
 </body>
+
 </html>
