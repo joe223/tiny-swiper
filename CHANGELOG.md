@@ -46,3 +46,8 @@
 - Add: excludeElements configuration
 - Changes: update resistance calculate
 - Changes: optimize package size
+
+# v1.1.0 - Released on 2019/12/9
+
+- Add: `SwiperPluginLazyload` plugin
+- Add: use method
