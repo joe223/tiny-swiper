@@ -12,7 +12,7 @@ const globalVariables = {
 const opts = {
     devtools: process.env.TEST_MODE === 'local' ? true : false,
     timeout: 10000,
-    slowMo: 10,
+    slowMo: 20,
     defaultViewport: {
         width: 400,
         height: 770,

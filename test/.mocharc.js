@@ -1,5 +1,5 @@
 module.exports = {
-    timeout: 5000,
+    timeout: 10000,
     extension: ['js'],
     opts: false,
     file: './test/setup.js',
