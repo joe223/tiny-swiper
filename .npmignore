@@ -1,5 +1,6 @@
-.git
-.github
-demo
-docs
-node_modules
+/*
+
+!/package.json
+!/README.md
+!/lib/**/*
+!/src/**/*
