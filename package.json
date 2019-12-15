@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "description": "2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.",
   "main": "lib/index.min.js",
+  "module": "lib/index.esm.js",
   "repository": "https://github.com/joe223/tiny-swiper.git",
   "author": "joe223",
   "license": "MIT",
@@ -69,7 +70,9 @@
     ],
     "exclude": [
       "test",
-      "node_modules"
+      "node_modules",
+      "src/index.esm.js",
+      "src/index.full.js"
     ],
     "watermarks": {
       "lines": [
