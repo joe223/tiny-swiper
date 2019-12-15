@@ -12,13 +12,18 @@
     "build": "cross-env NODE_ENV=production rollup -c",
     "test": "nyc mocha test/**/*.spec.js --config test/.mocharc.js",
     "test:local": "cross-env TEST_MODE=local npm run test",
-    "report": "nyc npm run test && nyc report --reporter=text-lcov | coveralls"
+    "report": "nyc npm run test && nyc report --reporter=text-lcov | coveralls",
+    "lint": "eslint src test",
+    "lint:fix": "eslint src test --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "coveralls": "^3.0.7",
     "cross-env": "^6.0.3",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.19.1",
     "expect": "^24.9.0",
     "finalhandler": "^1.1.2",
     "husky": "^3.0.9",
@@ -28,6 +33,7 @@
     "puppeteer-to-istanbul": "https://github.com/joe223/puppeteer-to-istanbul#master",
     "rollup": "^1.23.1",
     "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-uglify": "^6.0.3",
     "serve-static": "^1.14.1"
   },

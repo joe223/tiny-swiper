@@ -13,6 +13,8 @@ const formEls = [
     'BUTTON',
     'VIDEO'
 ]
+
+// eslint-disable-next-line
 const hooks = [
     'before-init',
     'after-init',
@@ -28,13 +30,12 @@ const hooks = [
 export default class Swiper {
     constructor (el, config) {
         config = Swiper.formatConfig(config)
+        el = typeof el === 'string' ? document.body.querySelector(el) : el
+
         this.index = 0
         this.scrolling = false
         this.config = config
         this.supportTouch = detectTouch()
-        if (typeof el === 'string') {
-            el = document.body.querySelector(el)
-        }
         this.$el = el
         this.$wrapper = el.querySelector(`.${config.wrapperClass}`)
         this.eventHub = {}
@@ -141,8 +142,7 @@ export default class Swiper {
 
                 this.initTouchStatus()
                 const { touchStatus } = this
-                const shouldPreventDefault =
-                    (config.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1)
+                const shouldPreventDefault = (config.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1)
                     || config.touchStartForcePreventDefault
                 touchStatus.startOffset = getTranslate($wrapper, this.isHorizontal)
                 this.transform(touchStatus.startOffset)
@@ -153,7 +153,7 @@ export default class Swiper {
 
                 touchStatus.touchTracks.push({
                     x: supportTouch ? e.touches[0].pageX : e.pageX,
-                    y: supportTouch ? e.touches[0].pageY : e.pageY,
+                    y: supportTouch ? e.touches[0].pageY : e.pageY
                 })
 
                 if (shouldPreventDefault && !config.passiveListeners) e.preventDefault()
@@ -172,7 +172,7 @@ export default class Swiper {
 
                 const currentPosition = {
                     x: supportTouch ? e.touches[0].pageX : e.pageX,
-                    y: supportTouch ? e.touches[0].pageY : e.pageY,
+                    y: supportTouch ? e.touches[0].pageY : e.pageY
                 }
                 const diff = {
                     x: currentPosition.x - touchTracks[touchTracks.length - 1].x,
@@ -206,7 +206,7 @@ export default class Swiper {
                 this.scrollPixel(offset * config.touchRatio)
             },
 
-            handleTouchEnd: e => {
+            handleTouchEnd: () => {
                 if (!this.touchStatus.isTouchStart) return
 
                 const {
@@ -242,7 +242,7 @@ export default class Swiper {
                     index,
                     wheelStatus
                 } = this
-                const deltaY = e.deltaY
+                const { deltaY } = e
 
                 if ((Math.abs(deltaY) - Math.abs(wheelStatus.wheelDelta) > 0 || !wheelStatus.wheeling)
                     && Math.abs(deltaY) >= config.mousewheel.sensitivity) {
@@ -374,9 +374,9 @@ export default class Swiper {
 
         if (this.config.resistance) {
             if (px > 0 && this.index === 0) {
-                px = px - (px * expand) ** this.config.resistanceRatio / expand
+                px -= (px * expand) ** this.config.resistanceRatio / expand
             } else if (px < 0 && this.index === this.maxIndex) {
-                px = px + ((-px * expand) ** this.config.resistanceRatio) / expand
+                px += ((-px * expand) ** this.config.resistanceRatio) / expand
             }
             // if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
             //     px = px * Math.pow(this.config.resistanceRatio, 4)

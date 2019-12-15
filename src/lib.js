@@ -12,10 +12,10 @@ export function removeClassName (el, list = []) {
 
 export function detectTouch () {
     return Boolean(
-        'ontouchstart' in window ||
-        window.navigator.maxTouchPoints > 0 ||
-        window.navigator.msMaxTouchPoints > 0 ||
-        window.DocumentTouch && document instanceof DocumentTouch
+        'ontouchstart' in window
+        || window.navigator.maxTouchPoints > 0
+        || window.navigator.msMaxTouchPoints > 0
+        || window.DocumentTouch && document instanceof DocumentTouch
     )
 }
 

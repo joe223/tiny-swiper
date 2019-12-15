@@ -42,7 +42,9 @@ describe('Initialization', function () {
         const $slide = await page.$('.swiper-wrapper')
         const boxModel = await $slide.boxModel()
         const isInheritor = await page.evaluate(function () {
-            return (mySwiper instanceof Swiper) && (mySwiper.index === 0) && (mySwiper.isHorizontal === true)
+            return (mySwiper instanceof Swiper)
+                && (mySwiper.index === 0)
+                && (mySwiper.isHorizontal === true)
         })
         const swiper = await page.evaluate(function () {
             return mySwiper

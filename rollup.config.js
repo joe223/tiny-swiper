@@ -1,6 +1,7 @@
-import { uglify } from 'rollup-plugin-uglify'
-import babel from 'rollup-plugin-babel'
 import path from 'path'
+import babel from 'rollup-plugin-babel'
+import { uglify } from 'rollup-plugin-uglify'
+import { eslint } from "rollup-plugin-eslint"
 
 const entries = [
     {
@@ -17,6 +18,7 @@ const entries = [
     }
 ]
 const plugins = [
+    eslint(),
     babel()
 ]
 const isBuildProd = process.env.NODE_ENV === 'production'
