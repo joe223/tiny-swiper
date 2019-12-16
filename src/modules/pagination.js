@@ -3,7 +3,7 @@ import {
     removeClassName
 } from '../lib.js'
 
-export default function TinySwiperPluginPagination (instance) {
+export default function SwiperPluginPagination (instance) {
     instance.on('before-init', tinyswiper => {
         const { config } = tinyswiper
 

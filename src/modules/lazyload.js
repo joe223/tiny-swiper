@@ -8,7 +8,7 @@ import {
  *
  * @param {*} tinyswiper
  */
-export default function TinySwiperPluginLazyload (instance) {
+export default function SwiperPluginLazyload (instance) {
     const { config } = instance
 
     if (!config.lazyload) return

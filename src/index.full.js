@@ -1,11 +1,11 @@
 import Swiper from './core.js'
 
-import TinySwiperPluginLazyload from './modules/lazyload.js'
-import TinySwiperPluginPagination from './modules/pagination.js'
+import SwiperPluginLazyload from './modules/lazyload.js'
+import SwiperPluginPagination from './modules/pagination.js'
 
 const plugins = [
-    TinySwiperPluginLazyload,
-    TinySwiperPluginPagination
+    SwiperPluginLazyload,
+    SwiperPluginPagination
 ]
 
 Swiper.use(plugins)
