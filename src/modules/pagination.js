@@ -3,8 +3,8 @@ import {
     removeClassName
 } from '../lib.js'
 
-export default function TinySwiperPluginPagination (tinyswiper) {
-    tinyswiper.on('before-init', tinyswiper => {
+export default function SwiperPluginPagination (instance) {
+    instance.on('before-init', tinyswiper => {
         const { config } = tinyswiper
 
         if (config.pagination) {
@@ -17,10 +17,11 @@ export default function TinySwiperPluginPagination (tinyswiper) {
         }
     })
 
-    tinyswiper.on('after-init', tinyswiper => {
+    instance.on('after-init', tinyswiper => {
         const { config } = tinyswiper
 
         if (!config.pagination) return
+
         const {
             bulletClass,
             bulletActiveClass
@@ -39,7 +40,10 @@ export default function TinySwiperPluginPagination (tinyswiper) {
         tinyswiper.$list.forEach((item, index) => {
             const $page = document.createElement('div')
 
-            addClassName($page, index === tinyswiper.index ? [bulletClass, bulletActiveClass] : bulletClass)
+            addClassName(
+                $page,
+                index === tinyswiper.index ? [bulletClass, bulletActiveClass] : bulletClass
+            )
             $pageList.push($page)
             $group.appendChild($page)
         })
@@ -54,7 +58,7 @@ export default function TinySwiperPluginPagination (tinyswiper) {
         }
     })
 
-    tinyswiper.on('after-destroy', tinyswiper => {
+    instance.on('after-destroy', tinyswiper => {
         const { config } = tinyswiper
 
         if (!config.pagination) return
@@ -63,7 +67,7 @@ export default function TinySwiperPluginPagination (tinyswiper) {
         tinyswiper.$pagination = null
     })
 
-    tinyswiper.on('after-slide', (currentIndex, tinyswiper) => {
+    instance.on('after-slide', (currentIndex, tinyswiper) => {
         const { bulletActiveClass } = tinyswiper.config.pagination
 
         tinyswiper.$pageList && tinyswiper.$pageList.forEach(($page, index) => {

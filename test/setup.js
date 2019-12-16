@@ -10,18 +10,18 @@ const globalVariables = {
     entryPath: global.entryPath
 }
 const opts = {
-    devtools: process.env.TEST_MODE === 'local' ? true : false,
+    devtools: process.env.TEST_MODE === 'local',
     timeout: 10000,
     slowMo: 20,
     defaultViewport: {
         width: 400,
         height: 770,
-        isMobile: true,
+        isMobile: true
         // isLandscape: true
-    },
+    }
 }
 
-before (async function () {
+before(async function () {
     this.timeout(10000)
     global.expect = expect
     global.browser = await puppeteer.launch(opts)
@@ -29,7 +29,7 @@ before (async function () {
     global.entryPath = `http://localhost:${server.address().port}/test/fixtures/index.html`
 })
 
-after (async function () {
+after(async function () {
     if (process.env.TEST_MODE !== 'local') {
         server.close()
         await browser.close()

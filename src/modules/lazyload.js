@@ -8,14 +8,14 @@ import {
  *
  * @param {*} tinyswiper
  */
-export default function TinySwiperPluginLazyload (tinyswiper) {
-    const { config } = tinyswiper
+export default function SwiperPluginLazyload (instance) {
+    const { config } = instance
 
     if (!config.lazyload) return
 
-    tinyswiper.lazyload = {
+    instance.lazyload = {
         load (index) {
-            const $slide = tinyswiper.$list[index]
+            const $slide = instance.$list[index]
 
             if (!$slide) return
 
@@ -24,8 +24,8 @@ export default function TinySwiperPluginLazyload (tinyswiper) {
 
             function handleLoaded ($img) {
                 $img.removeAttribute('data-src')
-                addClassName($img, [ config.lazyload.loadedClass ])
-                removeClassName($img, [ config.lazyload.loadingClass ])
+                addClassName($img, [config.lazyload.loadedClass])
+                removeClassName($img, [config.lazyload.loadingClass])
                 $img.onloaded = null
                 $img.onerror = null
                 $img.isLoaded = true
@@ -42,8 +42,8 @@ export default function TinySwiperPluginLazyload (tinyswiper) {
 
                 const src = $img.getAttribute('data-src')
 
-                addClassName($img, [ config.lazyload.loadingClass ])
-                removeClassName($img, [ config.lazyload.loadedClass ])
+                addClassName($img, [config.lazyload.loadingClass])
+                removeClassName($img, [config.lazyload.loadedClass])
                 $img.src = src
                 $img.onload = () => handleLoaded($img)
                 $img.onerror = () => handleLoaded($img)
@@ -51,18 +51,18 @@ export default function TinySwiperPluginLazyload (tinyswiper) {
         },
 
         loadRange (index, range) {
-            tinyswiper.lazyload.load(index)
+            instance.lazyload.load(index)
 
             if (config.lazyload.loadPrevNext && range >= 1) {
                 for (let i = 1; i <= range; i++) {
-                    tinyswiper.lazyload.load(index + i)
-                    tinyswiper.lazyload.load(index - i)
+                    instance.lazyload.load(index + i)
+                    instance.lazyload.load(index - i)
                 }
             }
         }
     }
 
-    tinyswiper.on('before-init', () => {
+    instance.on('before-init', () => {
         config.lazyload = {
             loadPrevNext: false,
             loadPrevNextAmount: 1,
@@ -76,19 +76,18 @@ export default function TinySwiperPluginLazyload (tinyswiper) {
     })
 
     if (config.lazyload.loadOnTransitionStart) {
-        tinyswiper.on('before-slide', function (oldIndex, instance, newIndex) {
+        instance.on('before-slide', function (oldIndex, tinyswiper, newIndex) {
             tinyswiper.lazyload.loadRange(newIndex, config.lazyload.loadPrevNextAmount)
         })
     } else {
-        tinyswiper.on('after-slide', function (index, instance) {
+        instance.on('after-slide', function (index, tinyswiper) {
             tinyswiper.lazyload.loadRange(index, config.lazyload.loadPrevNextAmount)
         })
     }
 
-    tinyswiper.on('after-destroy', tinyswiper => {
-        const { config } = tinyswiper
+    instance.on('after-destroy', tinyswiper => {
+        if (!tinyswiper.config.lazyload) return
 
-        if (!config.lazyload) return
         delete tinyswiper.lazyload
     })
 }

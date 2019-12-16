@@ -195,6 +195,6 @@ describe('Plugin - Pagination', function () {
         })
 
         expect(swiper.$pagination).toEqual(null)
-        expect(swiper.$pageList ).toEqual([])
+        expect(swiper.$pageList).toEqual([])
     })
 })

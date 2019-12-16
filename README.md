@@ -65,12 +65,31 @@ Html code:
 JavaScript/TypeScript code:
 
 ```javascript
+import Swiper, {
+    SwiperPluginLazyload,
+    SwiperPluginPagination
+} from 'tiny-swiper'
+
+Swiper.use([ SwiperPluginLazyload, SwiperPluginPagination ])
+
 const swiper = new Swiper(swiperContainer: HTMLElement | string, parameters?: TinySwiperParameters)
 ```
 
 - `new Swiper()` - initialize swiper with options.
+- `Swiper.use()` - Register plugin.
 - `swiperContainer` - HTMLElement or string (with CSS Selector) of swiper container HTML element. Required.
 - `parameters` - object with Swiper parameters. Optional.
+
+
+You also can load full-featured Tiny-Swiper:
+
+```javascript
+import Swiper from 'tiny-swiper/lib/index.full.js'
+```
+
+```html
+<script src="https://unpkg.com/tiny-swiper@latest/lib/index.full.js"></script>
+```
 
 Looking for exact example and demonstrations? [👉click me](https://joe223.github.io/tiny-swiper)
 
@@ -149,6 +168,10 @@ Tiny-Swiper instance only reserve core functions such as `init` `destroy` `LifeH
 Plugin is under `lib/modules` folder. You could import theme as ES modules:
 
 ```javascript
+import { SwiperPluginPagination } from 'tiny-swiper' // Since v1.2.0
+
+// or
+
 import SwiperPluginPagination from 'tiny-swiper/lib/modules/pagination.min.js'
 ```
 

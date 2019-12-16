@@ -51,3 +51,7 @@
 
 - Add: `SwiperPluginLazyload` plugin
 - Add: use method
+
+# v1.2.0 - Released on 2019/12/16
+
+- Add: export ESM and full-featured file

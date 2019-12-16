@@ -8,7 +8,7 @@ describe('Plugin - Lazyload', function () {
     before(async function () {
         page = await browser.newPage()
         await page.coverage.startJSCoverage()
-        await page.goto(global.entryHost + 'test/fixtures/lazyload.html')
+        await page.goto(`${global.entryHost}test/fixtures/lazyload.html`)
     })
 
     after(async function () {
