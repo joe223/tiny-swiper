@@ -417,6 +417,8 @@ export default class Swiper {
         const wrapperStyle = $wrapper.style
         const isHorizontal = config.direction === 'horizontal'
 
+        $el.style.overflow = 'hidden'
+
         this.isHorizontal = isHorizontal
         this.$list = [].slice.call($el.getElementsByClassName(config.slideClass))
         this.minIndex = 0
@@ -427,7 +429,7 @@ export default class Swiper {
             item.style[isHorizontal ? 'width' : 'height'] = `${this.slideSize}px`
             item.style[isHorizontal ? 'margin-right' : 'margin-bottom'] = `${config.spaceBetween}px`
         })
-        $el.style.overflow = 'hidden'
+
         wrapperStyle.willChange = 'transform'
         wrapperStyle.transition = `transform ease ${this.config.speed}ms`
         wrapperStyle[isHorizontal ? 'width' : 'height'] = `${this.boxSize * this.$list.length}px`

@@ -9,7 +9,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development rollup -wc",
+    "dev": "http-server & cross-env NODE_ENV=development rollup -wc",
     "build": "cross-env NODE_ENV=production rollup -c",
     "test": "nyc mocha test/**/*.spec.js --config test/.mocharc.js",
     "test:local": "cross-env TEST_MODE=local npm run test",
@@ -27,6 +27,7 @@
     "eslint-plugin-import": "^2.19.1",
     "expect": "^24.9.0",
     "finalhandler": "^1.1.2",
+    "http-server": "^0.12.0",
     "husky": "^3.1.0",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
