@@ -71,6 +71,8 @@ export default class Swiper {
             longSwipesMs: 300,
             intermittent: 0,
             spaceBetween: 0,
+            slidesPerView: 1,
+            centeredSlides: false,
             slidePrevClass: 'swiper-slide-prev',
             slideNextClass: 'swiper-slide-next',
             slideActiveClass: 'swiper-slide-active',
@@ -211,28 +213,23 @@ export default class Swiper {
 
                 const {
                     index,
-                    slideSize,
+                    boxSize,
                     touchStatus
                 } = this
                 const swipTime = Date.now() - touchStatus.touchStartTime
-                const computedOffset = getTranslate($wrapper, this.isHorizontal) - touchStatus.startOffset
+                const transform = getTranslate($wrapper, this.isHorizontal)
+                const computedOffset = transform - touchStatus.startOffset
+                const jump = Math.ceil(Math.abs(computedOffset) / boxSize)
+                const longSwipeIndex = Math.ceil(Math.abs(computedOffset) / boxSize - config.longSwipesRatio)
 
                 $wrapper.style.transition = `transform ease ${config.speed}ms`
 
                 // long swip
                 if (swipTime > this.config.longSwipesMs) {
-                    if (Math.abs(computedOffset) >= slideSize * config.longSwipesRatio) {
-                        this.scroll(computedOffset > 0 ? index - 1 : index + 1, true)
-                    } else {
-                        this.scroll(index, true)
-                    }
+                    this.scroll(this.index + longSwipeIndex * (computedOffset > 0 ? -1 : 1), true)
                 } else {
                     // short swip
-                    if (computedOffset === 0) {
-                        this.scroll(index, true)
-                    } else {
-                        this.scroll(computedOffset > 0 ? index - 1 : index + 1, true)
-                    }
+                    this.scroll(computedOffset > 0 ? index - jump : index + jump, true)
                 }
                 this.initTouchStatus()
             },
@@ -324,43 +321,39 @@ export default class Swiper {
         const {
             config,
             minIndex,
-            maxIndex
+            maxIndex,
+            maxTransform
         } = this
 
         index = index < minIndex ? minIndex : index > maxIndex ? maxIndex : index
 
         this.emit('before-slide', this.index, this, index)
 
-        const offset = index * this.boxSize
+        const offset = index * this.boxSize + this.baseTransform
 
         this.scrolling = true
-        this.transform(-offset)
+        this.transform(-(offset > maxTransform ? maxTransform : offset))
 
         const $current = this.$list[index]
         const $prev = this.$list[index - 1]
         const $next = this.$list[index + 1]
 
-        if ($current) {
-            addClassName($current, config.slideActiveClass)
-            removeClassName($current, [
+        this.$list.forEach(($slide, i) => {
+            removeClassName($slide, [
                 config.slidePrevClass,
-                config.slideNextClass
+                config.slideNextClass,
+                config.slideActiveClass
             ])
-        }
-        if ($prev) {
-            addClassName($prev, config.slidePrevClass)
-            removeClassName($prev, [
-                config.slideActiveClass,
-                config.slideNextClass
-            ])
-        }
-        if ($next) {
-            addClassName($next, config.slideNextClass)
-            removeClassName($next, [
-                config.slideActiveClass,
-                config.slidePrevClass
-            ])
-        }
+            if (i === index) {
+                addClassName($current, config.slideActiveClass)
+            }
+            if (i === index - 1) {
+                addClassName($prev, config.slidePrevClass)
+            }
+            if (i === index + 1) {
+                addClassName($next, config.slideNextClass)
+            }
+        })
         this.index = index
         setTimeout(() => {
             this.scrolling = false
@@ -371,19 +364,18 @@ export default class Swiper {
     scrollPixel (px) {
         const ratio = px.toExponential().split('e')[1]
         const expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1
+        const oldTransform = getTranslate(this.$wrapper, this.isHorizontal)
 
         if (this.config.resistance) {
-            if (px > 0 && this.index === 0) {
+            if (px > 0 && oldTransform - this.minTransform >= 0) {
                 px -= (px * expand) ** this.config.resistanceRatio / expand
-            } else if (px < 0 && this.index === this.maxIndex) {
+            } else if (px < 0 && oldTransform + this.maxTransform <= 0) {
                 px += ((-px * expand) ** this.config.resistanceRatio) / expand
             }
             // if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
             //     px = px * Math.pow(this.config.resistanceRatio, 4)
             // }
         }
-
-        const oldTransform = getTranslate(this.$wrapper, this.isHorizontal)
 
         this.transform(oldTransform + px)
     }
@@ -423,15 +415,19 @@ export default class Swiper {
         this.$list = [].slice.call($el.getElementsByClassName(config.slideClass))
         this.minIndex = 0
         this.maxIndex = this.$list.length - 1
-        this.slideSize = isHorizontal ? $el.offsetWidth : $el.offsetHeight
+        this.viewSize = isHorizontal ? $el.offsetWidth : $el.offsetHeight
+        this.slideSize = (this.viewSize - (Math.floor(config.slidesPerView)) * config.spaceBetween) / config.slidesPerView
         this.boxSize = this.slideSize + config.spaceBetween
+        this.baseTransform = config.centeredSlides ? (this.slideSize - this.viewSize) / 2 : 0
+        this.minTransform = -this.baseTransform
+        this.maxTransform = this.boxSize * this.$list.length - config.spaceBetween - this.viewSize - this.baseTransform
         this.$list.forEach(item => {
             item.style[isHorizontal ? 'width' : 'height'] = `${this.slideSize}px`
             item.style[isHorizontal ? 'margin-right' : 'margin-bottom'] = `${config.spaceBetween}px`
         })
 
         wrapperStyle.willChange = 'transform'
-        wrapperStyle.transition = `transform ease ${this.config.speed}ms`
+        wrapperStyle.transition = `transform ease ${config.speed}ms`
         wrapperStyle[isHorizontal ? 'width' : 'height'] = `${this.boxSize * this.$list.length}px`
         wrapperStyle.display = 'flex'
         wrapperStyle.flexDirection = isHorizontal ? 'row' : 'column'

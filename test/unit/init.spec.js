@@ -155,4 +155,114 @@ describe('Initialization', function () {
 
         expect(count).toEqual(1)
     })
+
+    it('slidesPerView parameter', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import { getTranslate } from '/src/lib.js'
+            import Swiper from '/src/index.js'
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                slidesPerView: 2.4,
+                initialSlide: 1
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            window.getTranslate = getTranslate
+            `
+        })
+        const data = await page.evaluate(function () {
+            return {
+                instance: window.mySwiper,
+                transform: parseInt(getTranslate(mySwiper.$wrapper, mySwiper.isHorizontal), 10)
+            }
+        })
+        const { instance } = data
+        const match = {
+
+            // eslint-disable-next-line
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
+        }
+
+        expect(data.instance).toMatchObject(match)
+        expect(data.transform).toEqual(parseInt(-instance.boxSize * instance.index, 10))
+    })
+
+
+    it('slidesPerView parameter - scroll to last slide', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import { getTranslate } from '/src/lib.js'
+            import Swiper from '/src/index.js'
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                slidesPerView: 2.4,
+                initialSlide: 3
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            window.getTranslate = getTranslate
+            `
+        })
+        const data = await page.evaluate(function () {
+            return {
+                instance: window.mySwiper,
+                transform: parseInt(getTranslate(mySwiper.$wrapper, mySwiper.isHorizontal), 10)
+            }
+        })
+        const { instance } = data
+        const match = {
+
+            // eslint-disable-next-line
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
+        }
+
+        expect(data.instance).toMatchObject(match)
+
+        // eslint-disable-next-line
+        expect(data.transform).toEqual(-parseInt(instance.slideSize * instance.$list.length - instance.viewSize - instance.config.spaceBetween, 10))
+    })
+
+
+    it('centeredSlides parameter', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import { getTranslate } from '/src/lib.js'
+            import Swiper from '/src/index.js'
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                slidesPerView: 1.5,
+                initialSlide: 3,
+                centeredSlides: true
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            window.getTranslate = getTranslate
+            `
+        })
+        const data = await page.evaluate(function () {
+            return {
+                instance: window.mySwiper,
+                transform: parseInt(getTranslate(mySwiper.$wrapper, mySwiper.isHorizontal), 10)
+            }
+        })
+        const { instance } = data
+        const match = {
+
+            // eslint-disable-next-line
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
+        }
+
+        expect(data.instance).toMatchObject(match)
+        expect(data.transform).toEqual(parseInt(-(instance.boxSize * instance.index - (instance.viewSize - instance.slideSize) / 2), 10))
+    })
 })

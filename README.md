@@ -128,6 +128,8 @@ Looking for exact example and demonstrations? [👉click me](https://joe223.gith
 | resistanceRatio | number | 0.85 | This option allows you to control resistance ratio |
 | plugins | TinySwiperPlugins[] | undefined | Plugins for Tiny-Swiper instance. |
 | excludeElements | HTMLElements[] | `[]` | An HTMLElement array which contains all elements that do not trigger swipe. |
+| slidesPerView | number | 1 | Number of slides per view (slides visible at the same time on slider's container). |
+| centeredSlides | boolean | false | If true, then active slide will be centered, not always on the left side. |
 
 ##### Mousewheel Control Parameters
 
