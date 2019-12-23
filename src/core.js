@@ -1,6 +1,9 @@
 import {
-    addClassName,
-    removeClassName,
+    attachListener,
+    detachListener,
+    removeAttr,
+    addClass,
+    removeClass,
     detectTouch,
     getTranslate
 } from './lib.js'
@@ -137,7 +140,7 @@ export default class Swiper {
         } = this
 
         this.listeners = {
-            handleTouchStart: e => {
+            onTouchStart: e => {
                 for (let i = 0; i < config.excludeElements.length; i++) {
                     if (config.excludeElements[i].contains(e.target)) return
                 }
@@ -161,7 +164,7 @@ export default class Swiper {
                 if (shouldPreventDefault && !config.passiveListeners) e.preventDefault()
             },
 
-            handleTouchMove: e => {
+            onTouchMove: e => {
                 const {
                     touchStatus
                 } = this
@@ -208,7 +211,7 @@ export default class Swiper {
                 this.scrollPixel(offset * config.touchRatio)
             },
 
-            handleTouchEnd: () => {
+            onTouchEnd: () => {
                 if (!this.touchStatus.isTouchStart) return
 
                 const {
@@ -234,7 +237,7 @@ export default class Swiper {
                 this.initTouchStatus()
             },
 
-            handleWheel: e => {
+            onWheel: e => {
                 const {
                     index,
                     wheelStatus
@@ -264,28 +267,28 @@ export default class Swiper {
             supportTouch
         } = this
         const {
-            handleTouchStart,
-            handleTouchMove,
-            handleTouchEnd,
-            handleWheel
+            onTouchStart,
+            onTouchMove,
+            onTouchEnd,
+            onWheel
         } = this.listeners
 
         if (supportTouch) {
-            $el.addEventListener('touchstart', handleTouchStart, {
+            attachListener($el, 'touchstart', onTouchStart, {
                 passive: config.passiveListeners,
                 capture: false
             }, false)
-            $el.addEventListener('touchmove', handleTouchMove)
-            $el.addEventListener('touchend', handleTouchEnd)
-            $el.addEventListener('touchcancel', handleTouchEnd)
+            attachListener($el, 'touchmove', onTouchMove)
+            attachListener($el, 'touchend', onTouchEnd)
+            attachListener($el, 'touchcancel', onTouchEnd)
         } else {
-            $el.addEventListener('mousedown', handleTouchStart)
-            document.addEventListener('mousemove', handleTouchMove)
-            document.addEventListener('mouseup', handleTouchEnd)
+            attachListener($el, 'mousedown', onTouchStart)
+            attachListener(document, 'mousemove', onTouchMove)
+            attachListener(document, 'mouseup', onTouchEnd)
         }
 
         if (config.mousewheel) {
-            $el.addEventListener('wheel', handleWheel)
+            attachListener($el, 'wheel', onWheel)
         }
     }
 
@@ -294,21 +297,21 @@ export default class Swiper {
             $el
         } = this
         const {
-            handleTouchStart,
-            handleTouchMove,
-            handleTouchEnd,
-            handleWheel
+            onTouchStart,
+            onTouchMove,
+            onTouchEnd,
+            onWheel
         } = this.listeners
 
-        $el.removeEventListener('touchstart', handleTouchStart)
-        $el.removeEventListener('touchmove', handleTouchMove)
-        $el.removeEventListener('touchend', handleTouchEnd)
-        $el.removeEventListener('touchcancel', handleTouchEnd)
-        $el.removeEventListener('mousedown', handleTouchStart)
-        document.removeEventListener('mousemove', handleTouchMove)
-        document.removeEventListener('mouseup', handleTouchEnd)
+        detachListener($el, 'touchstart', onTouchStart)
+        detachListener($el, 'touchmove', onTouchMove)
+        detachListener($el, 'touchend', onTouchEnd)
+        detachListener($el, 'touchcancel', onTouchEnd)
+        detachListener($el, 'mousedown', onTouchStart)
+        detachListener(document, 'mousemove', onTouchMove)
+        detachListener(document, 'mouseup', onTouchEnd)
 
-        $el.removeEventListener('wheel', handleWheel)
+        detachListener($el, 'wheel', onWheel)
     }
 
     transform (offset) {
@@ -322,36 +325,36 @@ export default class Swiper {
             config,
             minIndex,
             maxIndex,
+            minTransform,
             maxTransform
         } = this
+        const offset = index * this.boxSize + this.baseTransform
 
         index = index < minIndex ? minIndex : index > maxIndex ? maxIndex : index
 
         this.emit('before-slide', this.index, this, index)
 
-        const offset = index * this.boxSize + this.baseTransform
-
         this.scrolling = true
-        this.transform(-(offset > maxTransform ? maxTransform : offset))
+        this.transform(-(offset > maxTransform ? maxTransform : offset < minTransform ? minTransform : offset))
 
         const $current = this.$list[index]
         const $prev = this.$list[index - 1]
         const $next = this.$list[index + 1]
 
         this.$list.forEach(($slide, i) => {
-            removeClassName($slide, [
+            removeClass($slide, [
                 config.slidePrevClass,
                 config.slideNextClass,
                 config.slideActiveClass
             ])
             if (i === index) {
-                addClassName($current, config.slideActiveClass)
+                addClass($current, config.slideActiveClass)
             }
             if (i === index - 1) {
-                addClassName($prev, config.slidePrevClass)
+                addClass($prev, config.slidePrevClass)
             }
             if (i === index + 1) {
-                addClassName($next, config.slideNextClass)
+                addClass($next, config.slideNextClass)
             }
         })
         this.index = index
@@ -414,7 +417,7 @@ export default class Swiper {
         this.isHorizontal = isHorizontal
         this.$list = [].slice.call($el.getElementsByClassName(config.slideClass))
         this.minIndex = 0
-        this.maxIndex = this.$list.length - 1
+        this.maxIndex = this.$list.length - (config.centeredSlides ? 1 : Math.ceil(config.slidesPerView))
         this.viewSize = isHorizontal ? $el.offsetWidth : $el.offsetHeight
         this.slideSize = (this.viewSize - (Math.floor(config.slidesPerView)) * config.spaceBetween) / config.slidesPerView
         this.boxSize = this.slideSize + config.spaceBetween
@@ -446,11 +449,11 @@ export default class Swiper {
 
         this.emit('before-destroy', this)
         this.$list.forEach(item => {
-            item.removeAttribute('style')
-            removeClassName(item, [slideActiveClass])
+            removeAttr(item, 'style')
+            removeClass(item, [slideActiveClass])
         })
-        $wrapper.removeAttribute('style')
-        $el.removeAttribute('style')
+        removeAttr($wrapper, 'style')
+        removeAttr($el, 'style')
         this.detachListener()
         this.emit('after-destroy', this)
         this.$el = null

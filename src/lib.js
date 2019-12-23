@@ -1,20 +1,32 @@
-export function addClassName (el, list = []) {
+export function addClass (el, list = []) {
     if (!Array.isArray(list)) list = [list]
 
     list.forEach(clz => (!el.classList.contains(clz) && el.classList.add(clz)))
 }
 
-export function removeClassName (el, list = []) {
+export function removeClass (el, list = []) {
     if (!Array.isArray(list)) list = [list]
 
     list.forEach(clz => (el.classList.contains(clz) && el.classList.remove(clz)))
 }
 
+export function attachListener (el, evtName, handler, opts) {
+    el.addEventListener(evtName, handler, opts)
+}
+
+export function detachListener (el, evtName, handler) {
+    el.removeEventListener(evtName, handler)
+}
+
+export function removeAttr (el, attr) {
+    el.removeAttribute(attr)
+}
+
 export function detectTouch () {
     return Boolean(
         'ontouchstart' in window
-        || window.navigator.maxTouchPoints > 0
-        || window.navigator.msMaxTouchPoints > 0
+        || navigator.maxTouchPoints > 0
+        || navigator.msMaxTouchPoints > 0
         || window.DocumentTouch && document instanceof DocumentTouch
     )
 }

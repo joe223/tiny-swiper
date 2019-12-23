@@ -182,13 +182,25 @@ describe('Initialization', function () {
         })
         const { instance } = data
         const match = {
+            minIndex: 0,
+            maxIndex: instance.$list.length - Math.ceil(instance.config.slidesPerView),
+            minTransform: 0,
+
+            // eslint-disable-next-line
+            maxTransform: instance.boxSize * instance.$list.length - instance.baseTransform - instance.config.spaceBetween - instance.viewSize,
 
             // eslint-disable-next-line
             slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
         }
 
-        expect(data.instance).toMatchObject(match)
         expect(data.transform).toEqual(parseInt(-instance.boxSize * instance.index, 10))
+
+        Object.keys(match).forEach(prop => {
+            match[prop] = parseInt(match[prop], 10)
+            instance[prop] = parseInt(instance[prop], 10)
+        })
+
+        expect(data.instance).toMatchObject(match)
     })
 
 
@@ -257,12 +269,25 @@ describe('Initialization', function () {
         })
         const { instance } = data
         const match = {
+            minIndex: 0,
+            maxIndex: instance.$list.length - 1,
+            baseTransform: -(instance.viewSize - instance.slideSize) / 2,
+            minTransform: (instance.viewSize - instance.slideSize) / 2,
+
+            // eslint-disable-next-line
+            maxTransform: instance.boxSize * instance.$list.length - instance.baseTransform - instance.config.spaceBetween - instance.viewSize,
 
             // eslint-disable-next-line
             slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
         }
 
-        expect(data.instance).toMatchObject(match)
         expect(data.transform).toEqual(parseInt(-(instance.boxSize * instance.index - (instance.viewSize - instance.slideSize) / 2), 10))
+
+        Object.keys(match).forEach(prop => {
+            match[prop] = parseInt(match[prop], 10)
+            instance[prop] = parseInt(instance[prop], 10)
+        })
+
+        expect(instance).toMatchObject(match)
     })
 })

@@ -1,6 +1,6 @@
 import {
-    addClassName,
-    removeClassName
+    addClass,
+    removeClass
 } from '../lib.js'
 
 export default function SwiperPluginPagination (instance) {
@@ -40,7 +40,7 @@ export default function SwiperPluginPagination (instance) {
         tinyswiper.$list.forEach((item, index) => {
             const $page = document.createElement('div')
 
-            addClassName(
+            addClass(
                 $page,
                 index === tinyswiper.index ? [bulletClass, bulletActiveClass] : bulletClass
             )
@@ -72,9 +72,9 @@ export default function SwiperPluginPagination (instance) {
 
         tinyswiper.$pageList && tinyswiper.$pageList.forEach(($page, index) => {
             if (index === currentIndex) {
-                addClassName($page, bulletActiveClass)
+                addClass($page, bulletActiveClass)
             } else {
-                removeClassName($page, bulletActiveClass)
+                removeClass($page, bulletActiveClass)
             }
         })
     })
