@@ -53,7 +53,7 @@ describe('Initialization', function () {
         expect(boxModel.height).toEqual(300)
         expect(isInheritor).toBeTruthy()
         expect(swiper.isHorizontal).toBeTruthy
-        expect(swiper.slideSize).toEqual(400)
+        expect(swiper.slideSize).toEqual(swiper.viewSize)
         expect(swiper.boxSize).toEqual(swiper.slideSize + swiper.config.spaceBetween)
         expect(swiper.index).toEqual(0)
     })
@@ -78,6 +78,28 @@ describe('Initialization', function () {
         })
 
         expect(initialSlideTransform).toBeTruthy()
+    })
+
+    it('spaceBetween', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import Swiper from '/src/index.js'
+            const mySwiper = new Swiper('#swiper1', {
+                spaceBetween: 100
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            `
+        })
+
+        const swiper = await page.evaluate(function () {
+            return mySwiper
+        })
+        const mather = {
+            slideSize: swiper.viewSize
+        }
     })
 
     it('excludeElements parameter', async function () {
@@ -190,7 +212,7 @@ describe('Initialization', function () {
             maxTransform: instance.boxSize * instance.$list.length - instance.baseTransform - instance.config.spaceBetween - instance.viewSize,
 
             // eslint-disable-next-line
-            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.ceil(instance.config.slidesPerView - 1))) / instance.config.slidesPerView
         }
 
         expect(data.transform).toEqual(parseInt(-instance.boxSize * instance.index, 10))
@@ -232,7 +254,7 @@ describe('Initialization', function () {
         const match = {
 
             // eslint-disable-next-line
-            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.ceil(instance.config.slidesPerView - 1))) / instance.config.slidesPerView
         }
 
         expect(data.instance).toMatchObject(match)
@@ -278,7 +300,7 @@ describe('Initialization', function () {
             maxTransform: instance.boxSize * instance.$list.length - instance.baseTransform - instance.config.spaceBetween - instance.viewSize,
 
             // eslint-disable-next-line
-            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.floor(instance.config.slidesPerView))) / instance.config.slidesPerView
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.ceil(instance.config.slidesPerView - 1))) / instance.config.slidesPerView
         }
 
         expect(data.transform).toEqual(parseInt(-(instance.boxSize * instance.index - (instance.viewSize - instance.slideSize) / 2), 10))
