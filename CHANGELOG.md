@@ -60,4 +60,7 @@
 
 - Add: `slidesPerView` parameter
 - Add: `centeredSlides` parameter
+- Add: SwiperPluginKeyboardControl
 - Fix: Unexpected slide width (#14)
+- Fix: transform boundary
+
