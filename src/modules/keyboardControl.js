@@ -35,7 +35,7 @@ function isElementInView (el) {
 /**
  * TinySwiper plugin for keyboard control.
  *
- * @param {*} tinyswiper
+ * @param {TinySwiper} instance
  */
 export default function SwiperPluginKeyboardControl (instance) {
     const { config } = instance
@@ -52,7 +52,8 @@ export default function SwiperPluginKeyboardControl (instance) {
         onKeyDown (e) {
             const { key } = e
 
-            if (!isElementInView(instance.$el) || !instance.config.keyboard.enabled) return
+            if ((instance.config.keyboard.onlyInViewport && !isElementInView(instance.$el))
+                || !instance.config.keyboard.enabled) return
 
             if (instance.isHorizontal) {
                 if (key === DIRECTION.left) {
@@ -72,7 +73,7 @@ export default function SwiperPluginKeyboardControl (instance) {
 
     instance.on('before-init', tinyswiper => {
         config.keyboard = {
-            enabled: false,
+            enabled: true,
             onlyInViewport: true,
             ...config.keyboard
         }

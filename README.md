@@ -1,6 +1,7 @@
 <p align="center">
-    <a href="https://github.com/joe223/tiny-swiper" target="_blank"><img width="220" src="https://user-images.githubusercontent.com/10026019/67691474-9edcca00-f9d9-11e9-9542-5b330cfcc975.png"></a>
+    <a href="https://github.com/joe223/tiny-swiper" target="_blank"><img width="190" src="https://user-images.githubusercontent.com/10026019/67691474-9edcca00-f9d9-11e9-9542-5b330cfcc975.png"></a>
 </p>
+<br/>
 <p align="center">2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.</p>
 <p align="center">
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="npm" src="https://img.shields.io/npm/v/tiny-swiper?style=flat-square"></a>
@@ -228,6 +229,7 @@ Do not forget, just keep Plugin parameter at the **first level** of configuratio
 
 - [Pagination](#pagination)
 - [Lazyload](#lazyload)
+- [Keyboard Control](#keyboard-control)
 
 ##### Pagination
 
@@ -261,7 +263,7 @@ const swiper = new Swiper(
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
-| pagination | Object/Boolean | undefined | Object with navigation parameters. |
+| pagination | object/boolean | undefined | Object with navigation parameters. |
 | {
 | clickable | boolean | false | If true then clicking on pagination button will cause transition to appropriate slide |
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
@@ -305,7 +307,7 @@ Using `data-src` attribute to enable lazyload. `.swiper-lazy-preloader` will kee
 ```javascript
 Swiper.use([ SwiperPluginLazyload ])
 
-var mySwiper = new Swiper('#swiper1', {
+var mySwiper = new Swiper('#swiper', {
     lazyload: {
         loadPrevNext: false,
         loadPrevNextAmount: 1,
@@ -320,7 +322,7 @@ var mySwiper = new Swiper('#swiper1', {
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
-| lazyload | Object/Boolean | undefined | Object with parameters. |
+| lazyload | object/boolean | undefined | Object with parameters. |
 | {
 | loadPrevNext | boolean | false | Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images) |
 | loadPrevNextAmount | number | 1 | Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView |
@@ -329,6 +331,34 @@ var mySwiper = new Swiper('#swiper1', {
 | loadingClass | string | 'swiper-lazy-loading' | CSS class name of lazy loading element |
 | loadedClass |	string | 'swiper-lazy-loaded' | CSS class name of lazy loaded element |
 | preloaderClass |	string | 'swiper-lazy-preloader' | CSS class name of lazy preloader |
+| }
+
+##### Keyboard Control
+
+Control Tiny-Swiper with directional arrow keys on keyboard.
+
+- Global name on `window`: `SwiperPluginKeyboardControl`.
+- Configuration name: `keyboard`.
+
+###### Usage
+
+```javascript
+Swiper.use([ SwiperPluginKeyboardControl ])
+
+var mySwiper = new Swiper('#swiper', {
+    keyboard: {
+        enabled: true,
+        onlyInViewport: true
+    }
+})
+```
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| keyboard | object/boolean | undefined | Object with parameters. |
+| {
+| enabled | boolean | true | Set to "true" to enable keyboard control function. |
+| onlyInViewport | boolean | true | Keyboard control will be enabled only if container element is displayed in viewport integrally. |
 | }
 
 ## FAQ
