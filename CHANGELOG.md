@@ -56,7 +56,7 @@
 
 - Add: export ESM and full-featured file
 
-# v1.3.0 -
+# v1.3.0 - Released on 2019/12/30
 
 - Add: `slidesPerView` parameter
 - Add: `centeredSlides` parameter
