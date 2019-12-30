@@ -6,9 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Demo</title>
     <style>
-        :root {
-            --theme-color: rgb(205, 138, 50);
-        }
         body {
             font-family: Arial, Helvetica, sans-serif;
         }
@@ -26,6 +23,9 @@
         .b {
             background: lightblue;
         }
+        .c {
+            height: 100%;
+        }
         .a,
         .b {
             display: flex;
@@ -39,40 +39,18 @@
             height: 100%;
         }
         .swiper-container {
-            height: 100%;
+            height: 50%;
+            margin-bottom: 100%;
             /* touch-action: none; */
         }
-        .t-ScrollBar {
-            display: block;
-            position: fixed;
-            top: 50%;
-            right: 2.2rem;
-            width: 0.5rem;
-            transform: translateY(-50%);
-        }
-        .t-ScrollBar__item {
-            display: block;
-            margin: 100% 0;
-            width: 100%;
-            padding-top: 100%;
-            height: 0;
-            box-shadow: 0 0 0 0.1rem #22216D inset;
-            box-shadow: 0 0 0 0.1rem var(--theme-color) inset;
-            border-radius: 50% !important;
-            border: none;
-            background: #FFF;
-            transition: background ease 0.2s;
-            cursor: pointer;
-        }
-        .t-ScrollBar__item.is-active {
-            background: #22216D;
-            background: var(--theme-color);
+        .swiper-wrapper {
+            flex-direction: column
         }
     </style>
 </head>
 <body>
     <script src="/lib/index.js"></script>
-    <script src="/lib/modules/pagination.js"></script>
+    <script src="/lib/modules/keyboardControl.js"></script>
 
     <!-- Slider main container -->
     <div class="swiper-container" id="swiper1">
@@ -85,24 +63,14 @@
             <div class="b swiper-slide">4</div>
         </div>
         <!-- If we need pagination -->
-        <div class="t-ScrollBar"></div>
+        <div class="swiper-pagination"></div>
     </div>
 
     <script>
-        Swiper.use([ SwiperPluginPagination ])
-
+        Swiper.use([ SwiperPluginKeyboardControl ])
         var mySwiper = new Swiper('#swiper1', {
-            speed: 300,
-            direction: 'vertical',
-            spaceBetween: 100,
-            mousewheel: true,
-            resistance: true,
-            resistanceRatio: 0.85,
-            pagination: {
-                el: '.t-ScrollBar',
-                bulletClass: 't-ScrollBar__item',
-                bulletActiveClass: 'is-active',
-                clickable: true
+            keyboard: {
+                enabled: true
             }
         });
     </script>

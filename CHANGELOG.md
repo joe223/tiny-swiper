@@ -55,3 +55,12 @@
 # v1.2.0 - Released on 2019/12/16
 
 - Add: export ESM and full-featured file
+
+# v1.3.0 -
+
+- Add: `slidesPerView` parameter
+- Add: `centeredSlides` parameter
+- Add: SwiperPluginKeyboardControl
+- Fix: Unexpected slide width (#14)
+- Fix: transform boundary
+

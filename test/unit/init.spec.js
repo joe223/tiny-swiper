@@ -53,7 +53,7 @@ describe('Initialization', function () {
         expect(boxModel.height).toEqual(300)
         expect(isInheritor).toBeTruthy()
         expect(swiper.isHorizontal).toBeTruthy
-        expect(swiper.slideSize).toEqual(400)
+        expect(swiper.slideSize).toEqual(swiper.viewSize)
         expect(swiper.boxSize).toEqual(swiper.slideSize + swiper.config.spaceBetween)
         expect(swiper.index).toEqual(0)
     })
@@ -78,6 +78,28 @@ describe('Initialization', function () {
         })
 
         expect(initialSlideTransform).toBeTruthy()
+    })
+
+    it('spaceBetween', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import Swiper from '/src/index.js'
+            const mySwiper = new Swiper('#swiper1', {
+                spaceBetween: 100
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            `
+        })
+
+        const swiper = await page.evaluate(function () {
+            return mySwiper
+        })
+        const mather = {
+            slideSize: swiper.viewSize
+        }
     })
 
     it('excludeElements parameter', async function () {
@@ -154,5 +176,140 @@ describe('Initialization', function () {
         })
 
         expect(count).toEqual(1)
+    })
+
+    it('slidesPerView parameter', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import { getTranslate } from '/src/lib.js'
+            import Swiper from '/src/index.js'
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                slidesPerView: 2.4,
+                initialSlide: 1
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            window.getTranslate = getTranslate
+            `
+        })
+        const data = await page.evaluate(function () {
+            return {
+                instance: window.mySwiper,
+                transform: parseInt(getTranslate(mySwiper.$wrapper, mySwiper.isHorizontal), 10)
+            }
+        })
+        const { instance } = data
+        const match = {
+            minIndex: 0,
+            maxIndex: instance.$list.length - Math.ceil(instance.config.slidesPerView),
+            minTransform: 0,
+
+            // eslint-disable-next-line
+            maxTransform: instance.boxSize * instance.$list.length - instance.baseTransform - instance.config.spaceBetween - instance.viewSize,
+
+            // eslint-disable-next-line
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.ceil(instance.config.slidesPerView - 1))) / instance.config.slidesPerView
+        }
+
+        expect(data.transform).toEqual(parseInt(-instance.boxSize * instance.index, 10))
+
+        Object.keys(match).forEach(prop => {
+            match[prop] = parseInt(match[prop], 10)
+            instance[prop] = parseInt(instance[prop], 10)
+        })
+
+        expect(data.instance).toMatchObject(match)
+    })
+
+
+    it('slidesPerView parameter - scroll to last slide', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import { getTranslate } from '/src/lib.js'
+            import Swiper from '/src/index.js'
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                slidesPerView: 2.4,
+                initialSlide: 3
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            window.getTranslate = getTranslate
+            `
+        })
+        const data = await page.evaluate(function () {
+            return {
+                instance: window.mySwiper,
+                transform: parseInt(getTranslate(mySwiper.$wrapper, mySwiper.isHorizontal), 10)
+            }
+        })
+        const { instance } = data
+        const match = {
+
+            // eslint-disable-next-line
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.ceil(instance.config.slidesPerView - 1))) / instance.config.slidesPerView
+        }
+
+        expect(data.instance).toMatchObject(match)
+
+        // eslint-disable-next-line
+        expect(data.transform).toEqual(-parseInt(instance.slideSize * instance.$list.length - instance.viewSize - instance.config.spaceBetween, 10))
+    })
+
+
+    it('centeredSlides parameter', async function () {
+        await page.addScriptTag({
+            type: 'module',
+            content: `
+            import { getTranslate } from '/src/lib.js'
+            import Swiper from '/src/index.js'
+
+            const mySwiper = new Swiper('#swiper1', {
+                speed: 0,
+                slidesPerView: 1.5,
+                initialSlide: 3,
+                centeredSlides: true
+            })
+
+            window.Swiper = Swiper
+            window.mySwiper = mySwiper
+            window.getTranslate = getTranslate
+            `
+        })
+        const data = await page.evaluate(function () {
+            return {
+                instance: window.mySwiper,
+                transform: parseInt(getTranslate(mySwiper.$wrapper, mySwiper.isHorizontal), 10)
+            }
+        })
+        const { instance } = data
+        const match = {
+            minIndex: 0,
+            maxIndex: instance.$list.length - 1,
+            baseTransform: -(instance.viewSize - instance.slideSize) / 2,
+            minTransform: (instance.viewSize - instance.slideSize) / 2,
+
+            // eslint-disable-next-line
+            maxTransform: instance.boxSize * instance.$list.length - instance.baseTransform - instance.config.spaceBetween - instance.viewSize,
+
+            // eslint-disable-next-line
+            slideSize: (instance.viewSize - (instance.config.spaceBetween * Math.ceil(instance.config.slidesPerView - 1))) / instance.config.slidesPerView
+        }
+
+        expect(data.transform).toEqual(parseInt(-(instance.boxSize * instance.index - (instance.viewSize - instance.slideSize) / 2), 10))
+
+        Object.keys(match).forEach(prop => {
+            match[prop] = parseInt(match[prop], 10)
+            instance[prop] = parseInt(instance[prop], 10)
+        })
+
+        expect(instance).toMatchObject(match)
     })
 })

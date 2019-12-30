@@ -43,6 +43,13 @@ const entries = [
         options: {
             name: 'SwiperPluginLazyload'
         }
+    },
+    {
+        input: 'modules/keyboardControl.js',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginKeyboardControl'
+        }
     }
 ]
 const plugins = [

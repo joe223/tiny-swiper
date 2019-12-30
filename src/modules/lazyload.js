@@ -1,6 +1,6 @@
 import {
-    addClassName,
-    removeClassName
+    addClass,
+    removeClass
 } from '../lib.js'
 
 /**
@@ -24,8 +24,8 @@ export default function SwiperPluginLazyload (instance) {
 
             function handleLoaded ($img) {
                 $img.removeAttribute('data-src')
-                addClassName($img, [config.lazyload.loadedClass])
-                removeClassName($img, [config.lazyload.loadingClass])
+                addClass($img, [config.lazyload.loadedClass])
+                removeClass($img, [config.lazyload.loadingClass])
                 $img.onloaded = null
                 $img.onerror = null
                 $img.isLoaded = true
@@ -42,8 +42,8 @@ export default function SwiperPluginLazyload (instance) {
 
                 const src = $img.getAttribute('data-src')
 
-                addClassName($img, [config.lazyload.loadingClass])
-                removeClassName($img, [config.lazyload.loadedClass])
+                addClass($img, [config.lazyload.loadingClass])
+                removeClass($img, [config.lazyload.loadedClass])
                 $img.src = src
                 $img.onload = () => handleLoaded($img)
                 $img.onerror = () => handleLoaded($img)
