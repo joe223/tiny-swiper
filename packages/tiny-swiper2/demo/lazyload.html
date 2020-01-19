@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Demo</title>
+    <style>
+        :root {
+            --theme-color: rgb(205, 138, 50);
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html,
+        body,
+        .swiper-wrapper {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-container {
+            height: 100%;
+        }
+
+        /* image lazyload */
+
+        .swiper-lazy {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: all ease 300ms;
+        }
+
+        .swiper-lazy-preloader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-lazy-loaded {
+            opacity: 1;
+        }
+
+        .swiper-lazy-preloader::after {
+            display: block;
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: -15px 0 0 -15px;
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgb(0, 0, 0, .88);
+            border-radius: 50%;
+            border-bottom-color: transparent;
+            transform-origin: 50%;
+            animation: rotate 1s infinite linear;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate3d(0, 0, 0, 0);
+            }
+
+            100% {
+                transform: rotate3d(0, 0, 1, 360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- All images come from https://unsplash.com/ -->
+
+    <script src="/lib/index.js"></script>
+    <script src="/lib/modules/lazyload.js"></script>
+
+    <!-- Slider main container -->
+    <div class="swiper-container" id="swiper1">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="swiper-slide">
+                <img data-src="https://user-images.githubusercontent.com/10026019/70386464-78944c00-19d3-11ea-93ea-e1f8b43e5708.jpeg" class="swiper-lazy">
+                <div class="swiper-lazy-preloader"></div>
+            </div>
+            <div class="swiper-slide">
+                <img data-src="https://user-images.githubusercontent.com/10026019/70386489-ecceef80-19d3-11ea-934d-375227e4c319.png" class="swiper-lazy">
+                <div class="swiper-lazy-preloader"></div>
+            </div>
+            <div class="swiper-slide">
+                <img data-src="https://user-images.githubusercontent.com/10026019/70386482-cc9f3080-19d3-11ea-803b-451bc9e3373b.png" class="swiper-lazy">
+                <div class="swiper-lazy-preloader"></div>
+            </div>
+            <div class="swiper-slide">
+                <img data-src="https://user-images.githubusercontent.com/10026019/70386467-792ce280-19d3-11ea-8524-3199138b4c7b.jpeg" class="swiper-lazy">
+                <div class="swiper-lazy-preloader"></div>
+            </div>
+            <div class="swiper-slide">
+                <img data-src="https://user-images.githubusercontent.com/10026019/70386468-79c57900-19d3-11ea-97ef-275e6583e1c6.jpeg" class="swiper-lazy">
+                <div class="swiper-lazy-preloader"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Swiper.use([SwiperPluginLazyload])
+
+        var mySwiper = new Swiper('#swiper1', {
+            speed: 300,
+            lazyload: {
+                loadPrevNext: false,
+                loadPrevNextAmount: 1,
+                loadOnTransitionStart: true,
+                elementClass: 'swiper-lazy',
+                loadingClass: 'swiper-lazy-loading',
+                loadedClass: 'swiper-lazy-loaded',
+                preloaderClass: 'swiper-lazy-preloader'
+            }
+        });
+    </script>
+</body>
