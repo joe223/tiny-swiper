@@ -1,6 +1,7 @@
 module.exports = {
+    'parser': '@typescript-eslint/parser',
     'plugins': [
-        'import'
+        '@typescript-eslint'
     ],
     'env': {
         'jest': true,
@@ -9,7 +10,11 @@ module.exports = {
         'es6': true,
         'mocha': true
     },
-    'extends': 'airbnb-base',
+    'extends': [
+        'airbnb-typescript/base',
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended'
+    ],
     'globals': {
         'Atomics': 'readonly',
         'SharedArrayBuffer': 'readonly',
@@ -20,6 +25,13 @@ module.exports = {
         'sourceType': 'module'
     },
     'rules': {
+        '@typescript-eslint/consistent-type-assertions': ['off'],
+        '@typescript-eslint/indent': [
+            'error',
+            4
+        ],
+        '@typescript-eslint/no-unused-expressions': ['off'],
+        '@typescript-eslint/no-non-null-assertion': ['off'],
         'indent': [
             'error',
             4
@@ -32,26 +44,40 @@ module.exports = {
             'error',
             'single'
         ],
+        '@typescript-eslint/semi': [
+            'error',
+            'never'
+        ],
+        '@typescript-eslint/member-delimiter-style': [
+            'error',
+            {
+                'multiline': {
+                    'delimiter': 'none'
+                }
+            }
+        ],
         'semi': [
             'error',
             'never'
         ],
-        "comma-dangle": ["error", {
-            "arrays": "never",
-            "objects": "never",
-            "imports": "never",
-            "exports": "never",
-            "functions": "never"
+        'comma-dangle': ['error', {
+            'arrays': 'never',
+            'objects': 'never',
+            'imports': 'never',
+            'exports': 'never',
+            'functions': 'never'
         }],
         'prefer-arrow-callback': ['off'],
-        'func-names': ["off"],
+        'func-names': ['off'],
         'no-param-reassign': ['error', {
             'props': false
         }],
         'import/extensions': ['error', {
-            "js": 'always'
+            'js': 'always'
         }],
-        "max-len": ["error", {
+        'import/no-cycle': ['off'],
+        'import/prefer-default-export': ['off'],
+        'max-len': ['error', {
             code: 140
         }],
         'space-before-function-paren': ['error', 'always'],

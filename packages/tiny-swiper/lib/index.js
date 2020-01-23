@@ -1,124 +1,18 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Swiper = factory());
-}(this, function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global = global || self, global.Swiper = factory());
+}(this, (function () { 'use strict';
 
-  function _extends() {
-    _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-
-      return target;
-    };
-
-    return _extends.apply(this, arguments);
-  }
-
-  function addClass(el, list) {
-    if (list === void 0) {
-      list = [];
-    }
-
-    if (!Array.isArray(list)) list = [list];
-    list.forEach(function (clz) {
-      return !el.classList.contains(clz) && el.classList.add(clz);
-    });
-  }
-  function removeClass(el, list) {
-    if (list === void 0) {
-      list = [];
-    }
-
-    if (!Array.isArray(list)) list = [list];
-    list.forEach(function (clz) {
-      return el.classList.contains(clz) && el.classList.remove(clz);
-    });
-  }
-  function attachListener(el, evtName, handler, opts) {
-    el.addEventListener(evtName, handler, opts);
-  }
-  function detachListener(el, evtName, handler) {
-    el.removeEventListener(evtName, handler);
-  }
-  function removeAttr(el, attr) {
-    el.removeAttribute(attr);
-  }
-  function detectTouch() {
-    return Boolean('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0 || window.DocumentTouch && document instanceof DocumentTouch);
-  }
-  /**
-   * get Element transform
-   * @param {HTMLElement} el
-   * @param {Boolean} isHorizontal
-   * @returns {Number}
-   */
-
-  function getTranslate(el, isHorizontal) {
-    var matrix = getComputedStyle(el).transform.replace(/[a-z]|\(|\)|\s/g, '').split(',').map(parseFloat);
-    var arr;
-
-    if (matrix.length === 16) {
-      arr = matrix.slice(12, 14);
-    } else if (matrix.length === 6) {
-      arr = matrix.slice(4, 6);
-    }
-
-    return arr[isHorizontal ? 0 : 1] || 0;
-  }
-
-  var formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO']; // eslint-disable-next-line
-  /**
-   * Swiper Class
-   */
-
-  var Swiper =
-  /*#__PURE__*/
-  function () {
-    function Swiper(el, config) {
-      config = Swiper.formatConfig(config);
-      el = typeof el === 'string' ? document.body.querySelector(el) : el;
-      this.index = 0;
-      this.scrolling = false;
-      this.config = config;
-      this.supportTouch = detectTouch();
-      this.$el = el;
-      this.$wrapper = el.querySelector("." + config.wrapperClass);
-      this.eventHub = {};
-      this.initPlugins(config.plugins || Swiper.plugins);
-      this.emit('before-init', this);
-      this.initListener();
-      this.initTouchStatus();
-      this.initWheelStatus();
-      this.update();
-      this.attachListener();
-      this.emit('after-init', this);
-      this.scroll(config.initialSlide);
-    }
-
-    Swiper.use = function use(plugins) {
-      Swiper.plugins = plugins;
-    };
-
-    Swiper.formatConfig = function formatConfig(config) {
-      if (config === void 0) {
-        config = {};
-      }
-
-      var defaultConfig = {
+    const defaultOptions = {
+        // `isHorizontal` is computed value
         direction: 'horizontal',
         touchRatio: 1,
         touchAngle: 45,
         longSwipesRatio: 0.5,
         initialSlide: 0,
         loop: false,
+        freeMode: false,
         mousewheel: false,
         pagination: false,
         passiveListeners: true,
@@ -139,375 +33,486 @@
         touchStartForcePreventDefault: false,
         touchMoveStopPropagation: false,
         excludeElements: []
-      };
-
-      if (config.mousewheel) {
-        config.mousewheel = _extends({
-          invert: false,
-          sensitivity: 1
-        }, config.mousewheel);
-      }
-
-      return _extends({}, defaultConfig, {}, config);
     };
+    function optionFormatter(userOptions) {
+        const options = Object.assign(Object.assign({}, defaultOptions), userOptions);
+        return Object.assign(Object.assign({}, options), { isHorizontal: options.direction === 'horizontal' });
+    }
+    //# sourceMappingURL=options.js.map
 
-    var _proto = Swiper.prototype;
-
-    _proto.initPlugins = function initPlugins(plugins) {
-      var _this = this;
-
-      (plugins || []).forEach(function (plugin) {
-        return plugin(_this);
-      });
-    };
-
-    _proto.on = function on(evtName, cb) {
-      var eventHub = this.eventHub;
-
-      if (!eventHub[evtName]) {
-        eventHub[evtName] = [cb];
-      } else {
-        eventHub[evtName].push(cb);
-      }
-    };
-
-    _proto.off = function off(evtName, cb) {
-      var eventHub = this.eventHub;
-
-      if (eventHub[evtName]) {
-        var index = eventHub[evtName].indexOf(cb);
-        index > -1 && eventHub[evtName].splice(index, 1);
-      }
-    };
-
-    _proto.emit = function emit(evtName) {
-      for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        data[_key - 1] = arguments[_key];
-      }
-
-      var eventHub = this.eventHub;
-
-      if (eventHub[evtName]) {
-        eventHub[evtName].forEach(function (cb) {
-          return cb.apply(void 0, data);
-        });
-      }
-    };
-
-    _proto.initListener = function initListener() {
-      var _this2 = this;
-
-      var $wrapper = this.$wrapper,
-          config = this.config,
-          supportTouch = this.supportTouch;
-      this.listeners = {
-        onTouchStart: function onTouchStart(e) {
-          for (var i = 0; i < config.excludeElements.length; i++) {
-            if (config.excludeElements[i].contains(e.target)) return;
-          }
-
-          _this2.initTouchStatus();
-
-          var touchStatus = _this2.touchStatus;
-          var shouldPreventDefault = config.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1 || config.touchStartForcePreventDefault;
-          touchStatus.startOffset = getTranslate($wrapper, _this2.isHorizontal);
-
-          _this2.transform(touchStatus.startOffset);
-
-          $wrapper.style.transition = 'none';
-          touchStatus.isTouchStart = true;
-          touchStatus.touchStartTime = Date.now();
-          touchStatus.touchTracks.push({
-            x: supportTouch ? e.touches[0].pageX : e.pageX,
-            y: supportTouch ? e.touches[0].pageY : e.pageY
-          });
-          if (shouldPreventDefault && !config.passiveListeners) e.preventDefault();
-        },
-        onTouchMove: function onTouchMove(e) {
-          var touchStatus = _this2.touchStatus;
-          var touchTracks = touchStatus.touchTracks;
-          if (!touchStatus.isTouchStart || touchStatus.isScrolling) return;
-          if (config.touchMoveStopPropagation) e.stopPropagation();
-          var currentPosition = {
-            x: supportTouch ? e.touches[0].pageX : e.pageX,
-            y: supportTouch ? e.touches[0].pageY : e.pageY
-          };
-          var diff = {
-            x: currentPosition.x - touchTracks[touchTracks.length - 1].x,
-            y: currentPosition.y - touchTracks[touchTracks.length - 1].y
-          };
-          touchTracks.push(currentPosition);
-          var touchAngle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * 180 / Math.PI;
-          var offset = 0;
-
-          if (_this2.isHorizontal) {
-            if (touchAngle < config.touchAngle || touchStatus.isTouching) {
-              touchStatus.isTouching = true;
-              offset = diff.x;
-              e.preventDefault();
-            } else {
-              touchStatus.isScrolling = true;
+    function EventHub() {
+        let hub = {};
+        function on(evtName, cb) {
+            if (!hub[evtName]) {
+                hub[evtName] = [cb];
             }
-          } else {
-            if (90 - touchAngle < config.touchAngle || touchStatus.isTouching) {
-              touchStatus.isTouching = true;
-              offset = diff.y;
-              e.preventDefault();
-            } else {
-              touchStatus.isScrolling = true;
+            else {
+                hub[evtName].push(cb);
             }
-          }
-
-          _this2.scrollPixel(offset * config.touchRatio);
-        },
-        onTouchEnd: function onTouchEnd() {
-          if (!_this2.touchStatus.isTouchStart) return;
-          var index = _this2.index,
-              boxSize = _this2.boxSize,
-              touchStatus = _this2.touchStatus;
-          var swipTime = Date.now() - touchStatus.touchStartTime;
-          var transform = getTranslate($wrapper, _this2.isHorizontal);
-          var computedOffset = transform - touchStatus.startOffset;
-          var jump = Math.ceil(Math.abs(computedOffset) / boxSize);
-          var longSwipeIndex = Math.ceil(Math.abs(computedOffset) / boxSize - config.longSwipesRatio);
-          $wrapper.style.transition = "transform ease " + config.speed + "ms"; // long swip
-
-          if (swipTime > _this2.config.longSwipesMs) {
-            _this2.scroll(_this2.index + longSwipeIndex * (computedOffset > 0 ? -1 : 1), true);
-          } else {
-            // short swip
-            _this2.scroll(computedOffset > 0 ? index - jump : index + jump, true);
-          }
-
-          _this2.initTouchStatus();
-        },
-        onWheel: function onWheel(e) {
-          var index = _this2.index,
-              wheelStatus = _this2.wheelStatus;
-          var deltaY = e.deltaY;
-
-          if ((Math.abs(deltaY) - Math.abs(wheelStatus.wheelDelta) > 0 || !wheelStatus.wheeling) && Math.abs(deltaY) >= config.mousewheel.sensitivity) {
-            _this2.scroll(deltaY > 0 ? index - 1 : index + 1);
-          }
-
-          wheelStatus.wheelDelta = deltaY;
-          clearTimeout(wheelStatus.wheelingTimer);
-          wheelStatus.wheeling = true;
-          wheelStatus.wheelingTimer = setTimeout(function () {
-            _this2.initWheelStatus();
-          }, 200);
-          e.preventDefault();
-          e.stopPropagation();
         }
-      };
-    };
+        function off(evtName, cb) {
+            if (hub[evtName]) {
+                const index = hub[evtName].indexOf(cb);
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                index > -1 && hub[evtName].splice(index, 1);
+            }
+        }
+        function emit(evtName, ...data) {
+            if (hub[evtName]) {
+                hub[evtName].forEach(cb => cb(...data));
+            }
+        }
+        function clear() {
+            hub = {};
+        }
+        return {
+            on,
+            off,
+            emit,
+            clear
+        };
+    }
+    //# sourceMappingURL=eventHub.js.map
 
-    _proto.attachListener = function attachListener$1() {
-      var $el = this.$el,
-          config = this.config,
-          supportTouch = this.supportTouch;
-      var _this$listeners = this.listeners,
-          onTouchStart = _this$listeners.onTouchStart,
-          onTouchMove = _this$listeners.onTouchMove,
-          onTouchEnd = _this$listeners.onTouchEnd,
-          onWheel = _this$listeners.onWheel;
+    const delta = 180 / Math.PI;
+    function Vector(logs, index) {
+        const trace = logs[index];
+        const formerTrace = logs[index - 1];
+        const diff = {
+            x: trace.x - formerTrace.x,
+            y: trace.y - formerTrace.y
+        };
+        const duration = trace.time - formerTrace.time;
+        const velocityX = diff.x / duration;
+        const velocityY = diff.y / duration;
+        const angle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * delta;
+        return Object.assign(Object.assign({}, diff), { angle,
+            velocityX,
+            velocityY });
+    }
+    function Tracker() {
+        let logs = [];
+        function push(position) {
+            logs.push(Object.assign(Object.assign({}, position), { time: Date.now() }));
+        }
+        function vector() {
+            return Vector(logs, logs.length - 1);
+        }
+        function clear() {
+            logs = [];
+        }
+        function getLogs() {
+            return logs;
+        }
+        function getDuration() {
+            const first = logs[0];
+            const last = logs[logs.length - 1];
+            return first ? last.time - first.time : 0;
+        }
+        function getOffset() {
+            const first = logs[0];
+            const last = logs[logs.length - 1];
+            return first ? {
+                x: last.x - first.x,
+                y: last.y - first.y
+            } : {
+                x: 0,
+                y: 0
+            };
+        }
+        return {
+            getDuration,
+            getOffset,
+            getLogs,
+            vector,
+            clear,
+            push
+        };
+    }
+    //# sourceMappingURL=trace.js.map
 
-      if (supportTouch) {
-        attachListener($el, 'touchstart', onTouchStart, {
-          passive: config.passiveListeners,
-          capture: false
+    function Engine(limitation, options, measure, renderer, eventHub) {
+        const { boxSize } = measure;
+        const tracker = Tracker();
+        let index = 0;
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        let status = initStatus();
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        let layout = initLayout(0);
+        function render(duration) {
+            renderer.render({
+                index,
+                status,
+                layout,
+                duration
+            });
+        }
+        function transform(trans) {
+            layout.transform = trans;
+        }
+        function slideTo(targetIndex, duration) {
+            const computedIndex = targetIndex < limitation.minIndex
+                ? limitation.minIndex
+                : targetIndex > limitation.maxIndex
+                    ? limitation.maxIndex
+                    : targetIndex;
+            const offset = -computedIndex * boxSize + limitation.base;
+            transform(offset > limitation.max
+                ? limitation.max
+                : offset < limitation.min
+                    ? limitation.min
+                    : offset);
+            index = computedIndex;
+            render(duration);
+        }
+        function scrollPixel(px) {
+            const ratio = Number(px.toExponential().split('e')[1]);
+            const expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1;
+            const oldTransform = layout.transform;
+            if (options.resistance && !options.loop) {
+                if (px > 0 && oldTransform >= limitation.max) {
+                    px -= Math.pow((px * expand), options.resistanceRatio) / expand;
+                }
+                else if (px < 0 && oldTransform <= limitation.min) {
+                    px += (Math.pow((-px * expand), options.resistanceRatio)) / expand;
+                }
+            }
+            layout.transform += px;
+        }
+        function initStatus(startTransform = 0) {
+            return {
+                startTransform,
+                isStart: false,
+                isScrolling: false,
+                isTouching: false
+            };
+        }
+        function initLayout(originTransform) {
+            return {
+                transform: originTransform
+            };
+        }
+        function preheat(originPosition, originTransform) {
+            tracker.push(originPosition);
+            layout = initLayout(originTransform);
+            status = initStatus(originTransform);
+            status.isStart = true;
+            render();
+        }
+        function move(position, trailingCall) {
+            if (!status.isStart || status.isScrolling)
+                return;
+            tracker.push(position);
+            const vector = tracker.vector();
+            let offset = 0;
+            if (options.isHorizontal) {
+                if (vector.angle < options.touchAngle || status.isTouching) {
+                    status.isTouching = true;
+                    offset = vector.x * options.touchRatio;
+                }
+                else {
+                    status.isScrolling = true;
+                }
+            }
+            else {
+                if ((90 - vector.angle) < options.touchAngle || status.isTouching) {
+                    status.isTouching = true;
+                    offset = vector.y * options.touchRatio;
+                }
+                else {
+                    status.isScrolling = true;
+                }
+            }
+            scrollPixel(offset);
+            render();
+            trailingCall && trailingCall(status);
+        }
+        function stop() {
+            const duration = tracker.getDuration();
+            const trans = layout.transform - status.startTransform;
+            const jump = Math.ceil(Math.abs(trans) / boxSize);
+            const longSwipeIndex = Math.ceil(Math.abs(trans) / boxSize - options.longSwipesRatio);
+            status.isStart = false;
+            // TODO: loop, limitation
+            // long siwpe
+            if (duration > options.longSwipesMs) {
+                slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
+            }
+            else {
+                // short swipe
+                slideTo(trans > 0 ? index - jump : index + jump);
+            }
+            tracker.clear();
+            status = initStatus();
+        }
+        function getStatus() {
+            return Object.assign(Object.assign({ index }, status), layout);
+        }
+        slideTo(options.initialSlide, 0);
+        return {
+            preheat,
+            move,
+            stop,
+            slideTo,
+            getStatus
+        };
+    }
+    //# sourceMappingURL=index.js.map
+
+    function Element(el, options) {
+        const $el = (typeof el === 'string' ? document.body.querySelector(el) : el);
+        const $wrapper = $el.querySelector(`.${options.wrapperClass}`);
+        const $list = [].slice.call($el.getElementsByClassName(options.slideClass));
+        return {
+            $el,
+            $wrapper,
+            $list
+        };
+    }
+    //# sourceMappingURL=element.js.map
+
+    function addClass(el, list = []) {
+        if (!Array.isArray(list))
+            list = [list];
+        list.forEach(clz => (!el.classList.contains(clz) && el.classList.add(clz)));
+    }
+    function removeClass(el, list = []) {
+        if (!Array.isArray(list))
+            list = [list];
+        list.forEach(clz => (el.classList.contains(clz) && el.classList.remove(clz)));
+    }
+    function attachListener(el, evtName, handler, opts) {
+        el.addEventListener(evtName, handler, opts);
+    }
+    function detachListener(el, evtName, handler) {
+        el.removeEventListener(evtName, handler);
+    }
+    function updateStyle(el, style, forceRender) {
+        Object.keys(style).forEach(prop => {
+            // TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+            el.style[prop] = style[prop];
         });
-
-        attachListener($el, 'touchmove', onTouchMove);
-
-        attachListener($el, 'touchend', onTouchEnd);
-
-        attachListener($el, 'touchcancel', onTouchEnd);
-      } else {
-        attachListener($el, 'mousedown', onTouchStart);
-
-        attachListener(document, 'mousemove', onTouchMove);
-
-        attachListener(document, 'mouseup', onTouchEnd);
-      }
-
-      if (config.mousewheel) {
-        attachListener($el, 'wheel', onWheel);
-      }
-    };
-
-    _proto.detachListener = function detachListener$1() {
-      var $el = this.$el;
-      var _this$listeners2 = this.listeners,
-          onTouchStart = _this$listeners2.onTouchStart,
-          onTouchMove = _this$listeners2.onTouchMove,
-          onTouchEnd = _this$listeners2.onTouchEnd,
-          onWheel = _this$listeners2.onWheel;
-
-      detachListener($el, 'touchstart', onTouchStart);
-
-      detachListener($el, 'touchmove', onTouchMove);
-
-      detachListener($el, 'touchend', onTouchEnd);
-
-      detachListener($el, 'touchcancel', onTouchEnd);
-
-      detachListener($el, 'mousedown', onTouchStart);
-
-      detachListener(document, 'mousemove', onTouchMove);
-
-      detachListener(document, 'mouseup', onTouchEnd);
-
-      detachListener($el, 'wheel', onWheel);
-    };
-
-    _proto.transform = function transform(offset) {
-      this.$wrapper.style.transform = this.isHorizontal ? "translate3d(" + offset + "px, 0, 0)" : "translate3d(0, " + offset + "px, 0)";
-    };
-
-    _proto.scroll = function scroll(index, force) {
-      var _this3 = this;
-
-      if (index === void 0) {
-        index = 0;
-      }
-
-      if (force === void 0) {
-        force = false;
-      }
-
-      if (this.scrolling && !force) return;
-      var config = this.config,
-          minIndex = this.minIndex,
-          maxIndex = this.maxIndex,
-          minTransform = this.minTransform,
-          maxTransform = this.maxTransform;
-      var offset = index * this.boxSize + this.baseTransform;
-      index = index < minIndex ? minIndex : index > maxIndex ? maxIndex : index;
-      this.emit('before-slide', this.index, this, index);
-      this.scrolling = true;
-      this.transform(-(offset > maxTransform ? maxTransform : offset < minTransform ? minTransform : offset));
-      var $current = this.$list[index];
-      var $prev = this.$list[index - 1];
-      var $next = this.$list[index + 1];
-      this.$list.forEach(function ($slide, i) {
-        removeClass($slide, [config.slidePrevClass, config.slideNextClass, config.slideActiveClass]);
-
-        if (i === index) {
-          addClass($current, config.slideActiveClass);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        forceRender && getComputedStyle(el);
+    }
+    function getTranslate(el, isHorizontal) {
+        const matrix = getComputedStyle(el).transform.replace(/[a-z]|\(|\)|\s/g, '').split(',').map(parseFloat);
+        let arr = [];
+        if (matrix.length === 16) {
+            arr = matrix.slice(12, 14);
         }
-
-        if (i === index - 1) {
-          addClass($prev, config.slidePrevClass);
+        else if (matrix.length === 6) {
+            arr = matrix.slice(4, 6);
         }
+        return arr[isHorizontal ? 0 : 1] || 0;
+    }
+    //# sourceMappingURL=dom.js.map
 
-        if (i === index + 1) {
-          addClass($next, config.slideNextClass);
+    // Only support single finger touch event.
+    function Sensor(element, env, engine, options) {
+        const formEls = [
+            'INPUT',
+            'SELECT',
+            'OPTION',
+            'TEXTAREA',
+            'BUTTON',
+            'VIDEO'
+        ];
+        const { $el, $wrapper } = element;
+        const { preheat, move, stop } = engine;
+        const { touchable } = env;
+        function getPostion(e) {
+            const touch = touchable ? e.changedTouches[0] : e;
+            return {
+                x: touch.pageX,
+                y: touch.pageY
+            };
         }
-      });
-      this.index = index;
-      setTimeout(function () {
-        _this3.scrolling = false;
+        function onTouchStart(e) {
+            const shouldPreventDefault = (options.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1)
+                || options.touchStartForcePreventDefault;
+            if (shouldPreventDefault && !options.passiveListeners)
+                e.preventDefault();
+            preheat(getPostion(e), getTranslate($wrapper, options.isHorizontal));
+        }
+        function onTouchMove(e) {
+            if (options.touchMoveStopPropagation)
+                e.stopPropagation();
+            move(getPostion(e), status => (status.isTouching && e.preventDefault()));
+        }
+        function onTouchEnd(e) {
+            onTouchMove(e);
+            stop();
+        }
+        function attach() {
+            if (touchable) {
+                attachListener($el, 'touchstart', onTouchStart, {
+                    passive: options.passiveListeners,
+                    capture: false
+                });
+                attachListener($el, 'touchmove', onTouchMove);
+                attachListener($el, 'touchend', onTouchEnd);
+                attachListener($el, 'touchcancel', onTouchEnd);
+            }
+            else {
+                attachListener($el, 'mousedown', onTouchStart);
+                attachListener(document, 'mousemove', onTouchMove);
+                attachListener(document, 'mouseup', onTouchEnd);
+            }
+        }
+        function detach() {
+            detachListener($el, 'touchstart', onTouchStart);
+            detachListener($el, 'touchmove', onTouchMove);
+            detachListener($el, 'touchend', onTouchEnd);
+            detachListener($el, 'touchcancel', onTouchEnd);
+            detachListener($el, 'mousedown', onTouchStart);
+            detachListener(document, 'mousemove', onTouchMove);
+            detachListener(document, 'mouseup', onTouchEnd);
+        }
+        return {
+            attach,
+            detach
+        };
+    }
+    //# sourceMappingURL=index.js.map
 
-        _this3.emit('after-slide', index, _this3);
-      }, this.config.speed + this.config.intermittent);
-    };
+    function Env() {
+        return {
+            touchable: Boolean('ontouchstart' in window
+                || navigator.maxTouchPoints > 0
+                || navigator.msMaxTouchPoints > 0
+                || window.DocumentTouch && document instanceof DocumentTouch)
+        };
+    }
+    //# sourceMappingURL=index.js.map
 
-    _proto.scrollPixel = function scrollPixel(px) {
-      var ratio = px.toExponential().split('e')[1];
-      var expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1;
-      var oldTransform = getTranslate(this.$wrapper, this.isHorizontal);
+    function Limitation(element, measure, options) {
+        const { $list } = element;
+        const { viewSize, slideSize, boxSize } = measure;
+        const base = options.centeredSlides ? (slideSize - viewSize) / 2 : 0;
+        // [min, max] usually equal to [-x, 0]
+        const max = base;
+        const min = options.spaceBetween + viewSize + base - boxSize * $list.length;
+        const minIndex = 0;
+        const maxIndex = $list.length - (options.centeredSlides ? 1 : Math.ceil(options.slidesPerView));
+        return {
+            max,
+            min,
+            base,
+            minIndex,
+            maxIndex
+        };
+    }
+    //# sourceMappingURL=limitation.js.map
 
-      if (this.config.resistance) {
-        if (px > 0 && oldTransform - this.minTransform >= 0) {
-          px -= Math.pow(px * expand, this.config.resistanceRatio) / expand;
-        } else if (px < 0 && oldTransform + this.maxTransform <= 0) {
-          px += Math.pow(-px * expand, this.config.resistanceRatio) / expand;
-        } // if ((px > 0 && this.index === 0) || (px < 0 && this.index === this.maxIndex)) {
-        //     px = px * Math.pow(this.config.resistanceRatio, 4)
-        // }
+    function Measure(options, element) {
+        const { $el } = element;
+        const viewSize = options.isHorizontal ? $el.offsetWidth : $el.offsetHeight;
+        const slideSize = (viewSize - (Math.ceil(options.slidesPerView - 1)) * options.spaceBetween) / options.slidesPerView;
+        const boxSize = slideSize + options.spaceBetween;
+        return {
+            boxSize,
+            viewSize,
+            slideSize
+        };
+    }
+    //# sourceMappingURL=index.js.map
 
-      }
+    function Renderer(element, options) {
+        const { $list, $wrapper } = element;
+        function render({ index, layout, status, duration }, cb) {
+            const wrapperStyle = {
+                transition: status.isStart ? 'none' : `transform ease ${duration === void 0 ? options.speed : duration}ms`,
+                transform: options.isHorizontal
+                    ? `translate3d(${layout.transform}px, 0, 0)`
+                    : `translate3d(0, ${layout.transform}px, 0)`
+            };
+            const $current = $list[index];
+            const $prev = $list[index - 1];
+            const $next = $list[index + 1];
+            updateStyle($wrapper, wrapperStyle);
+            if (!status.isStart) {
+                $list.forEach(($slide, i) => {
+                    removeClass($slide, [
+                        options.slidePrevClass,
+                        options.slideNextClass,
+                        options.slideActiveClass
+                    ]);
+                    if (i === index) {
+                        addClass($current, options.slideActiveClass);
+                    }
+                    if (i === index - 1) {
+                        addClass($prev, options.slidePrevClass);
+                    }
+                    if (i === index + 1) {
+                        addClass($next, options.slideNextClass);
+                    }
+                });
+            }
+        }
+        function init() {
+            const wrapperStyle = {
+                display: 'flex',
+                willChange: 'transform',
+                flexDirection: options.isHorizontal ? 'row' : 'column'
+            };
+            const itemStyle = {
+                [options.isHorizontal ? 'margin-right' : 'margin-bottom']: `${options.spaceBetween}px`
+            };
+            updateStyle($wrapper, wrapperStyle);
+            $list.forEach($slide => updateStyle($slide, itemStyle));
+        }
+        return {
+            init,
+            render
+        };
+    }
 
-      this.transform(oldTransform + px);
-    };
-
-    _proto.initTouchStatus = function initTouchStatus() {
-      this.touchStatus = {
-        touchTracks: [],
-        startOffset: 0,
-        touchStartTime: 0,
-        isTouchStart: false,
-        isScrolling: false,
-        isTouching: false
-      };
-    };
-
-    _proto.initWheelStatus = function initWheelStatus() {
-      this.wheelStatus = {
-        wheeling: false,
-        wheelDelta: 0,
-        wheelingTimer: false
-      };
-    };
-
-    _proto.update = function update() {
-      var _this4 = this;
-
-      var $el = this.$el,
-          $wrapper = this.$wrapper,
-          index = this.index,
-          config = this.config;
-      var wrapperStyle = $wrapper.style;
-      var isHorizontal = config.direction === 'horizontal';
-      $el.style.overflow = 'hidden';
-      this.isHorizontal = isHorizontal;
-      this.$list = [].slice.call($el.getElementsByClassName(config.slideClass));
-      this.minIndex = 0;
-      this.maxIndex = this.$list.length - (config.centeredSlides ? 1 : Math.ceil(config.slidesPerView));
-      this.viewSize = isHorizontal ? $el.offsetWidth : $el.offsetHeight;
-      this.slideSize = (this.viewSize - Math.ceil(config.slidesPerView - 1) * config.spaceBetween) / config.slidesPerView;
-      this.boxSize = this.slideSize + config.spaceBetween;
-      this.baseTransform = config.centeredSlides ? (this.slideSize - this.viewSize) / 2 : 0;
-      this.minTransform = -this.baseTransform;
-      this.maxTransform = this.boxSize * this.$list.length - config.spaceBetween - this.viewSize - this.baseTransform;
-      this.$list.forEach(function (item) {
-        item.style[isHorizontal ? 'width' : 'height'] = _this4.slideSize + "px";
-        item.style[isHorizontal ? 'margin-right' : 'margin-bottom'] = config.spaceBetween + "px";
-      });
-      wrapperStyle.willChange = 'transform';
-      wrapperStyle.transition = "transform ease " + config.speed + "ms";
-      wrapperStyle[isHorizontal ? 'width' : 'height'] = this.boxSize * this.$list.length + "px";
-      wrapperStyle.display = 'flex';
-      wrapperStyle.flexDirection = isHorizontal ? 'row' : 'column';
-      this.transform(-index * this.boxSize);
-    };
-
-    _proto.destroy = function destroy() {
-      var $el = this.$el,
-          $wrapper = this.$wrapper,
-          config = this.config;
-      var slideActiveClass = config.slideActiveClass;
-      this.emit('before-destroy', this);
-      this.$list.forEach(function (item) {
-        removeAttr(item, 'style');
-        removeClass(item, [slideActiveClass]);
-      });
-      removeAttr($wrapper, 'style');
-      removeAttr($el, 'style');
-      this.detachListener();
-      this.emit('after-destroy', this);
-      this.$el = null;
-      this.$list = [];
-      this.$wrapper = null;
-      this.eventHub = {};
-      this.config = Swiper.formatConfig();
-    };
+    function Swiper(el, userOptions) {
+        const options = optionFormatter(userOptions);
+        const eventHub = EventHub();
+        const env = Env();
+        let element;
+        let measure;
+        let limitation;
+        let renderer;
+        let engine;
+        let sensor;
+        function load() {
+            element = Element(el, options);
+            measure = Measure(options, element);
+            limitation = Limitation(element, measure, options);
+            renderer = Renderer(element, options);
+            engine = Engine(limitation, options, measure, renderer);
+            sensor = Sensor(element, env, engine, options);
+            renderer.init();
+            sensor.attach();
+        }
+        function destory() {
+            sensor.detach();
+            eventHub.clear();
+        }
+        function update() {
+            sensor.detach();
+            load();
+        }
+        function on(evtName, cb) {
+            eventHub.on(evtName, cb);
+        }
+        function off(evtName, cb) {
+            eventHub.off(evtName, cb);
+        }
+        load();
+        return {
+            on,
+            off,
+            update,
+            destory
+        };
+    }
+    //# sourceMappingURL=index.js.map
 
     return Swiper;
-  }();
 
-  return Swiper;
-
-}));
+})));
 //# sourceMappingURL=index.js.map

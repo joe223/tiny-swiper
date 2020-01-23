@@ -20,10 +20,14 @@
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
+    "@rollup/plugin-typescript": "^2.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0",
     "coveralls": "^3.0.7",
     "cross-env": "^6.0.3",
     "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-airbnb-typescript": "^6.3.1",
     "eslint-plugin-import": "^2.19.1",
     "expect": "^24.9.0",
     "finalhandler": "^1.1.2",
@@ -39,7 +43,8 @@
     "rollup-plugin-uglify": "^6.0.3",
     "serve-static": "^1.14.1",
     "ts-mocha": "^6.0.0",
-    "typescript": "^3.7.4"
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
   },
   "browserslist": [
     "Android >= 7",

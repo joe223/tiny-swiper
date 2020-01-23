@@ -1,5 +1,5 @@
 {
-  "name": "tiny-swiper",
+  "name": "tiny-swiper3",
   "version": "1.3.0",
   "description": "2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.",
   "main": "lib/index.min.js",
