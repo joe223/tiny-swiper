@@ -1,5 +1,5 @@
-import { Options } from '../options'
-import { Element } from '../element'
+import { Options } from './options'
+import { Element } from './element'
 
 export type Measure = {
     boxSize: number

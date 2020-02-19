@@ -13,7 +13,7 @@ const entries = [
         options: {
             name: 'Swiper'
         }
-    },
+    }
     // {
     //     input: 'index.full.ts',
     //     compress: isBuildProd,
@@ -53,10 +53,16 @@ const entries = [
     //     }
     // }
 ]
+const extensions = [
+    '.js', '.jsx', '.ts', '.tsx'
+]
 const plugins = [
     eslint(),
     typescript(),
-    babel()
+    babel({
+        extensions,
+        include: ['src/**/*']
+    })
 ]
 
 function genConfig (entries) {

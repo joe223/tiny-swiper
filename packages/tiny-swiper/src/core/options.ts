@@ -1,3 +1,5 @@
+import { SwiperPlugin } from './index'
+
 export type Direction = 'horizontal' | 'vertical'
 
 export type Options = {
@@ -29,7 +31,9 @@ export type Options = {
     touchMoveStopPropagation: boolean
     excludeElements: Array<HTMLElement | string>
     isHorizontal: boolean
+    plugins?: Array<SwiperPlugin>
 }
+
 export type UserOptions = Partial<Options>
 
 const defaultOptions: UserOptions = {

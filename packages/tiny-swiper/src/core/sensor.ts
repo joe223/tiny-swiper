@@ -1,21 +1,25 @@
-import { Engine } from '../engine/index'
-import { Env } from '../env/index'
-import { attachListener, detachListener, getTranslate } from '../render/dom'
-import { Element } from '../element'
-import { Options } from '../options'
-import { Position } from '../engine/trace'
+import { State } from './state/index'
+import { Env } from './env'
+import { attachListener, detachListener, getTranslate } from './render/dom'
+import { Element } from './element'
+import { Options } from './options'
+import { Position } from './state/trace'
+import { EventHub } from './eventHub'
+import { Operations } from './state/operations'
 
 export type Sensor = {
     attach: () => void
     detach: () => void
+    update: (ele: Element) => void
 }
 
 // Only support single finger touch event.
 export function Sensor (
     element: Element,
     env: Env,
-    engine: Engine,
-    options: Options
+    state: State,
+    options: Options,
+    operations: Operations
 ): Sensor {
     const formEls = [
         'INPUT',
@@ -26,19 +30,19 @@ export function Sensor (
         'VIDEO'
     ]
     const {
-        $el,
-        $wrapper
-    } = element
-    const {
         preheat,
         move,
         stop
-    } = engine
+    } = operations
     const {
         touchable
     } = env
 
-    function getPostion (e: Event): Position {
+    function update (ele: Element): void {
+        element = ele
+    }
+
+    function getPosition (e: Event): Position {
         const touch = touchable ? (<TouchEvent>e).changedTouches[0] : <MouseEvent>e
 
         return {
@@ -48,13 +52,16 @@ export function Sensor (
     }
 
     function onTouchStart (e: Event): void {
-        const shouldPreventDefault = (options.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1)
+        const {
+            $wrapper
+        } = element
+        const shouldPreventDefault = (options.touchStartPreventDefault && formEls.indexOf((<HTMLElement>e.target).nodeName) === -1)
             || options.touchStartForcePreventDefault
 
         if (shouldPreventDefault && !options.passiveListeners) e.preventDefault()
 
         preheat(
-            getPostion(e),
+            getPosition(e),
             getTranslate($wrapper, options.isHorizontal)
         )
     }
@@ -62,7 +69,8 @@ export function Sensor (
     function onTouchMove (e: Event): void {
         if (options.touchMoveStopPropagation) e.stopPropagation()
 
-        move(getPostion(e), status => (status.isTouching && e.preventDefault()))
+        move(getPosition(e))
+        state.isTouching && e.preventDefault()
     }
 
     function onTouchEnd (e: Event): void {
@@ -71,6 +79,10 @@ export function Sensor (
     }
 
     function attach (): void {
+        const {
+            $el
+        } = element
+
         if (touchable) {
             attachListener($el, 'touchstart', onTouchStart, {
                 passive: options.passiveListeners,
@@ -87,6 +99,10 @@ export function Sensor (
     }
 
     function detach (): void {
+        const {
+            $el
+        } = element
+
         detachListener($el, 'touchstart', onTouchStart)
         detachListener($el, 'touchmove', onTouchMove)
         detachListener($el, 'touchend', onTouchEnd)
@@ -98,6 +114,7 @@ export function Sensor (
 
     return {
         attach,
-        detach
+        detach,
+        update
     }
 }
