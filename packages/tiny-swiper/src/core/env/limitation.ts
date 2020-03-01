@@ -1,14 +1,28 @@
 import { Options } from '../options'
-import { Element } from '../element'
-import { Measure } from '../measure'
-import { getExpand } from '../shared'
+import { Element } from './element'
+import { Measure } from './measure'
 
 export type Limitation = {
     min: number
     max: number
     base: number
+    expand: number
+    buffer: number
     minIndex: number
     maxIndex: number
+}
+
+export function getExpand (
+    options: Options,
+    element: Element
+): number {
+    if (options.loop) {
+        // return options.slidesPerView >= element.$list.length
+        //     ? options.slidesPerView - element.$list.length + 1
+        //     : 1
+        return Math.ceil(options.slidesPerView)
+    }
+    return 0
 }
 
 export function Limitation (
@@ -25,7 +39,8 @@ export function Limitation (
         boxSize
     } = measure
     const expand = getExpand(options, element)
-    const base = -expand * boxSize + (options.centeredSlides
+    const buffer = expand * boxSize
+    const base = -buffer + (options.centeredSlides
         ? (slideSize - viewSize) / 2
         : 0)
     // [min, max] usually equal to [-x, 0]
@@ -40,6 +55,8 @@ export function Limitation (
         max,
         min,
         base,
+        expand,
+        buffer,
         minIndex,
         maxIndex
     }

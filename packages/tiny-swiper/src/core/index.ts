@@ -1,11 +1,11 @@
 import { UserOptions, optionFormatter, Options } from './options'
 import { EventHub } from './eventHub'
 import { State } from './state/index'
-import { Element } from './element'
+import { Element } from './env/element'
 import { Sensor } from './sensor'
-import { Env } from './env'
-import { Limitation } from './state/limitation'
-import { Measure } from './measure'
+import { Env } from './env/index'
+import { Limitation } from './env/limitation'
+import { Measure } from './env/measure'
 import { Renderer } from './render/index'
 import { Operations } from './state/operations'
 
@@ -18,7 +18,9 @@ export type SwiperInstance = {
     options: Options
 }
 export type SwiperPlugin = (instance: SwiperInstance, options: Options) => void
-export type Swiper = {
+// export type Swiper = (el: HTMLElement | string, userOptions: UserOptions) => SwiperInstance
+
+export interface Swiper {
     (el: HTMLElement | string, userOptions: UserOptions): SwiperInstance
     use: (plugins: Array<SwiperPlugin>) => void
     plugins: Array<SwiperPlugin>
@@ -27,36 +29,21 @@ export type Swiper = {
 const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions: UserOptions): SwiperInstance {
     const options = optionFormatter(userOptions)
     const eventHub = EventHub()
-    const env = Env()
-    const element = Element(
-        el,
-        options
-    )
-    const measure = Measure(
-        options,
-        element
-    )
-    const limitation = Limitation(
-        element,
-        measure,
-        options
-    )
-    const renderer = Renderer(
-        element,
-        options,
-        eventHub
-    )
+    const env = Env(el, options)
     const state = State()
+
+    const renderer = Renderer(
+        env,
+        options
+    )
     const operations = Operations(
+        env,
         state,
         options,
-        measure,
-        limitation,
         renderer,
         eventHub
     )
     const sensor = Sensor(
-        element,
         env,
         state,
         options,
@@ -69,29 +56,18 @@ const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions:
         eventHub.clear()
     }
 
-    function update (): void {
-        const ele = Element(
-            el,
-            options
-        )
-        const meas = Measure(
-            options,
-            element
-        )
-        const limit = Limitation(
-            element,
-            measure,
-            options
-        )
+    function updateSize (): void {
+        env.update()
+        operations.update()
+        renderer.updateSize()
+    }
 
-        sensor.detach()
-        operations.update(
-            limit,
-            meas
-        )
-        renderer.update(ele)
+    function update (): void {
+        renderer.destroy()
+        env.update()
         renderer.init()
-        sensor.attach
+
+        updateSize()
     }
 
     function on (evtName: string, cb: Function): void {
@@ -107,13 +83,15 @@ const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions:
     }
 
     const instance = {
+        env,
         state,
+        options,
         on,
         off,
         update,
         destroy,
         slideTo,
-        options
+        updateSize
     }
 
     function load (): void {

@@ -183,17 +183,6 @@
     return state;
   }
 
-  function Element(el, options) {
-    var $el = typeof el === 'string' ? document.body.querySelector(el) : el;
-    var $wrapper = $el.querySelector("." + options.wrapperClass);
-    var $list = [].slice.call($el.getElementsByClassName(options.slideClass));
-    return {
-      $el: $el,
-      $wrapper: $wrapper,
-      $list: $list
-    };
-  }
-
   function addClass(el, list) {
     if (list === void 0) {
       list = [];
@@ -220,7 +209,7 @@
   function detachListener(el, evtName, handler) {
     el.removeEventListener(evtName, handler);
   }
-  function updateStyle(el, style, forceRender) {
+  function setStyle(el, style, forceRender) {
     Object.keys(style).forEach(function (prop) {
       // TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
       el.style[prop] = style[prop];
@@ -241,16 +230,12 @@
     return arr[isHorizontal ? 0 : 1] || 0;
   }
 
-  function Sensor(element, env, state, options, operations) {
+  function Sensor(env, state, options, operations) {
     var formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO'];
     var preheat = operations.preheat,
         move = operations.move,
         stop = operations.stop;
     var touchable = env.touchable;
-
-    function update(ele) {
-      element = ele;
-    }
 
     function getPosition(e) {
       var touch = touchable ? e.changedTouches[0] : e;
@@ -261,8 +246,7 @@
     }
 
     function onTouchStart(e) {
-      var _element = element,
-          $wrapper = _element.$wrapper;
+      var $wrapper = env.element.$wrapper;
       var shouldPreventDefault = options.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1 || options.touchStartForcePreventDefault;
       if (shouldPreventDefault && !options.passiveListeners) e.preventDefault();
       preheat(getPosition(e), getTranslate($wrapper, options.isHorizontal));
@@ -280,8 +264,7 @@
     }
 
     function attach() {
-      var _element2 = element,
-          $el = _element2.$el;
+      var $el = env.element.$el;
 
       if (touchable) {
         attachListener($el, 'touchstart', onTouchStart, {
@@ -299,8 +282,7 @@
     }
 
     function detach() {
-      var _element3 = element,
-          $el = _element3.$el;
+      var $el = env.element.$el;
       detachListener($el, 'touchstart', onTouchStart);
       detachListener($el, 'touchmove', onTouchMove);
       detachListener($el, 'touchend', onTouchEnd);
@@ -312,41 +294,19 @@
 
     return {
       attach: attach,
-      detach: detach,
-      update: update
+      detach: detach
     };
   }
 
-  function Env() {
+  function Element(el, options) {
+    var $el = typeof el === 'string' ? document.body.querySelector(el) : el;
+    var $wrapper = $el.querySelector("." + options.wrapperClass);
+    var $list = [].slice.call($el.getElementsByClassName(options.slideClass));
     return {
-      touchable: Boolean('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0 || window.DocumentTouch && document instanceof DocumentTouch)
+      $el: $el,
+      $wrapper: $wrapper,
+      $list: $list
     };
-  }
-
-  function getExpand(options, element) {
-    return options.slidesPerView >= element.$list.length ? options.slidesPerView - element.$list.length + 1 : 1;
-  }
-
-  function Limitation(element, measure, options) {
-    var $list = element.$list;
-    var viewSize = measure.viewSize,
-        slideSize = measure.slideSize,
-        boxSize = measure.boxSize;
-    var expand = getExpand(options, element);
-    var base = -expand * boxSize + (options.centeredSlides ? (slideSize - viewSize) / 2 : 0); // [min, max] usually equal to [-x, 0]
-
-    var max = base;
-    var min = options.spaceBetween + viewSize + base - boxSize * $list.length;
-    var minIndex = 0;
-    var maxIndex = $list.length - (options.centeredSlides || options.loop ? 1 : Math.ceil(options.slidesPerView));
-    var limitation = {
-      max: max,
-      min: min,
-      base: base,
-      minIndex: minIndex,
-      maxIndex: maxIndex
-    };
-    return limitation;
   }
 
   function Measure(options, element) {
@@ -361,22 +321,81 @@
     };
   }
 
-  function Renderer(element, options, eventHub) {
-    function render(instance, duration, cb) {
-      var _element = element,
-          $list = _element.$list,
-          $wrapper = _element.$wrapper;
-      var index = instance.index;
+  function getExpand(options, element) {
+    if (options.loop) {
+      // return options.slidesPerView >= element.$list.length
+      //     ? options.slidesPerView - element.$list.length + 1
+      //     : 1
+      return Math.ceil(options.slidesPerView);
+    }
+
+    return 0;
+  }
+  function Limitation(element, measure, options) {
+    var $list = element.$list;
+    var viewSize = measure.viewSize,
+        slideSize = measure.slideSize,
+        boxSize = measure.boxSize;
+    var expand = getExpand(options);
+    var buffer = expand * boxSize;
+    var base = -buffer + (options.centeredSlides ? (slideSize - viewSize) / 2 : 0); // [min, max] usually equal to [-x, 0]
+
+    var max = base;
+    var min = options.spaceBetween + viewSize + base - boxSize * $list.length;
+    var minIndex = 0;
+    var maxIndex = $list.length - (options.centeredSlides || options.loop ? 1 : Math.ceil(options.slidesPerView));
+    var limitation = {
+      max: max,
+      min: min,
+      base: base,
+      expand: expand,
+      buffer: buffer,
+      minIndex: minIndex,
+      maxIndex: maxIndex
+    };
+    return limitation;
+  }
+
+  function Env(el, options) {
+    var env = {};
+
+    function update() {
+      var element = Element(el, options);
+      var measure = Measure(options, element);
+      var limitation = Limitation(element, measure, options);
+      var touchable = Boolean('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0 || window.DocumentTouch && document instanceof DocumentTouch);
+      Object.assign(env, {
+        touchable: touchable,
+        element: element,
+        measure: measure,
+        limitation: limitation
+      });
+    }
+
+    env.update = update;
+    update();
+    return env;
+  }
+
+  function Renderer(env, options) {
+    var $leftExpandList = [];
+    var $rightExpandList = [];
+
+    function render(state, duration, cb) {
+      var _env$element = env.element,
+          $list = _env$element.$list,
+          $wrapper = _env$element.$wrapper;
+      var index = state.index;
       var wrapperStyle = {
-        transition: instance.isStart ? 'none' : "transform ease " + (duration === undefined ? options.speed : duration) + "ms",
-        transform: options.isHorizontal ? "translate3d(" + instance.transforms + "px, 0, 0)" : "translate3d(0, " + instance.transforms + "px, 0)"
+        transition: state.isStart ? 'none' : "transform ease " + (duration === undefined ? options.speed : duration) + "ms",
+        transform: options.isHorizontal ? "translate3d(" + state.transforms + "px, 0, 0)" : "translate3d(0, " + state.transforms + "px, 0)"
       };
       var $current = $list[index];
       var $prev = $list[index - 1];
       var $next = $list[index + 1];
-      updateStyle($wrapper, wrapperStyle);
+      setStyle($wrapper, wrapperStyle);
 
-      if (!instance.isStart) {
+      if (!state.isStart) {
         $list.forEach(function ($slide, i) {
           removeClass($slide, [options.slidePrevClass, options.slideNextClass, options.slideActiveClass]);
 
@@ -395,42 +414,66 @@
       }
     }
 
-    function init() {
+    function appendExpandList() {
+      if (!options.loop) return;
+      var element = env.element,
+          limitation = env.limitation;
+      var $list = element.$list,
+          $wrapper = element.$wrapper;
+      var expand = limitation.expand;
+      $leftExpandList = $list.slice(-expand).map(function ($slide) {
+        return $slide.cloneNode(true);
+      });
+      $rightExpandList = $list.slice(0, expand).map(function ($slide) {
+        return $slide.cloneNode(true);
+      });
+      console.log($leftExpandList, $rightExpandList);
+      $leftExpandList.forEach(function ($shadowSlide, index) {
+        $wrapper.appendChild($rightExpandList[index]);
+        $wrapper.insertBefore($leftExpandList[index], $list[0]);
+      });
+    }
+
+    function destroyExpandList() {
+      var expandList = $leftExpandList.splice(0, $leftExpandList.length).concat($rightExpandList.splice(0, $rightExpandList.length));
+      expandList.forEach(function (item) {
+        return env.element.$wrapper.removeChild(item);
+      });
+    }
+
+    function updateDom() {
+      destroyExpandList();
+      appendExpandList();
+    }
+
+    function updateSize() {
       var _itemStyle;
 
-      var _element2 = element,
-          $list = _element2.$list,
-          $wrapper = _element2.$wrapper;
+      var element = env.element,
+          measure = env.measure;
+      var $list = element.$list,
+          $wrapper = element.$wrapper;
       var wrapperStyle = {
         display: 'flex',
         willChange: 'transform',
         flexDirection: options.isHorizontal ? 'row' : 'column'
       };
-      var itemStyle = (_itemStyle = {}, _itemStyle[options.isHorizontal ? 'margin-right' : 'margin-bottom'] = options.spaceBetween + "px", _itemStyle);
-      updateStyle($wrapper, wrapperStyle);
-      $list.forEach(function ($slide) {
-        return updateStyle($slide, itemStyle);
+      var itemStyle = (_itemStyle = {}, _itemStyle[options.isHorizontal ? 'width' : 'height'] = measure.slideSize + "px", _itemStyle[options.isHorizontal ? 'margin-right' : 'margin-bottom'] = options.spaceBetween + "px", _itemStyle);
+      setStyle($wrapper, wrapperStyle);
+      $list.slice().concat($leftExpandList, $rightExpandList).forEach(function ($slide) {
+        return setStyle($slide, itemStyle);
       });
+    }
 
-      if (options.loop) {
-        var expand = getExpand(options, element);
-        var leftExpandList = $list.slice(-expand).map(function ($slide) {
-          return $slide.cloneNode(true);
-        });
-        var rightExpandList = $list.slice(0, expand).map(function ($slide) {
-          return $slide.cloneNode(true);
-        });
-        leftExpandList.forEach(function ($shadowSlide, index) {
-          $wrapper.appendChild(rightExpandList[index]);
-          $wrapper.insertBefore(leftExpandList[index], $list[0]);
-        });
-      }
+    function init() {
+      updateDom();
+      updateSize();
     }
 
     function destroy() {
-      var _element3 = element,
-          $list = _element3.$list,
-          $wrapper = _element3.$wrapper;
+      var _env$element2 = env.element,
+          $list = _env$element2.$list,
+          $wrapper = _env$element2.$wrapper;
       var arr = ['display', 'will-change', 'flex-direction'];
       var itemProp = options.isHorizontal ? 'margin-right' : 'margin-bottom';
       arr.forEach(function (propertyName) {
@@ -439,26 +482,36 @@
       $list.forEach(function ($slide) {
         return $slide.style.removeProperty(itemProp);
       });
-    }
-
-    function update(ele) {
-      element = ele;
-      init();
+      destroyExpandList();
     }
 
     return {
       init: init,
       render: render,
-      update: update,
-      destroy: destroy
+      destroy: destroy,
+      updateSize: updateSize
     };
   }
 
-  function Operations(state, options, measure, limitation, renderer, eventHub) {
-    function update(limit, mes) {
-      limitation = limit;
-      measure = mes;
-    }
+  function isExceedingLimits(velocity, transform, options, limitation) {
+    return velocity > 0 && transform > limitation.max || velocity < 0 && transform < limitation.min;
+  }
+  /**
+   * Get transform exceed value
+   * Return zero if is not reached border.
+   *
+   * @param transform
+   * @param options
+   * @param limitation
+   */
+
+  function getExcess(transform, options, limitation) {
+    var exceedLeft = transform - limitation.max;
+    var exceedRight = transform - limitation.min;
+    return exceedLeft > 0 ? exceedLeft : exceedRight < 0 ? exceedRight : 0;
+  }
+  function Operations(env, state, options, renderer, eventHub) {
+    function update() {}
 
     function render(duration) {
       renderer.render(state, duration);
@@ -469,21 +522,13 @@
     }
 
     function slideTo(targetIndex, duration) {
-      var computedIndex;
-
-      if (options.loop) {
-        computedIndex = targetIndex < limitation.minIndex ? limitation.maxIndex - (limitation.minIndex - targetIndex) + 1 : targetIndex > limitation.maxIndex ? limitation.minIndex + (targetIndex - limitation.maxIndex) - 1 : targetIndex;
-        var offset = -targetIndex * measure.boxSize + limitation.base;
-        console.log(computedIndex, targetIndex, offset);
-        transform(offset); // TODO
-      } else {
-        computedIndex = targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex;
-
-        var _offset = -computedIndex * measure.boxSize + limitation.base;
-
-        transform(_offset > limitation.max ? limitation.max : _offset < limitation.min ? limitation.min : _offset);
-      }
-
+      var measure = env.measure,
+          limitation = env.limitation;
+      var len = limitation.maxIndex - limitation.minIndex + 1;
+      var computedIndex = options.loop ? (targetIndex % len + len) % len : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex;
+      var offset = -computedIndex * measure.boxSize + limitation.base;
+      console.log(targetIndex, computedIndex, len);
+      transform(offset > limitation.max ? limitation.max : offset < limitation.min ? limitation.min : offset);
       state.index = computedIndex;
       eventHub.emit('before-slide', targetIndex, state);
       render(duration);
@@ -491,19 +536,35 @@
 
     function scrollPixel(px) {
       var transforms = state.transforms;
+      var measure = env.measure,
+          limitation = env.limitation;
       var ratio = Number(px.toExponential().split('e')[1]);
       var expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1;
-      var oldTransform = transforms; // For optimizing, do not calculate `px` if options.loop === true
+      var newTransform = transforms; // For optimizing, do not calculate `px` if options.loop === true
 
       if (options.resistance && !options.loop) {
-        if (px > 0 && oldTransform >= limitation.max) {
+        if (px > 0 && transforms >= limitation.max) {
           px -= Math.pow(px * expand, options.resistanceRatio) / expand;
-        } else if (px < 0 && oldTransform <= limitation.min) {
+        } else if (px < 0 && transforms <= limitation.min) {
           px += Math.pow(-px * expand, options.resistanceRatio) / expand;
         }
       }
 
-      state.transforms += px;
+      newTransform += px;
+
+      if (options.loop) {
+        var vector = state.tracker.vector();
+        var velocity = options.isHorizontal ? vector.velocityX : vector.velocityY;
+        var excess = getExcess(transforms, options, limitation);
+
+        if (excess && isExceedingLimits(velocity, transforms, options, limitation)) {
+          newTransform = excess > 0 ? limitation.min - measure.boxSize * options.slidesPerView + excess : limitation.max + measure.boxSize * options.slidesPerView + excess;
+        }
+      } // console.log(state.tracker.vector().velocityX)
+      // TODO: reached limitation when loop
+
+
+      state.transforms = newTransform;
     }
 
     function initStatus(startTransform) {
@@ -560,12 +621,14 @@
     function stop() {
       var index = state.index,
           tracker = state.tracker;
-      var duration = tracker.getDuration();
-      var trans = state.transforms - state.startTransform;
+      var measure = env.measure;
+      var duration = tracker.getDuration(); // const trans = state.transforms - state.startTransform
+
+      var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
       var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
       var longSwipeIndex = Math.ceil(Math.abs(trans) / measure.boxSize - options.longSwipesRatio);
-      state.isStart = false;
-      console.log(index, state.transforms, state.startTransform, longSwipeIndex); // long siwpe
+      state.isStart = false; // console.log(index, state.transforms, state.startTransform, longSwipeIndex)
+      // long siwpe
 
       if (duration > options.longSwipesMs) {
         slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
@@ -595,14 +658,11 @@
   var Swiper = function Swiper(el, userOptions) {
     var options = optionFormatter(userOptions);
     var eventHub = EventHub();
-    var env = Env();
-    var element = Element(el, options);
-    var measure = Measure(options, element);
-    var limitation = Limitation(element, measure, options);
-    var renderer = Renderer(element, options);
+    var env = Env(el, options);
     var state = State();
-    var operations = Operations(state, options, measure, limitation, renderer, eventHub);
-    var sensor = Sensor(element, env, state, options, operations);
+    var renderer = Renderer(env, options);
+    var operations = Operations(env, state, options, renderer, eventHub);
+    var sensor = Sensor(env, state, options, operations);
 
     function destroy() {
       sensor.detach();
@@ -610,14 +670,17 @@
       eventHub.clear();
     }
 
+    function updateSize() {
+      env.update();
+      operations.update();
+      renderer.updateSize();
+    }
+
     function update() {
-      var ele = Element(el, options);
-      var meas = Measure(options, element);
-      var limit = Limitation(element, measure, options);
-      sensor.detach();
-      operations.update(limit, meas);
-      renderer.update(ele);
+      renderer.destroy();
+      env.update();
       renderer.init();
+      updateSize();
     }
 
     function on(evtName, cb) {
@@ -633,13 +696,15 @@
     }
 
     var instance = {
+      env: env,
       state: state,
+      options: options,
       on: on,
       off: off,
       update: update,
       destroy: destroy,
       slideTo: slideTo,
-      options: options
+      updateSize: updateSize
     };
 
     function load() {

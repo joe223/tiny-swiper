@@ -1,52 +1,53 @@
 import { Options } from '../options'
-import { removeClass, addClass, updateStyle } from './dom'
-import { Element } from '../element'
-import { EventHub } from '../eventHub'
+import { removeClass, addClass, setStyle } from './dom'
 import { State } from '../state/index'
-import { getExpand } from '../shared'
+import { getExpand } from '../limita'
+import { Env } from '../env/index'
 
 export type Renderer = {
     init (): void
     render (
-        instance: State,
+        state: State,
         duration?: number,
         cb?: Function
     ): void
-    update (ele: Element): void
     destroy (): void
+    updateSize (): void
 }
 
 export function Renderer (
-    element: Element,
-    options: Options,
-    eventHub: EventHub
+    env: Env,
+    options: Options
 ): Renderer {
+    let $leftExpandList: Array<HTMLElement> = []
+    let $rightExpandList: Array<HTMLElement> = []
+
     function render (
-        instance: State,
+        state: State,
         duration?: number,
         cb?: Function
     ) {
         const {
             $list,
             $wrapper
-        } = element
+        } = env.element
         const {
             index
-        } = instance
+        } = state
         const wrapperStyle = {
-            transition: instance.isStart
+            transition: state.isStart
                 ? 'none'
                 : `transform ease ${duration === undefined ? options.speed : duration}ms`,
             transform: options.isHorizontal
-                ? `translate3d(${instance.transforms}px, 0, 0)`
-                : `translate3d(0, ${instance.transforms}px, 0)`
+                ? `translate3d(${state.transforms}px, 0, 0)`
+                : `translate3d(0, ${state.transforms}px, 0)`
         }
         const $current = $list[index]
         const $prev = $list[index - 1]
         const $next = $list[index + 1]
 
-        updateStyle($wrapper, wrapperStyle)
-        if (!instance.isStart) {
+        setStyle($wrapper, wrapperStyle)
+        if (!state.isStart) {
             $list.forEach(($slide, i) => {
                 removeClass($slide, [
                     options.slidePrevClass,
@@ -66,7 +67,50 @@ export function Renderer (
         }
     }
 
-    function init (): void {
+    function appendExpandList (): void {
+        if (!options.loop) return
+
+        const {
+            element,
+            limitation
+        } = env
+        const {
+            $list,
+            $wrapper
+        } = element
+        const {
+            expand
+        } = limitation
+
+        $leftExpandList = $list.slice(-expand)
+            .map($slide => <HTMLElement>$slide.cloneNode(true))
+        $rightExpandList = $list.slice(0, expand)
+            .map($slide => <HTMLElement>$slide.cloneNode(true))
+
+        console.log($leftExpandList, $rightExpandList)
+        $leftExpandList.forEach(($shadowSlide, index) => {
+            $wrapper.appendChild($rightExpandList[index])
+            $wrapper.insertBefore($leftExpandList[index], $list[0])
+        })
+    }
+
+    function destroyExpandList (): void {
+        const expandList = $leftExpandList.splice(0, $leftExpandList.length)
+            .concat($rightExpandList.splice(0, $rightExpandList.length))
+
+        expandList.forEach(item => env.element.$wrapper.removeChild(item))
+    }
+
+    function updateDom (): void {
+        destroyExpandList()
+        appendExpandList()
+    }
+
+    function updateSize (): void {
+        const {
+            element,
+            measure
+        } = env
         const {
             $list,
             $wrapper
@@ -77,31 +121,26 @@ export function Renderer (
             flexDirection: options.isHorizontal ? 'row' : 'column'
         }
         const itemStyle = {
+            [options.isHorizontal ? 'width' : 'height']: `${measure.slideSize}px`,
             [options.isHorizontal ? 'margin-right' : 'margin-bottom']: `${options.spaceBetween}px`
         }
 
-        updateStyle($wrapper, wrapperStyle)
-        $list.forEach($slide => updateStyle($slide, itemStyle))
+        setStyle($wrapper, wrapperStyle)
 
-        if (options.loop) {
-            const expand = getExpand(options, element)
-            const leftExpandList = $list.slice(-expand)
-                .map($slide => $slide.cloneNode(true))
-            const rightExpandList = $list.slice(0, expand)
-                .map($slide => $slide.cloneNode(true))
-
-            leftExpandList.forEach(($shadowSlide, index) => {
-                $wrapper.appendChild(rightExpandList[index])
-                $wrapper.insertBefore(leftExpandList[index], $list[0])
-            })
-        }
+        $list.slice().concat($leftExpandList, $rightExpandList)
+            .forEach($slide => setStyle($slide, itemStyle))
     }
 
-    function destroy () {
+    function init (): void {
+        updateDom()
+        updateSize()
+    }
+
+    function destroy (): void {
         const {
             $list,
             $wrapper
-        } = element
+        } = env.element
         const arr = ['display', 'will-change', 'flex-direction']
         const itemProp = options.isHorizontal ? 'margin-right' : 'margin-bottom'
 
@@ -109,17 +148,13 @@ export function Renderer (
             $wrapper.style.removeProperty(propertyName)
         })
         $list.forEach($slide => $slide.style.removeProperty(itemProp))
-    }
-
-    function update (ele: Element): void {
-        element = ele
-        init()
+        destroyExpandList()
     }
 
     return {
         init,
         render,
-        update,
-        destroy
+        destroy,
+        updateSize
     }
 }

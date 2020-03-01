@@ -48,7 +48,7 @@ export function setAttr (
     el.setAttribute(attr, value)
 }
 
-export function updateStyle (
+export function setStyle (
     el: HTMLElement,
     style: {[key: string]: string},
     forceRender?: boolean

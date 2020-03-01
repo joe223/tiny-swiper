@@ -1,16 +1,13 @@
 import { Position } from './trace'
 import { State } from './index'
-import { Limitation } from './limitation'
-import { Measure } from '../measure'
+import { Limitation } from '../env/limitation'
 import { EventHub } from '../eventHub'
 import { Renderer } from '../render/index'
 import { Options } from '../options'
+import { Env } from '../env/index'
 
 export interface Operations {
-    update (
-        limit: Limitation,
-        mes: Measure
-    ): void
+    update (): void
     render (duration?: number): void
     transform (trans: number): void
     slideTo (
@@ -28,20 +25,49 @@ export interface Operations {
     stop (): void
 }
 
+export function isExceedingLimits (
+    velocity: number,
+    transform: number,
+    options: Options,
+    limitation: Limitation
+): boolean {
+    return velocity > 0 && transform > (limitation.max)
+        || velocity < 0 && transform < (limitation.min)
+}
+
+
+/**
+ * Get transform exceed value
+ * Return zero if is not reached border.
+ *
+ * @param transform
+ * @param options
+ * @param limitation
+ */
+export function getExcess (
+    transform: number,
+    options: Options,
+    limitation: Limitation
+): number {
+    const exceedLeft = transform - limitation.max
+    const exceedRight = transform - limitation.min
+
+    return exceedLeft > 0
+        ? exceedLeft
+        : exceedRight < 0
+            ? exceedRight
+            : 0
+}
+
 export function Operations (
+    env: Env,
     state: State,
     options: Options,
-    measure: Measure,
-    limitation: Limitation,
     renderer: Renderer,
     eventHub: EventHub
 ): Operations {
-    function update (
-        limit: Limitation,
-        mes: Measure
-    ): void {
-        limitation = limit
-        measure = mes
+    function update (): void {
+
     }
 
     function render (duration?: number): void {
@@ -59,33 +85,26 @@ export function Operations (
         targetIndex: number,
         duration?: number
     ): void {
-        let computedIndex
-
-        if (options.loop) {
-            computedIndex = targetIndex < limitation.minIndex
-                ? limitation.maxIndex - (limitation.minIndex - targetIndex) + 1
-                : targetIndex > limitation.maxIndex
-                    ? limitation.minIndex + (targetIndex - limitation.maxIndex) - 1
+        const {
+            measure,
+            limitation
+        } = env
+        const len = limitation.maxIndex - limitation.minIndex + 1
+        const computedIndex = options.loop
+            ? (targetIndex % len + len) % len
+            : targetIndex > limitation.maxIndex
+                ? limitation.maxIndex
+                : targetIndex < limitation.minIndex
+                    ? limitation.minIndex
                     : targetIndex
-            const offset = -targetIndex * measure.boxSize + limitation.base
+        const offset = -computedIndex * measure.boxSize + limitation.base
+        console.log(targetIndex, computedIndex, len)
 
-            console.log(computedIndex, targetIndex, offset)
-            transform(offset)
-            // TODO
-        } else {
-            computedIndex = targetIndex < limitation.minIndex
-                ? limitation.minIndex
-                : targetIndex > limitation.maxIndex
-                    ? limitation.maxIndex
-                    : targetIndex
-            const offset = -computedIndex * measure.boxSize + limitation.base
-
-            transform(offset > limitation.max
-                ? limitation.max
-                : offset < limitation.min
-                    ? limitation.min
-                    : offset)
-        }
+        transform(offset > limitation.max
+            ? limitation.max
+            : offset < limitation.min
+                ? limitation.min
+                : offset)
         state.index = computedIndex
 
         eventHub.emit('before-slide',
@@ -99,21 +118,46 @@ export function Operations (
         const {
             transforms
         } = state
+        const {
+            measure,
+            limitation
+        } = env
         const ratio = Number(px.toExponential().split('e')[1])
         const expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1
-        const oldTransform = transforms
+
+        let newTransform = transforms
 
         // For optimizing, do not calculate `px` if options.loop === true
         if (options.resistance && !options.loop) {
-            if (px > 0 && oldTransform >= limitation.max) {
+            if (px > 0 && transforms >= limitation.max) {
                 px -= (px * expand) ** options.resistanceRatio / expand
-            } else if (px < 0 && oldTransform <= limitation.min) {
+            } else if (px < 0 && transforms <= limitation.min) {
                 px += ((-px * expand) ** options.resistanceRatio) / expand
             }
         }
 
+        newTransform += px
+
+        if (options.loop) {
+            const vector = state.tracker.vector()
+            const velocity = options.isHorizontal ? vector.velocityX : vector.velocityY
+            const excess = getExcess(transforms, options, limitation)
+
+            if (excess && isExceedingLimits(
+                velocity,
+                transforms,
+                options,
+                limitation
+            )) {
+                newTransform = excess > 0
+                    ? limitation.min - measure.boxSize * options.slidesPerView + excess
+                    : limitation.max + measure.boxSize * options.slidesPerView + excess
+            }
+        }
+
+        // console.log(state.tracker.vector().velocityX)
         // TODO: reached limitation when loop
-        state.transforms += px
+        state.transforms = newTransform
     }
 
     function initStatus (startTransform = 0): void {
@@ -179,14 +223,18 @@ export function Operations (
             index,
             tracker
         } = state
+        const {
+            measure
+        } = env
         const duration = tracker.getDuration()
-        const trans = state.transforms - state.startTransform
+        // const trans = state.transforms - state.startTransform
+        const trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y']
         const jump = Math.ceil(Math.abs(trans) / measure.boxSize)
         const longSwipeIndex = Math.ceil(Math.abs(trans) / measure.boxSize - options.longSwipesRatio)
 
         state.isStart = false
 
-        console.log(index, state.transforms, state.startTransform, longSwipeIndex)
+        // console.log(index, state.transforms, state.startTransform, longSwipeIndex)
         // long siwpe
         if (duration > options.longSwipesMs) {
             slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1))

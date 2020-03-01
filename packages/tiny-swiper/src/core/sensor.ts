@@ -1,21 +1,17 @@
 import { State } from './state/index'
-import { Env } from './env'
+import { Env } from './env/index'
 import { attachListener, detachListener, getTranslate } from './render/dom'
-import { Element } from './element'
 import { Options } from './options'
 import { Position } from './state/trace'
-import { EventHub } from './eventHub'
 import { Operations } from './state/operations'
 
 export type Sensor = {
     attach: () => void
     detach: () => void
-    update: (ele: Element) => void
 }
 
 // Only support single finger touch event.
 export function Sensor (
-    element: Element,
     env: Env,
     state: State,
     options: Options,
@@ -38,10 +34,6 @@ export function Sensor (
         touchable
     } = env
 
-    function update (ele: Element): void {
-        element = ele
-    }
-
     function getPosition (e: Event): Position {
         const touch = touchable ? (<TouchEvent>e).changedTouches[0] : <MouseEvent>e
 
@@ -54,7 +46,7 @@ export function Sensor (
     function onTouchStart (e: Event): void {
         const {
             $wrapper
-        } = element
+        } = env.element
         const shouldPreventDefault = (options.touchStartPreventDefault && formEls.indexOf((<HTMLElement>e.target).nodeName) === -1)
             || options.touchStartForcePreventDefault
 
@@ -81,7 +73,7 @@ export function Sensor (
     function attach (): void {
         const {
             $el
-        } = element
+        } = env.element
 
         if (touchable) {
             attachListener($el, 'touchstart', onTouchStart, {
@@ -101,7 +93,7 @@ export function Sensor (
     function detach (): void {
         const {
             $el
-        } = element
+        } = env.element
 
         detachListener($el, 'touchstart', onTouchStart)
         detachListener($el, 'touchmove', onTouchMove)
@@ -114,7 +106,6 @@ export function Sensor (
 
     return {
         attach,
-        detach,
-        update
+        detach
     }
 }
