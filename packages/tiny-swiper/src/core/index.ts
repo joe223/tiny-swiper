@@ -1,11 +1,8 @@
 import { UserOptions, optionFormatter, Options } from './options'
 import { EventHub } from './eventHub'
 import { State } from './state/index'
-import { Element } from './env/element'
 import { Sensor } from './sensor'
 import { Env } from './env/index'
-import { Limitation } from './env/limitation'
-import { Measure } from './env/measure'
 import { Renderer } from './render/index'
 import { Operations } from './state/operations'
 
@@ -18,9 +15,8 @@ export type SwiperInstance = {
     options: Options
 }
 export type SwiperPlugin = (instance: SwiperInstance, options: Options) => void
-// export type Swiper = (el: HTMLElement | string, userOptions: UserOptions) => SwiperInstance
 
-export interface Swiper {
+export type Swiper = {
     (el: HTMLElement | string, userOptions: UserOptions): SwiperInstance
     use: (plugins: Array<SwiperPlugin>) => void
     plugins: Array<SwiperPlugin>

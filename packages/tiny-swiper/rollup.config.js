@@ -1,7 +1,8 @@
 import path from 'path'
 import babel from 'rollup-plugin-babel'
+import serve from 'rollup-plugin-serve'
 import { uglify } from 'rollup-plugin-uglify'
-import { eslint } from "rollup-plugin-eslint"
+import { eslint } from 'rollup-plugin-eslint'
 import typescript from '@rollup/plugin-typescript'
 
 const isBuildProd = process.env.NODE_ENV === 'production'
@@ -71,7 +72,8 @@ function genConfig (entries) {
             input: path.resolve('src', entry.input),
             plugins: [
                 ...plugins,
-                entry.compress ? uglify() : null
+                entry.compress ? uglify() : null,
+                isBuildProd ? null : serve(path.resolve(__dirname))
             ],
             output: {
                 dir: path.resolve('lib', path.dirname(entry.input)),

@@ -338,10 +338,10 @@
         boxSize = measure.boxSize;
     var expand = getExpand(options);
     var buffer = expand * boxSize;
-    var base = -buffer + (options.centeredSlides ? (slideSize - viewSize) / 2 : 0); // [min, max] usually equal to [-x, 0]
+    var base = -buffer + (options.centeredSlides ? (viewSize - slideSize) / 2 : 0); // [min, max] usually equal to [-x, 0]
 
     var max = base;
-    var min = options.spaceBetween + viewSize + base - boxSize * $list.length;
+    var min = options.spaceBetween + (options.loop ? slideSize : viewSize) + base - boxSize * $list.length;
     var minIndex = 0;
     var maxIndex = $list.length - (options.centeredSlides || options.loop ? 1 : Math.ceil(options.slidesPerView));
     var limitation = {
@@ -381,7 +381,7 @@
     var $leftExpandList = [];
     var $rightExpandList = [];
 
-    function render(state, duration, cb) {
+    function render(state, duration, cb, force) {
       var _env$element = env.element,
           $list = _env$element.$list,
           $wrapper = _env$element.$wrapper;
@@ -412,6 +412,8 @@
           }
         });
       }
+
+      force && getComputedStyle($wrapper).transform;
     }
 
     function appendExpandList() {
@@ -427,7 +429,6 @@
       $rightExpandList = $list.slice(0, expand).map(function ($slide) {
         return $slide.cloneNode(true);
       });
-      console.log($leftExpandList, $rightExpandList);
       $leftExpandList.forEach(function ($shadowSlide, index) {
         $wrapper.appendChild($rightExpandList[index]);
         $wrapper.insertBefore($leftExpandList[index], $list[0]);
@@ -513,8 +514,13 @@
   function Operations(env, state, options, renderer, eventHub) {
     function update() {}
 
-    function render(duration) {
-      renderer.render(state, duration);
+    function getOffsetSteps(offset) {
+      var measure = env.measure;
+      return Math.ceil(Math.abs(offset) / measure.boxSize - options.longSwipesRatio);
+    }
+
+    function render(duration, cb, force) {
+      renderer.render(state, duration, cb, force);
     }
 
     function transform(trans) {
@@ -527,9 +533,16 @@
       var len = limitation.maxIndex - limitation.minIndex + 1;
       var computedIndex = options.loop ? (targetIndex % len + len) % len : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex;
       var offset = -computedIndex * measure.boxSize + limitation.base;
-      console.log(targetIndex, computedIndex, len);
-      transform(offset > limitation.max ? limitation.max : offset < limitation.min ? limitation.min : offset);
+
+      if (state.index === computedIndex && getOffsetSteps(offset - state.transforms) !== 0) {
+        var excess = getExcess(state.transforms, options, limitation);
+        transform(excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess);
+        render(0, undefined, true);
+        transform(offset);
+      }
+
       state.index = computedIndex;
+      transform(offset);
       eventHub.emit('before-slide', targetIndex, state);
       render(duration);
     }
@@ -558,11 +571,9 @@
         var excess = getExcess(transforms, options, limitation);
 
         if (excess && isExceedingLimits(velocity, transforms, options, limitation)) {
-          newTransform = excess > 0 ? limitation.min - measure.boxSize * options.slidesPerView + excess : limitation.max + measure.boxSize * options.slidesPerView + excess;
+          newTransform = excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess;
         }
-      } // console.log(state.tracker.vector().velocityX)
-      // TODO: reached limitation when loop
-
+      }
 
       state.transforms = newTransform;
     }
@@ -593,29 +604,22 @@
 
     function move(position) {
       var tracker = state.tracker;
+      var touchRatio = options.touchRatio,
+          touchAngle = options.touchAngle,
+          isHorizontal = options.isHorizontal;
       if (!state.isStart || state.isScrolling) return;
       tracker.push(position);
       var vector = tracker.vector();
-      var offset = 0;
 
-      if (options.isHorizontal) {
-        if (vector.angle < options.touchAngle || state.isTouching) {
-          state.isTouching = true;
-          offset = vector.x * options.touchRatio;
-        } else {
-          state.isScrolling = true;
-        }
+      if (isHorizontal && vector.angle < touchAngle || !isHorizontal && 90 - vector.angle < touchAngle || state.isTouching) {
+        var offset = vector[isHorizontal ? 'x' : 'y'] * touchRatio;
+        state.isTouching = true;
+        scrollPixel(offset);
+        render();
       } else {
-        if (90 - vector.angle < options.touchAngle || state.isTouching) {
-          state.isTouching = true;
-          offset = vector.y * options.touchRatio;
-        } else {
-          state.isScrolling = true;
-        }
+        state.isScrolling = true;
+        tracker.clear();
       }
-
-      scrollPixel(offset);
-      render();
     }
 
     function stop() {
@@ -626,7 +630,7 @@
 
       var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
       var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
-      var longSwipeIndex = Math.ceil(Math.abs(trans) / measure.boxSize - options.longSwipesRatio);
+      var longSwipeIndex = getOffsetSteps(trans);
       state.isStart = false; // console.log(index, state.transforms, state.startTransform, longSwipeIndex)
       // long siwpe
 

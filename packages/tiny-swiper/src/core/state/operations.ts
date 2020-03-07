@@ -70,10 +70,23 @@ export function Operations (
 
     }
 
-    function render (duration?: number): void {
+    function getOffsetSteps (offset: number): number {
+        const {
+            measure
+        } = env
+        return Math.ceil(Math.abs(offset) / measure.boxSize - options.longSwipesRatio)
+    }
+
+    function render (
+        duration?: number,
+        cb?: Function,
+        force?: boolean
+    ): void {
         renderer.render(
             state,
-            duration
+            duration,
+            cb,
+            force
         )
     }
 
@@ -98,15 +111,22 @@ export function Operations (
                     ? limitation.minIndex
                     : targetIndex
         const offset = -computedIndex * measure.boxSize + limitation.base
-        console.log(targetIndex, computedIndex, len)
 
-        transform(offset > limitation.max
-            ? limitation.max
-            : offset < limitation.min
-                ? limitation.min
-                : offset)
+        if (state.index === computedIndex
+            && getOffsetSteps(offset - state.transforms) !== 0
+        ) {
+            const excess = getExcess(state.transforms, options, limitation)
+
+            transform(excess > 0
+                ? limitation.min - measure.boxSize + excess
+                : limitation.max + measure.boxSize + excess)
+
+            render(0, undefined, true)
+            transform(offset)
+        }
+
         state.index = computedIndex
-
+        transform(offset)
         eventHub.emit('before-slide',
             targetIndex,
             state)
@@ -150,13 +170,11 @@ export function Operations (
                 limitation
             )) {
                 newTransform = excess > 0
-                    ? limitation.min - measure.boxSize * options.slidesPerView + excess
-                    : limitation.max + measure.boxSize * options.slidesPerView + excess
+                    ? limitation.min - measure.boxSize + excess
+                    : limitation.max + measure.boxSize + excess
             }
         }
 
-        // console.log(state.tracker.vector().velocityX)
-        // TODO: reached limitation when loop
         state.transforms = newTransform
     }
 
@@ -189,6 +207,11 @@ export function Operations (
         const {
             tracker
         } = state
+        const {
+            touchRatio,
+            touchAngle,
+            isHorizontal
+        } = options
 
         if (!state.isStart || state.isScrolling) return
 
@@ -196,26 +219,19 @@ export function Operations (
 
         const vector = tracker.vector()
 
-        let offset = 0
+        if ((isHorizontal && (vector.angle < touchAngle))
+            || (!isHorizontal && (90 - vector.angle) < touchAngle)
+            || state.isTouching
+        ) {
+            const offset = vector[isHorizontal ? 'x' : 'y'] * touchRatio
 
-        if (options.isHorizontal) {
-            if (vector.angle < options.touchAngle || state.isTouching) {
-                state.isTouching = true
-                offset = vector.x * options.touchRatio
-            } else {
-                state.isScrolling = true
-            }
+            state.isTouching = true
+            scrollPixel(offset)
+            render()
         } else {
-            if ((90 - vector.angle) < options.touchAngle || state.isTouching) {
-                state.isTouching = true
-                offset = vector.y * options.touchRatio
-            } else {
-                state.isScrolling = true
-            }
+            state.isScrolling = true
+            tracker.clear()
         }
-
-        scrollPixel(offset)
-        render()
     }
 
     function stop (): void {
@@ -230,7 +246,7 @@ export function Operations (
         // const trans = state.transforms - state.startTransform
         const trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y']
         const jump = Math.ceil(Math.abs(trans) / measure.boxSize)
-        const longSwipeIndex = Math.ceil(Math.abs(trans) / measure.boxSize - options.longSwipesRatio)
+        const longSwipeIndex = getOffsetSteps(trans)
 
         state.isStart = false
 

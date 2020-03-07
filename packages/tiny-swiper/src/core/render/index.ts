@@ -1,7 +1,6 @@
 import { Options } from '../options'
 import { removeClass, addClass, setStyle } from './dom'
 import { State } from '../state/index'
-import { getExpand } from '../limita'
 import { Env } from '../env/index'
 
 export type Renderer = {
@@ -9,7 +8,8 @@ export type Renderer = {
     render (
         state: State,
         duration?: number,
-        cb?: Function
+        cb?: Function,
+        force?: boolean
     ): void
     destroy (): void
     updateSize (): void
@@ -25,7 +25,8 @@ export function Renderer (
     function render (
         state: State,
         duration?: number,
-        cb?: Function
+        cb?: Function,
+        force?: false
     ) {
         const {
             $list,
@@ -65,6 +66,7 @@ export function Renderer (
                 }
             })
         }
+        force && getComputedStyle($wrapper).transform
     }
 
     function appendExpandList (): void {
@@ -87,7 +89,6 @@ export function Renderer (
         $rightExpandList = $list.slice(0, expand)
             .map($slide => <HTMLElement>$slide.cloneNode(true))
 
-        console.log($leftExpandList, $rightExpandList)
         $leftExpandList.forEach(($shadowSlide, index) => {
             $wrapper.appendChild($rightExpandList[index])
             $wrapper.insertBefore($leftExpandList[index], $list[0])
