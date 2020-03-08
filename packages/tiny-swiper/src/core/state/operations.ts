@@ -66,10 +66,6 @@ export function Operations (
     renderer: Renderer,
     eventHub: EventHub
 ): Operations {
-    function update (): void {
-
-    }
-
     function getOffsetSteps (offset: number): number {
         const {
             measure
@@ -294,6 +290,11 @@ export function Operations (
 
         tracker.clear()
         initStatus()
+    }
+
+    function update (): void {
+        slideTo(state.index, 0)
+        renderer.updateSize()
     }
 
     return {

@@ -1,7 +1,12 @@
 import { Options } from '../options'
-import { removeClass, addClass, setStyle } from './dom'
+import {
+    removeClass, addClass, setStyle, setAttr
+} from './dom'
 import { State } from '../state/index'
 import { Env } from '../env/index'
+
+const shallowTag = 'data-shallow-slider'
+const sliderTag = 'data-slider'
 
 export type Renderer = {
     init (): void
@@ -19,9 +24,6 @@ export function Renderer (
     env: Env,
     options: Options
 ): Renderer {
-    let $leftExpandList: Array<HTMLElement> = []
-    let $rightExpandList: Array<HTMLElement> = []
-
     function render (
         state: State,
         duration?: number,
@@ -29,7 +31,6 @@ export function Renderer (
         force?: false
     ) {
         const {
-            $list,
             $wrapper
         } = env.element
         const {
@@ -43,29 +44,32 @@ export function Renderer (
                 ? `translate3d(${state.transforms}px, 0, 0)`
                 : `translate3d(0, ${state.transforms}px, 0)`
         }
-        const $current = $list[index]
-        const $prev = $list[index - 1]
-        const $next = $list[index + 1]
 
         setStyle($wrapper, wrapperStyle)
+
         if (!state.isStart) {
-            $list.forEach(($slide, i) => {
-                removeClass($slide, [
+            $wrapper.querySelectorAll(`[${sliderTag}]`).forEach($slide => {
+                // eslint-disable-next-line no-bitwise
+                const tagNumber = ~~<string>$slide.getAttribute(sliderTag)
+
+                removeClass(<HTMLElement>$slide, [
                     options.slidePrevClass,
                     options.slideNextClass,
                     options.slideActiveClass
                 ])
-                if (i === index) {
-                    addClass($current, options.slideActiveClass)
+
+                if (tagNumber === index) {
+                    addClass(<HTMLElement>$slide, options.slideActiveClass)
                 }
-                if (i === index - 1) {
-                    addClass($prev, options.slidePrevClass)
+                if (tagNumber === index - 1) {
+                    addClass(<HTMLElement>$slide, options.slidePrevClass)
                 }
-                if (i === index + 1) {
-                    addClass($next, options.slideNextClass)
+                if (tagNumber === index + 1) {
+                    addClass(<HTMLElement>$slide, options.slideNextClass)
                 }
             })
         }
+
         force && getComputedStyle($wrapper).transform
     }
 
@@ -83,28 +87,27 @@ export function Renderer (
         const {
             expand
         } = limitation
-
-        $leftExpandList = $list.slice(-expand)
+        const $leftExpandList = $list.slice(-expand)
             .map($slide => <HTMLElement>$slide.cloneNode(true))
-        $rightExpandList = $list.slice(0, expand)
+        const $rightExpandList = $list.slice(0, expand)
             .map($slide => <HTMLElement>$slide.cloneNode(true))
 
         $leftExpandList.forEach(($shadowSlide, index) => {
-            $wrapper.appendChild($rightExpandList[index])
-            $wrapper.insertBefore($leftExpandList[index], $list[0])
+            $wrapper.appendChild(setAttr($rightExpandList[index], shallowTag))
+            $wrapper.insertBefore(setAttr($leftExpandList[index], shallowTag), $list[0])
         })
     }
 
     function destroyExpandList (): void {
-        const expandList = $leftExpandList.splice(0, $leftExpandList.length)
-            .concat($rightExpandList.splice(0, $rightExpandList.length))
-
-        expandList.forEach(item => env.element.$wrapper.removeChild(item))
+        env.element.$wrapper
+            .querySelectorAll(`[${shallowTag}]`)
+            .forEach(item => env.element.$wrapper.removeChild(item))
     }
 
     function updateDom (): void {
-        destroyExpandList()
+        env.element.$list.forEach((el, index) => setAttr(el, sliderTag, <any>index))
 
+        destroyExpandList()
         appendExpandList()
     }
 
@@ -114,7 +117,6 @@ export function Renderer (
             measure
         } = env
         const {
-            $list,
             $wrapper
         } = element
         const wrapperStyle = {
@@ -128,9 +130,8 @@ export function Renderer (
         }
 
         setStyle($wrapper, wrapperStyle)
-
-        $list.slice().concat($leftExpandList, $rightExpandList)
-            .forEach($slide => setStyle($slide, itemStyle))
+        $wrapper.querySelectorAll(`[${sliderTag}]`)
+            .forEach($slide => setStyle(<HTMLElement>$slide, itemStyle))
     }
 
     function init (): void {

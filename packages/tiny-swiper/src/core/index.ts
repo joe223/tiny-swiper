@@ -55,7 +55,6 @@ const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions:
     function updateSize (): void {
         env.update()
         operations.update()
-        renderer.updateSize()
     }
 
     function update (): void {

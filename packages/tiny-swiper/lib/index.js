@@ -210,6 +210,14 @@
   function detachListener(el, evtName, handler) {
     el.removeEventListener(evtName, handler);
   }
+  function setAttr(el, attr, value) {
+    if (value === void 0) {
+      value = '';
+    }
+
+    el.setAttribute(attr, value);
+    return el;
+  }
   function setStyle(el, style, forceRender) {
     Object.keys(style).forEach(function (prop) {
       // TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
@@ -217,6 +225,7 @@
     }); // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 
     forceRender && getComputedStyle(el);
+    return el;
   }
   function getTranslate(el, isHorizontal) {
     var matrix = getComputedStyle(el).transform.replace(/[a-z]|\(|\)|\s/g, '').split(',').map(parseFloat);
@@ -378,38 +387,34 @@
     return env;
   }
 
+  var shallowTag = 'data-shallow-slider';
+  var sliderTag = 'data-slider';
   function Renderer(env, options) {
-    var $leftExpandList = [];
-    var $rightExpandList = [];
-
     function render(state, duration, cb, force) {
-      var _env$element = env.element,
-          $list = _env$element.$list,
-          $wrapper = _env$element.$wrapper;
+      var $wrapper = env.element.$wrapper;
       var index = state.index;
       var wrapperStyle = {
         transition: state.isStart ? 'none' : "transform ease " + (duration === undefined ? options.speed : duration) + "ms",
         transform: options.isHorizontal ? "translate3d(" + state.transforms + "px, 0, 0)" : "translate3d(0, " + state.transforms + "px, 0)"
       };
-      var $current = $list[index];
-      var $prev = $list[index - 1];
-      var $next = $list[index + 1];
       setStyle($wrapper, wrapperStyle);
 
       if (!state.isStart) {
-        $list.forEach(function ($slide, i) {
+        $wrapper.querySelectorAll("[" + sliderTag + "]").forEach(function ($slide) {
+          // eslint-disable-next-line no-bitwise
+          var tagNumber = ~~$slide.getAttribute(sliderTag);
           removeClass($slide, [options.slidePrevClass, options.slideNextClass, options.slideActiveClass]);
 
-          if (i === index) {
-            addClass($current, options.slideActiveClass);
+          if (tagNumber === index) {
+            addClass($slide, options.slideActiveClass);
           }
 
-          if (i === index - 1) {
-            addClass($prev, options.slidePrevClass);
+          if (tagNumber === index - 1) {
+            addClass($slide, options.slidePrevClass);
           }
 
-          if (i === index + 1) {
-            addClass($next, options.slideNextClass);
+          if (tagNumber === index + 1) {
+            addClass($slide, options.slideNextClass);
           }
         });
       }
@@ -424,26 +429,28 @@
       var $list = element.$list,
           $wrapper = element.$wrapper;
       var expand = limitation.expand;
-      $leftExpandList = $list.slice(-expand).map(function ($slide) {
+      var $leftExpandList = $list.slice(-expand).map(function ($slide) {
         return $slide.cloneNode(true);
       });
-      $rightExpandList = $list.slice(0, expand).map(function ($slide) {
+      var $rightExpandList = $list.slice(0, expand).map(function ($slide) {
         return $slide.cloneNode(true);
       });
       $leftExpandList.forEach(function ($shadowSlide, index) {
-        $wrapper.appendChild($rightExpandList[index]);
-        $wrapper.insertBefore($leftExpandList[index], $list[0]);
+        $wrapper.appendChild(setAttr($rightExpandList[index], shallowTag));
+        $wrapper.insertBefore(setAttr($leftExpandList[index], shallowTag), $list[0]);
       });
     }
 
     function destroyExpandList() {
-      var expandList = $leftExpandList.splice(0, $leftExpandList.length).concat($rightExpandList.splice(0, $rightExpandList.length));
-      expandList.forEach(function (item) {
+      env.element.$wrapper.querySelectorAll("[" + shallowTag + "]").forEach(function (item) {
         return env.element.$wrapper.removeChild(item);
       });
     }
 
     function updateDom() {
+      env.element.$list.forEach(function (el, index) {
+        return setAttr(el, sliderTag, index);
+      });
       destroyExpandList();
       appendExpandList();
     }
@@ -453,8 +460,7 @@
 
       var element = env.element,
           measure = env.measure;
-      var $list = element.$list,
-          $wrapper = element.$wrapper;
+      var $wrapper = element.$wrapper;
       var wrapperStyle = {
         display: 'flex',
         willChange: 'transform',
@@ -462,7 +468,7 @@
       };
       var itemStyle = (_itemStyle = {}, _itemStyle[options.isHorizontal ? 'width' : 'height'] = measure.slideSize + "px", _itemStyle[options.isHorizontal ? 'margin-right' : 'margin-bottom'] = options.spaceBetween + "px", _itemStyle);
       setStyle($wrapper, wrapperStyle);
-      $list.slice().concat($leftExpandList, $rightExpandList).forEach(function ($slide) {
+      $wrapper.querySelectorAll("[" + sliderTag + "]").forEach(function ($slide) {
         return setStyle($slide, itemStyle);
       });
     }
@@ -473,9 +479,9 @@
     }
 
     function destroy() {
-      var _env$element2 = env.element,
-          $list = _env$element2.$list,
-          $wrapper = _env$element2.$wrapper;
+      var _env$element = env.element,
+          $list = _env$element.$list,
+          $wrapper = _env$element.$wrapper;
       var arr = ['display', 'will-change', 'flex-direction'];
       var itemProp = options.isHorizontal ? 'margin-right' : 'margin-bottom';
       arr.forEach(function (propertyName) {
@@ -513,8 +519,6 @@
     return exceedLeft > 0 ? exceedLeft : exceedRight < 0 ? exceedRight : 0;
   }
   function Operations(env, state, options, renderer, eventHub) {
-    function update() {}
-
     function getOffsetSteps(offset) {
       var measure = env.measure;
       return Math.ceil(Math.abs(offset) / measure.boxSize - options.longSwipesRatio);
@@ -664,6 +668,11 @@
       initStatus();
     }
 
+    function update() {
+      slideTo(state.index, 0);
+      renderer.updateSize();
+    }
+
     return {
       update: update,
       render: render,
@@ -696,7 +705,6 @@
     function updateSize() {
       env.update();
       operations.update();
-      renderer.updateSize();
     }
 
     function update() {

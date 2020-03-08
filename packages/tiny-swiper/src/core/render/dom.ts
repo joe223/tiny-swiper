@@ -43,22 +43,25 @@ export function removeAttr (
 export function setAttr (
     el: HTMLElement,
     attr: string,
-    value: string
-): void {
+    value = ''
+): HTMLElement {
     el.setAttribute(attr, value)
+    return el
 }
 
 export function setStyle (
     el: HTMLElement,
     style: {[key: string]: string},
     forceRender?: boolean
-): void {
+): HTMLElement {
     Object.keys(style).forEach(prop => {
         // TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
         el.style[prop as any] = style[prop]
     })
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     forceRender && getComputedStyle(el)
+
+    return el
 }
 
 export function getTranslate (
