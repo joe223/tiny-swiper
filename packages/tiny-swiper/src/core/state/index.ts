@@ -8,6 +8,7 @@ export interface State {
     isScrolling: boolean
     isTouching: boolean
     transforms: number
+    progress: number
 }
 
 export function State (): State {
@@ -18,7 +19,8 @@ export function State (): State {
         isStart: false,
         isScrolling: false,
         isTouching: false,
-        transforms: 0
+        transforms: 0,
+        progress: 0
     }
 
     return state

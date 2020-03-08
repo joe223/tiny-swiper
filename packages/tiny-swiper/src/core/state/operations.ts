@@ -91,7 +91,34 @@ export function Operations (
     }
 
     function transform (trans: number): void {
+        const {
+            min,
+            max
+        } = env.limitation
+        const transRange = max - min + (options.loop ? env.measure.boxSize : 0)
+        const len = transRange + 1
+
+        let progress
+
         state.transforms = trans
+
+        if (options.loop) {
+            progress = (max - trans) % len / transRange
+
+            state.progress = progress < 0
+                ? 1 + progress
+                : progress > 1
+                    ? progress - 1
+                    : progress
+        } else {
+            progress = (max - trans) / transRange
+
+            state.progress = progress < 0
+                ? 0
+                : progress > 1
+                    ? 1
+                    : progress
+        }
     }
 
     function slideTo (
@@ -175,7 +202,7 @@ export function Operations (
             }
         }
 
-        state.transforms = newTransform
+        transform(newTransform)
     }
 
     function initStatus (startTransform = 0): void {
@@ -186,7 +213,7 @@ export function Operations (
     }
 
     function initLayout (originTransform: number): void {
-        state.transforms = originTransform
+        transform(originTransform)
     }
 
     function preheat (

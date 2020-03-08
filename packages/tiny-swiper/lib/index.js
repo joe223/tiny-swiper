@@ -178,7 +178,8 @@
       isStart: false,
       isScrolling: false,
       isTouching: false,
-      transforms: 0
+      transforms: 0,
+      progress: 0
     };
     return state;
   }
@@ -524,7 +525,21 @@
     }
 
     function transform(trans) {
+      var _env$limitation = env.limitation,
+          min = _env$limitation.min,
+          max = _env$limitation.max;
+      var transRange = max - min + (options.loop ? env.measure.boxSize : 0);
+      var len = transRange + 1;
+      var progress;
       state.transforms = trans;
+
+      if (options.loop) {
+        progress = (max - trans) % len / transRange;
+        state.progress = progress < 0 ? 1 + progress : progress > 1 ? progress - 1 : progress;
+      } else {
+        progress = (max - trans) / transRange;
+        state.progress = progress < 0 ? 0 : progress > 1 ? 1 : progress;
+      }
     }
 
     function slideTo(targetIndex, duration) {
@@ -575,7 +590,7 @@
         }
       }
 
-      state.transforms = newTransform;
+      transform(newTransform);
     }
 
     function initStatus(startTransform) {
@@ -590,7 +605,7 @@
     }
 
     function initLayout(originTransform) {
-      state.transforms = originTransform;
+      transform(originTransform);
     }
 
     function preheat(originPosition, originTransform) {
