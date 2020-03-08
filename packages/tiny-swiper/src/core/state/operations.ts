@@ -143,6 +143,7 @@ export function Operations (
                     : targetIndex
         const offset = -computedIndex * measure.boxSize + limitation.base
 
+        // Slide over a cycle.
         if (state.index === computedIndex
             && getOffsetSteps(offset - state.transforms) !== 0
         ) {
@@ -152,8 +153,8 @@ export function Operations (
                 ? limitation.min - measure.boxSize + excess
                 : limitation.max + measure.boxSize + excess)
 
+            // Set initial offset for rebounding animation.
             render(0, undefined, true)
-            transform(offset)
         }
 
         state.index = computedIndex
@@ -161,7 +162,6 @@ export function Operations (
         eventHub.emit('before-slide',
             targetIndex,
             state)
-
         render(duration)
     }
 

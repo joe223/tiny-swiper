@@ -104,6 +104,7 @@ export function Renderer (
 
     function updateDom (): void {
         destroyExpandList()
+
         appendExpandList()
     }
 

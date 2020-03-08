@@ -549,13 +549,13 @@
           limitation = env.limitation;
       var len = limitation.maxIndex - limitation.minIndex + 1;
       var computedIndex = options.loop ? (targetIndex % len + len) % len : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex;
-      var offset = -computedIndex * measure.boxSize + limitation.base;
+      var offset = -computedIndex * measure.boxSize + limitation.base; // Slide over a cycle.
 
       if (state.index === computedIndex && getOffsetSteps(offset - state.transforms) !== 0) {
         var excess = getExcess(state.transforms, options, limitation);
-        transform(excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess);
+        transform(excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess); // Set initial offset for rebounding animation.
+
         render(0, undefined, true);
-        transform(offset);
       }
 
       state.index = computedIndex;
