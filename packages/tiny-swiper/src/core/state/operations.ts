@@ -119,6 +119,10 @@ export function Operations (
                     ? 1
                     : progress
         }
+
+        eventHub.emit('scroll', {
+            ...state
+        })
     }
 
     function slideTo (
@@ -245,6 +249,11 @@ export function Operations (
         tracker.push(position)
 
         const vector = tracker.vector()
+        const displacement = tracker.getOffset()
+
+        // Ignore this move action if there is no displacement of screen touch point.
+        // In case of minimal mouse move event. (Moving mouse extreme slowly will get the zero offset.)
+        if (!displacement.x && !displacement.y) return
 
         if ((isHorizontal && (vector.angle < touchAngle))
             || (!isHorizontal && (90 - vector.angle) < touchAngle)
@@ -270,15 +279,12 @@ export function Operations (
             measure
         } = env
         const duration = tracker.getDuration()
-        // const trans = state.transforms - state.startTransform
         const trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y']
         const jump = Math.ceil(Math.abs(trans) / measure.boxSize)
         const longSwipeIndex = getOffsetSteps(trans)
 
         state.isStart = false
 
-        // console.log(index, state.transforms, state.startTransform, longSwipeIndex)
-        // long siwpe
         if (duration > options.longSwipesMs) {
             slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1))
         } else {

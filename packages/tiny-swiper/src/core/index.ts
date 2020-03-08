@@ -66,17 +66,14 @@ const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions:
         updateSize()
     }
 
-    function on (evtName: string, cb: Function): void {
-        eventHub.on(evtName, cb)
-    }
-
-    function off (evtName: string, cb: Function): void {
-        eventHub.off(evtName, cb)
-    }
-
-    function slideTo (index: number, duration: number): void {
-        operations.slideTo(index, duration)
-    }
+    const {
+        on,
+        off,
+        emit
+    } = eventHub
+    const {
+        slideTo
+    } = operations
 
     const instance = {
         env,
@@ -94,8 +91,10 @@ const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions:
         (options.plugins || Swiper.plugins || [])
             .forEach((plugin: SwiperPlugin) => plugin(instance, options))
 
+        emit('before-init', instance)
         renderer.init()
         sensor.attach()
+        emit('after-init', instance)
         operations.slideTo(options.initialSlide || 0, 0)
     }
 

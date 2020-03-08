@@ -540,6 +540,8 @@
         progress = (max - trans) / transRange;
         state.progress = progress < 0 ? 0 : progress > 1 ? 1 : progress;
       }
+
+      eventHub.emit('scroll', _extends({}, state));
     }
 
     function slideTo(targetIndex, duration) {
@@ -625,6 +627,10 @@
       if (!state.isStart || state.isScrolling) return;
       tracker.push(position);
       var vector = tracker.vector();
+      var displacement = tracker.getOffset(); // Ignore this move action if there is no displacement of screen touch point.
+      // In case of minimal mouse move event. (Moving mouse extreme slowly will get the zero offset.)
+
+      if (!displacement.x && !displacement.y) return;
 
       if (isHorizontal && vector.angle < touchAngle || !isHorizontal && 90 - vector.angle < touchAngle || state.isTouching) {
         var offset = vector[isHorizontal ? 'x' : 'y'] * touchRatio;
@@ -641,13 +647,11 @@
       var index = state.index,
           tracker = state.tracker;
       var measure = env.measure;
-      var duration = tracker.getDuration(); // const trans = state.transforms - state.startTransform
-
+      var duration = tracker.getDuration();
       var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
       var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
       var longSwipeIndex = getOffsetSteps(trans);
-      state.isStart = false; // console.log(index, state.transforms, state.startTransform, longSwipeIndex)
-      // long siwpe
+      state.isStart = false;
 
       if (duration > options.longSwipesMs) {
         slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
@@ -702,18 +706,10 @@
       updateSize();
     }
 
-    function on(evtName, cb) {
-      eventHub.on(evtName, cb);
-    }
-
-    function off(evtName, cb) {
-      eventHub.off(evtName, cb);
-    }
-
-    function slideTo(index, duration) {
-      operations.slideTo(index, duration);
-    }
-
+    var on = eventHub.on,
+        off = eventHub.off,
+        emit = eventHub.emit;
+    var slideTo = operations.slideTo;
     var instance = {
       env: env,
       state: state,
@@ -730,8 +726,10 @@
       (options.plugins || Swiper.plugins || []).forEach(function (plugin) {
         return plugin(instance, options);
       });
+      emit('before-init', instance);
       renderer.init();
       sensor.attach();
+      emit('after-init', instance);
       operations.slideTo(options.initialSlide || 0, 0);
     }
 
