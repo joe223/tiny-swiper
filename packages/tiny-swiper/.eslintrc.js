@@ -73,7 +73,7 @@ module.exports = {
             'props': false
         }],
         'import/extensions': ['error', {
-            'js': 'always'
+            'js': 'never'
         }],
         'import/no-cycle': ['off'],
         'import/prefer-default-export': ['off'],

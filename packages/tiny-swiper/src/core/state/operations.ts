@@ -15,14 +15,9 @@ export interface Operations {
         duration?: number
     ): void
     scrollPixel (px: number): void
-    initStatus (startTransform: number): void
+    initStatus (startTransform?: number): void
     initLayout (originTransform: number): void
-    preheat (
-        originPosition: Position,
-        originTransform: number
-    ): void
-    move (position: Position): void
-    stop (): void
+    getOffsetSteps (offset: number): number
 }
 
 export function isExceedingLimits (
@@ -216,82 +211,6 @@ export function Operations (
         transform(originTransform)
     }
 
-    function preheat (
-        originPosition: Position,
-        originTransform: number
-    ): void {
-        const { tracker } = state
-
-        tracker.push(originPosition)
-        initLayout(originTransform)
-        initStatus(originTransform)
-        state.isStart = true
-
-        render()
-    }
-
-    function move (position: Position): void {
-        const {
-            tracker
-        } = state
-        const {
-            touchRatio,
-            touchAngle,
-            isHorizontal
-        } = options
-
-        if (!state.isStart || state.isScrolling) return
-
-        tracker.push(position)
-
-        const vector = tracker.vector()
-        const displacement = tracker.getOffset()
-
-        // Ignore this move action if there is no displacement of screen touch point.
-        // In case of minimal mouse move event. (Moving mouse extreme slowly will get the zero offset.)
-        if (!displacement.x && !displacement.y) return
-
-        if ((isHorizontal && (vector.angle < touchAngle))
-            || (!isHorizontal && (90 - vector.angle) < touchAngle)
-            || state.isTouching
-        ) {
-            const offset = vector[isHorizontal ? 'x' : 'y'] * touchRatio
-
-            state.isTouching = true
-            scrollPixel(offset)
-            render()
-        } else {
-            state.isScrolling = true
-            tracker.clear()
-        }
-    }
-
-    function stop (): void {
-        const {
-            index,
-            tracker
-        } = state
-        const {
-            measure
-        } = env
-        const duration = tracker.getDuration()
-        const trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y']
-        const jump = Math.ceil(Math.abs(trans) / measure.boxSize)
-        const longSwipeIndex = getOffsetSteps(trans)
-
-        state.isStart = false
-
-        if (duration > options.longSwipesMs) {
-            slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1))
-        } else {
-            // short swipe
-            slideTo(trans > 0 ? index - jump : index + jump)
-        }
-
-        tracker.clear()
-        initStatus()
-    }
-
     function update (): void {
         slideTo(state.index, 0)
         renderer.updateSize()
@@ -305,8 +224,6 @@ export function Operations (
         scrollPixel,
         initStatus,
         initLayout,
-        preheat,
-        move,
-        stop
+        getOffsetSteps
     }
 }

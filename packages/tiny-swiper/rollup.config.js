@@ -66,24 +66,24 @@ const plugins = [
     })
 ]
 
-function genConfig (entries) {
-    return entries.map(entry => {
-        return {
-            input: path.resolve('src', entry.input),
-            plugins: [
-                ...plugins,
-                entry.compress ? uglify() : null,
-                isBuildProd ? null : serve(path.resolve(__dirname))
-            ],
-            output: {
-                dir: path.resolve('lib', path.dirname(entry.input)),
-                format: 'umd',
-                sourcemap: !isBuildProd,
-                entryFileNames: isBuildProd ? '[name].min.js' : '[name].js',
-                ...entry.options
-            }
+function genConfig (options) {
+    console.log('genConfig', isBuildProd)
+
+    return options.map(entry => ({
+        input: path.resolve('src', entry.input),
+        plugins: [
+            ...plugins,
+            entry.compress ? uglify() : null,
+            isBuildProd ? null : serve(path.resolve(__dirname))
+        ],
+        output: {
+            dir: path.resolve('lib', path.dirname(entry.input)),
+            format: 'umd',
+            sourcemap: !isBuildProd,
+            entryFileNames: isBuildProd ? '[name].min.js' : '[name].js',
+            ...entry.options
         }
-    })
+    }))
 }
 
 export default genConfig(entries)

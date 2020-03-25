@@ -1,10 +1,11 @@
 import { UserOptions, optionFormatter, Options } from './options'
 import { EventHub } from './eventHub'
 import { State } from './state/index'
-import { Sensor } from './sensor'
+import { Sensor } from './sensor/index'
 import { Env } from './env/index'
 import { Renderer } from './render/index'
 import { Operations } from './state/operations'
+import { Injections } from './injections'
 
 export type SwiperInstance = {
     on: (evtName: string, cb: Function) => void
@@ -13,6 +14,10 @@ export type SwiperInstance = {
     destroy: () => void
     slideTo: (index: number, duration: number) => void
     options: Options
+    env: Env
+    state: State
+    updateSize: () => void
+    inject: (key: string, injection: Function) => void
 }
 export type SwiperPlugin = (instance: SwiperInstance, options: Options) => void
 
@@ -22,12 +27,37 @@ export type Swiper = {
     plugins: Array<SwiperPlugin>
 }
 
-const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions: UserOptions): SwiperInstance {
+const Swiper: Swiper = <Swiper> function (
+    el: HTMLElement | string,
+    userOptions: UserOptions
+): SwiperInstance {
     const options = optionFormatter(userOptions)
     const eventHub = EventHub()
     const env = Env(el, options)
     const state = State()
+    const injections = Injections()
+    const {
+        on,
+        off,
+        emit
+    } = eventHub
+    const instance = {
+        on,
+        off,
+        env,
+        state,
+        options
+    } as SwiperInstance
 
+    (options.plugins || Swiper.plugins || [])
+        .forEach((plugin: SwiperPlugin) => plugin(
+            instance,
+            options
+        ))
+
+    emit('before-init', instance)
+
+    // Initialize internal module
     const renderer = Renderer(
         env,
         options
@@ -43,7 +73,8 @@ const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions:
         env,
         state,
         options,
-        operations
+        operations,
+        injections
     )
 
     function destroy (): void {
@@ -66,38 +97,27 @@ const Swiper: Swiper = <Swiper> function (el: HTMLElement | string, userOptions:
     }
 
     const {
-        on,
-        off,
-        emit
-    } = eventHub
-    const {
         slideTo
     } = operations
+    const {
+        inject
+    } = injections
 
-    const instance = {
-        env,
-        state,
-        options,
-        on,
-        off,
+    Object.assign(instance, {
         update,
         destroy,
         slideTo,
-        updateSize
-    }
+        updateSize,
+        inject
+    })
 
-    function load (): void {
-        (options.plugins || Swiper.plugins || [])
-            .forEach((plugin: SwiperPlugin) => plugin(instance, options))
-
-        emit('before-init', instance)
-        renderer.init()
-        sensor.attach()
-        emit('after-init', instance)
-        operations.slideTo(options.initialSlide || 0, 0)
-    }
-
-    load()
+    renderer.init()
+    sensor.attach()
+    operations.slideTo(
+        options.initialSlide,
+        0
+    )
+    emit('after-init', instance)
 
     return instance
 }

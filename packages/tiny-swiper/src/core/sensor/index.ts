@@ -1,9 +1,11 @@
-import { State } from './state/index'
-import { Env } from './env/index'
-import { attachListener, detachListener, getTranslate } from './render/dom'
-import { Options } from './options'
-import { Position } from './state/trace'
-import { Operations } from './state/operations'
+import { State } from '../state/index'
+import { Env } from '../env/index'
+import { attachListener, detachListener, getTranslate } from '../render/dom'
+import { Options } from '../options'
+import { Position } from '../state/trace'
+import { Motions } from './motions'
+import { Operations } from '../state/operations'
+import { Injections } from '../injections'
 
 export type Sensor = {
     attach: () => void
@@ -15,8 +17,12 @@ export function Sensor (
     env: Env,
     state: State,
     options: Options,
-    operations: Operations
+    operations: Operations,
+    injections: Injections
 ): Sensor {
+    const {
+        touchable
+    } = env
     const formEls = [
         'INPUT',
         'SELECT',
@@ -25,14 +31,13 @@ export function Sensor (
         'BUTTON',
         'VIDEO'
     ]
+    const motions = injections.get('Motions', Motions)(options, env, state, operations)
     const {
         preheat,
         move,
         stop
-    } = operations
-    const {
-        touchable
-    } = env
+    } = motions
+
 
     function getPosition (e: Event): Position {
         const touch = touchable ? (<TouchEvent>e).changedTouches[0] : <MouseEvent>e
@@ -65,8 +70,7 @@ export function Sensor (
         state.isTouching && e.preventDefault()
     }
 
-    function onTouchEnd (e: Event): void {
-        onTouchMove(e)
+    function onTouchEnd (): void {
         stop()
     }
 

@@ -1,7 +1,7 @@
 import { Options } from '../options'
 import { Element } from './element'
 import { Measure } from './measure'
-import { Limitation } from '../env/limitation'
+import { Limitation } from './limitation'
 
 declare global {
     interface Window {

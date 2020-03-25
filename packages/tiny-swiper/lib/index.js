@@ -240,12 +240,158 @@
     return arr[isHorizontal ? 0 : 1] || 0;
   }
 
-  function Sensor(env, state, options, operations) {
-    var formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO'];
-    var preheat = operations.preheat,
-        move = operations.move,
-        stop = operations.stop;
+  function now() {
+    return performance ? performance.now() : Date.now();
+  }
+
+  function Tick() {
+    var nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout;
+    var cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout;
+    var startTime;
+    var id;
+
+    function run(cb) {
+      // eslint-disable-next-line no-void
+      startTime = startTime === void 0 ? now() : startTime; // Why do not use callback argument:
+      // https://stackoverflow.com/questions/50895206/exact-time-of-display-requestanimationframe-usage-and-timeline
+
+      id = nextFrame(function () {
+        var timeStamp = now();
+        var interval = timeStamp - startTime;
+        startTime = timeStamp;
+        cb(interval);
+      });
+    }
+
+    function stop() {
+      startTime = undefined;
+      cancelNextFrame(id);
+    }
+
+    return {
+      run: run,
+      stop: stop
+    };
+  }
+
+  function Animation() {
+    var tick = Tick();
+
+    function run(task) {
+      tick.run(function (interval) {
+        run(task);
+        task(interval);
+      });
+    }
+
+    function stop() {
+      tick.stop();
+    }
+
+    return {
+      run: run,
+      stop: stop
+    };
+  }
+
+  function Motions(options, env, state, operations) {
+    var initLayout = operations.initLayout,
+        initStatus = operations.initStatus,
+        render = operations.render,
+        scrollPixel = operations.scrollPixel,
+        slideTo = operations.slideTo,
+        getOffsetSteps = operations.getOffsetSteps;
+    var animation = Animation();
+
+    function preheat(originPosition, originTransform) {
+      var tracker = state.tracker;
+      animation.stop();
+      tracker.clear();
+      tracker.push(originPosition);
+      initLayout(originTransform);
+      initStatus(originTransform);
+      state.isStart = true;
+      render();
+    }
+
+    function move(position) {
+      var tracker = state.tracker;
+      var touchRatio = options.touchRatio,
+          touchAngle = options.touchAngle,
+          isHorizontal = options.isHorizontal;
+      if (!state.isStart || state.isScrolling) return;
+      tracker.push(position);
+      var vector = tracker.vector();
+      var displacement = tracker.getOffset(); // Ignore this move action if there is no displacement of screen touch point.
+      // In case of minimal mouse move event. (Moving mouse extreme slowly will get the zero offset.)
+
+      if (!displacement.x && !displacement.y) return;
+
+      if (isHorizontal && vector.angle < touchAngle || !isHorizontal && 90 - vector.angle < touchAngle || state.isTouching) {
+        var offset = vector[isHorizontal ? 'x' : 'y'] * touchRatio;
+        state.isTouching = true;
+        scrollPixel(offset);
+        render();
+      } else {
+        state.isScrolling = true;
+        tracker.clear();
+      }
+    }
+
+    function stop() {
+      var index = state.index,
+          tracker = state.tracker;
+      var measure = env.measure;
+
+      if (!options.freeMode || tracker.getLogs().length < 2) {
+        var duration = tracker.getDuration();
+        var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
+        var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
+        var longSwipeIndex = getOffsetSteps(trans);
+
+        if (duration > options.longSwipesMs) {
+          slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
+        } else {
+          // short swipe
+          slideTo(trans > 0 ? index - jump : index + jump);
+        }
+
+        tracker.clear();
+        initStatus();
+      } else {
+        var vector = tracker.vector();
+        var velocity = vector[options.isHorizontal ? 'velocityX' : 'velocityY']; // console.log(tracker.getLogs())
+
+        animation.run(function (duration) {
+          var offset = velocity * duration;
+          velocity *= 0.98;
+
+          if (Math.abs(offset) < 0.004) {
+            animation.stop();
+            tracker.clear();
+            initStatus();
+          } else {
+            scrollPixel(offset);
+            render(0);
+          }
+        });
+      }
+    }
+
+    return {
+      preheat: preheat,
+      move: move,
+      stop: stop
+    };
+  }
+
+  function Sensor(env, state, options, operations, injections) {
     var touchable = env.touchable;
+    var formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO'];
+    var motions = injections.get('Motions', Motions)(options, env, state, operations);
+    var preheat = motions.preheat,
+        move = motions.move,
+        stop = motions.stop;
 
     function getPosition(e) {
       var touch = touchable ? e.changedTouches[0] : e;
@@ -268,8 +414,7 @@
       state.isTouching && e.preventDefault();
     }
 
-    function onTouchEnd(e) {
-      onTouchMove(e);
+    function onTouchEnd() {
       stop();
     }
 
@@ -614,60 +759,6 @@
       transform(originTransform);
     }
 
-    function preheat(originPosition, originTransform) {
-      var tracker = state.tracker;
-      tracker.push(originPosition);
-      initLayout(originTransform);
-      initStatus(originTransform);
-      state.isStart = true;
-      render();
-    }
-
-    function move(position) {
-      var tracker = state.tracker;
-      var touchRatio = options.touchRatio,
-          touchAngle = options.touchAngle,
-          isHorizontal = options.isHorizontal;
-      if (!state.isStart || state.isScrolling) return;
-      tracker.push(position);
-      var vector = tracker.vector();
-      var displacement = tracker.getOffset(); // Ignore this move action if there is no displacement of screen touch point.
-      // In case of minimal mouse move event. (Moving mouse extreme slowly will get the zero offset.)
-
-      if (!displacement.x && !displacement.y) return;
-
-      if (isHorizontal && vector.angle < touchAngle || !isHorizontal && 90 - vector.angle < touchAngle || state.isTouching) {
-        var offset = vector[isHorizontal ? 'x' : 'y'] * touchRatio;
-        state.isTouching = true;
-        scrollPixel(offset);
-        render();
-      } else {
-        state.isScrolling = true;
-        tracker.clear();
-      }
-    }
-
-    function stop() {
-      var index = state.index,
-          tracker = state.tracker;
-      var measure = env.measure;
-      var duration = tracker.getDuration();
-      var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
-      var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
-      var longSwipeIndex = getOffsetSteps(trans);
-      state.isStart = false;
-
-      if (duration > options.longSwipesMs) {
-        slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
-      } else {
-        // short swipe
-        slideTo(trans > 0 ? index - jump : index + jump);
-      }
-
-      tracker.clear();
-      initStatus();
-    }
-
     function update() {
       slideTo(state.index, 0);
       renderer.updateSize();
@@ -681,9 +772,27 @@
       scrollPixel: scrollPixel,
       initStatus: initStatus,
       initLayout: initLayout,
-      preheat: preheat,
-      move: move,
-      stop: stop
+      getOffsetSteps: getOffsetSteps
+    };
+  }
+
+  function Injections() {
+    var injections = {};
+
+    function inject(key, injection) {
+      Object.defineProperty(injections, key, {
+        value: injection,
+        writable: false
+      });
+    }
+
+    function get(key, backup) {
+      return injections[key] || backup;
+    }
+
+    return {
+      inject: inject,
+      get: get
     };
   }
 
@@ -692,9 +801,25 @@
     var eventHub = EventHub();
     var env = Env(el, options);
     var state = State();
+    var injections = Injections();
+    var on = eventHub.on,
+        off = eventHub.off,
+        emit = eventHub.emit;
+    var instance = {
+      on: on,
+      off: off,
+      env: env,
+      state: state,
+      options: options
+    };
+    (options.plugins || Swiper.plugins || []).forEach(function (plugin) {
+      return plugin(instance, options);
+    });
+    emit('before-init', instance); // Initialize internal module
+
     var renderer = Renderer(env, options);
     var operations = Operations(env, state, options, renderer, eventHub);
-    var sensor = Sensor(env, state, options, operations);
+    var sensor = Sensor(env, state, options, operations, injections);
 
     function destroy() {
       sensor.detach();
@@ -714,34 +839,19 @@
       updateSize();
     }
 
-    var on = eventHub.on,
-        off = eventHub.off,
-        emit = eventHub.emit;
     var slideTo = operations.slideTo;
-    var instance = {
-      env: env,
-      state: state,
-      options: options,
-      on: on,
-      off: off,
+    var inject = injections.inject;
+    Object.assign(instance, {
       update: update,
       destroy: destroy,
       slideTo: slideTo,
-      updateSize: updateSize
-    };
-
-    function load() {
-      (options.plugins || Swiper.plugins || []).forEach(function (plugin) {
-        return plugin(instance, options);
-      });
-      emit('before-init', instance);
-      renderer.init();
-      sensor.attach();
-      emit('after-init', instance);
-      operations.slideTo(options.initialSlide || 0, 0);
-    }
-
-    load();
+      updateSize: updateSize,
+      inject: inject
+    });
+    renderer.init();
+    sensor.attach();
+    operations.slideTo(options.initialSlide, 0);
+    emit('after-init', instance);
     return instance;
   };
 
