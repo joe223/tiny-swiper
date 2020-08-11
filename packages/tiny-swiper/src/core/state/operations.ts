@@ -149,11 +149,15 @@ export function Operations (
         }
 
         state.index = computedIndex
-        transform(offset)
         eventHub.emit('before-slide',
             targetIndex,
             state)
-        render(duration)
+        transform(offset)
+        render(duration, () => {
+            eventHub.emit('after-slide',
+                targetIndex,
+                state)
+        })
     }
 
     function scrollPixel (px: number): void {

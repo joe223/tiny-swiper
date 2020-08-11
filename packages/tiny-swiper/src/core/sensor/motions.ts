@@ -91,6 +91,8 @@ export function Motions (
             measure
         } = env
 
+        state.isStart = false
+
         if (!options.freeMode || tracker.getLogs().length < 2) {
             const duration = tracker.getDuration()
             const trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y']

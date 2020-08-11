@@ -1,9 +1,10 @@
 module.exports = {
-    'extends': '../.eslintrc.js',
+    'extends': '../../.eslintrc.js',
     'globals': {
         'Atomics': 'readonly',
         'SharedArrayBuffer': 'readonly',
-        'browser': true
+        'browser': true,
+        'expect': 'readonly'
     },
     "rules": {
         "no-undef": ['off'],

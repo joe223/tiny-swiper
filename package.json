@@ -2,9 +2,21 @@
   "name": "tiny-swiper",
   "private": true,
   "devDependencies": {
+    "commitizen": "^4.1.2",
+    "husky": "^4.2.5",
     "lerna": "^3.20.2"
+  },
+  "scripts": {
+    "release": "lerna publish --conventional-commits --dist-tag=next"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run test",
+      "prepare-commit-msg": "exec < /dev/tty && git-cz --hook || true"
+    }
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "repository": "https://github.com/joe223/tiny-swiper.git"
 }

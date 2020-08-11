@@ -1,6 +1,6 @@
 import { Options } from '../options'
 import {
-    removeClass, addClass, setStyle, setAttr
+    removeClass, addClass, setStyle, setAttr, attachListener, detachListener
 } from './dom'
 import { State } from '../state/index'
 import { Env } from '../env/index'
@@ -24,6 +24,54 @@ export function Renderer (
     env: Env,
     options: Options
 ): Renderer {
+    function updateItem (state: State): void {
+        const {
+            $wrapper
+        } = env.element
+        const {
+            index
+        } = state
+
+        $wrapper.querySelectorAll(`[${sliderTag}]`).forEach($slide => {
+            // eslint-disable-next-line no-bitwise
+            const tagNumber = ~~<string>$slide.getAttribute(sliderTag)
+
+            removeClass(<HTMLElement>$slide, [
+                options.slidePrevClass,
+                options.slideNextClass,
+                options.slideActiveClass
+            ])
+
+            if (tagNumber === index) {
+                addClass(<HTMLElement>$slide, options.slideActiveClass)
+            }
+            if (tagNumber === index - 1) {
+                addClass(<HTMLElement>$slide, options.slidePrevClass)
+            }
+            if (tagNumber === index + 1) {
+                addClass(<HTMLElement>$slide, options.slideNextClass)
+            }
+        })
+    }
+
+    function translate (
+        state: State,
+        $wrapper: HTMLElement,
+        // eslint-disable-next-line no-shadow
+        duration?: number
+    ): void {
+        const wrapperStyle = {
+            transition: state.isStart
+                ? 'none'
+                : `transform ease ${duration}ms`,
+            transform: options.isHorizontal
+                ? `translate3d(${state.transforms}px, 0, 0)`
+                : `translate3d(0, ${state.transforms}px, 0)`
+        }
+
+        setStyle($wrapper, wrapperStyle)
+    }
+
     function render (
         state: State,
         duration?: number,
@@ -33,44 +81,15 @@ export function Renderer (
         const {
             $wrapper
         } = env.element
-        const {
-            index
-        } = state
-        const wrapperStyle = {
-            transition: state.isStart
-                ? 'none'
-                : `transform ease ${duration === undefined ? options.speed : duration}ms`,
-            transform: options.isHorizontal
-                ? `translate3d(${state.transforms}px, 0, 0)`
-                : `translate3d(0, ${state.transforms}px, 0)`
-        }
+        const timing = duration === undefined ? options.speed : duration
 
-        setStyle($wrapper, wrapperStyle)
+        translate(state, $wrapper, timing)
 
-        if (!state.isStart) {
-            $wrapper.querySelectorAll(`[${sliderTag}]`).forEach($slide => {
-                // eslint-disable-next-line no-bitwise
-                const tagNumber = ~~<string>$slide.getAttribute(sliderTag)
-
-                removeClass(<HTMLElement>$slide, [
-                    options.slidePrevClass,
-                    options.slideNextClass,
-                    options.slideActiveClass
-                ])
-
-                if (tagNumber === index) {
-                    addClass(<HTMLElement>$slide, options.slideActiveClass)
-                }
-                if (tagNumber === index - 1) {
-                    addClass(<HTMLElement>$slide, options.slidePrevClass)
-                }
-                if (tagNumber === index + 1) {
-                    addClass(<HTMLElement>$slide, options.slideNextClass)
-                }
-            })
-        }
+        // Update slide style only if scroll action is end.
+        if (!state.isStart) updateItem(state)
 
         force && getComputedStyle($wrapper).transform
+        cb && setTimeout(cb, timing)
     }
 
     function appendExpandList (): void {

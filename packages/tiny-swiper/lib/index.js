@@ -38,7 +38,6 @@
     resistanceRatio: 0.85,
     speed: 300,
     longSwipesMs: 300,
-    intermittent: 0,
     spaceBetween: 0,
     slidesPerView: 1,
     centeredSlides: false,
@@ -342,6 +341,7 @@
       var index = state.index,
           tracker = state.tracker;
       var measure = env.measure;
+      state.isStart = false;
 
       if (!options.freeMode || tracker.getLogs().length < 2) {
         var duration = tracker.getDuration();
@@ -535,36 +535,45 @@
   var shallowTag = 'data-shallow-slider';
   var sliderTag = 'data-slider';
   function Renderer(env, options) {
-    function render(state, duration, cb, force) {
+    function updateItem(state) {
       var $wrapper = env.element.$wrapper;
       var index = state.index;
+      $wrapper.querySelectorAll("[" + sliderTag + "]").forEach(function ($slide) {
+        // eslint-disable-next-line no-bitwise
+        var tagNumber = ~~$slide.getAttribute(sliderTag);
+        removeClass($slide, [options.slidePrevClass, options.slideNextClass, options.slideActiveClass]);
+
+        if (tagNumber === index) {
+          addClass($slide, options.slideActiveClass);
+        }
+
+        if (tagNumber === index - 1) {
+          addClass($slide, options.slidePrevClass);
+        }
+
+        if (tagNumber === index + 1) {
+          addClass($slide, options.slideNextClass);
+        }
+      });
+    }
+
+    function translate(state, $wrapper, // eslint-disable-next-line no-shadow
+    duration) {
       var wrapperStyle = {
-        transition: state.isStart ? 'none' : "transform ease " + (duration === undefined ? options.speed : duration) + "ms",
+        transition: state.isStart ? 'none' : "transform ease " + duration + "ms",
         transform: options.isHorizontal ? "translate3d(" + state.transforms + "px, 0, 0)" : "translate3d(0, " + state.transforms + "px, 0)"
       };
       setStyle($wrapper, wrapperStyle);
+    }
 
-      if (!state.isStart) {
-        $wrapper.querySelectorAll("[" + sliderTag + "]").forEach(function ($slide) {
-          // eslint-disable-next-line no-bitwise
-          var tagNumber = ~~$slide.getAttribute(sliderTag);
-          removeClass($slide, [options.slidePrevClass, options.slideNextClass, options.slideActiveClass]);
+    function render(state, duration, cb, force) {
+      var $wrapper = env.element.$wrapper;
+      var timing = duration === undefined ? options.speed : duration;
+      translate(state, $wrapper, timing); // Update slide style only if scroll action is end.
 
-          if (tagNumber === index) {
-            addClass($slide, options.slideActiveClass);
-          }
-
-          if (tagNumber === index - 1) {
-            addClass($slide, options.slidePrevClass);
-          }
-
-          if (tagNumber === index + 1) {
-            addClass($slide, options.slideNextClass);
-          }
-        });
-      }
-
+      if (!state.isStart) updateItem(state);
       force && getComputedStyle($wrapper).transform;
+      cb && setTimeout(cb, timing);
     }
 
     function appendExpandList() {
@@ -708,9 +717,11 @@
       }
 
       state.index = computedIndex;
-      transform(offset);
       eventHub.emit('before-slide', targetIndex, state);
-      render(duration);
+      transform(offset);
+      render(duration, function () {
+        eventHub.emit('after-slide', targetIndex, state);
+      });
     }
 
     function scrollPixel(px) {

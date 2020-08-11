@@ -17,7 +17,6 @@ export type Options = {
     resistanceRatio: number
     speed: number
     longSwipesMs: number
-    intermittent: number
     spaceBetween: number
     slidesPerView: number
     centeredSlides: boolean
@@ -52,7 +51,6 @@ const defaultOptions: UserOptions = {
     resistanceRatio: 0.85,
     speed: 300,
     longSwipesMs: 300,
-    intermittent: 0,
     spaceBetween: 0,
     slidesPerView: 1,
     centeredSlides: false,
