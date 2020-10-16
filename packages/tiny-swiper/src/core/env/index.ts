@@ -15,20 +15,16 @@ export type Env = {
     element: Element
     measure: Measure
     limitation: Limitation
-    update (): void
+    update (element: Element): void
 }
 
 export function Env (
-    el: HTMLElement | string,
+    elem: Element,
     options: Options
 ): Env {
     const env = <Env>{}
 
-    function update (): void {
-        const element = Element(
-            el,
-            options
-        )
+    function update (element: Element): void {
         const measure = Measure(
             options,
             element
@@ -55,7 +51,7 @@ export function Env (
 
     env.update = update
 
-    update()
+    update(elem)
 
     return env
 }

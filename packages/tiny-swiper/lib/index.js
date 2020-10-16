@@ -22,6 +22,71 @@
     return _extends.apply(this, arguments);
   }
 
+  function addClass(el, list) {
+    if (list === void 0) {
+      list = [];
+    }
+
+    if (!Array.isArray(list)) list = [list];
+    list.forEach(function (clz) {
+      return !el.classList.contains(clz) && el.classList.add(clz);
+    });
+  }
+  function removeClass(el, list) {
+    if (list === void 0) {
+      list = [];
+    }
+
+    if (!Array.isArray(list)) list = [list];
+    list.forEach(function (clz) {
+      return el.classList.contains(clz) && el.classList.remove(clz);
+    });
+  }
+  function attachListener(el, evtName, handler, opts) {
+    el.addEventListener(evtName, handler, opts);
+  }
+  function detachListener(el, evtName, handler) {
+    el.removeEventListener(evtName, handler);
+  }
+  function setAttr(el, attr, value) {
+    if (value === void 0) {
+      value = '';
+    }
+
+    el.setAttribute(attr, value);
+    return el;
+  }
+  function setStyle(el, style, forceRender) {
+    Object.keys(style).forEach(function (prop) {
+      // TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+      el.style[prop] = style[prop];
+    }); // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+
+    forceRender && getComputedStyle(el);
+    return el;
+  }
+  function getTranslate(el, isHorizontal) {
+    var matrix = getComputedStyle(el).transform.replace(/[a-z]|\(|\)|\s/g, '').split(',').map(parseFloat);
+    var arr = [];
+
+    if (matrix.length === 16) {
+      arr = matrix.slice(12, 14);
+    } else if (matrix.length === 6) {
+      arr = matrix.slice(4, 6);
+    }
+
+    return arr[isHorizontal ? 0 : 1] || 0;
+  }
+
+  function translate(state, env, options, duration) {
+    var $wrapper = env.element.$wrapper;
+    var wrapperStyle = {
+      transition: state.isStart ? 'none' : "transform ease " + duration + "ms",
+      transform: options.isHorizontal ? "translate3d(" + state.transforms + "px, 0, 0)" : "translate3d(0, " + state.transforms + "px, 0)"
+    };
+    setStyle($wrapper, wrapperStyle);
+  }
+
   var defaultOptions = {
     // `isHorizontal` is computed value
     direction: 'horizontal',
@@ -49,7 +114,10 @@
     touchStartPreventDefault: true,
     touchStartForcePreventDefault: false,
     touchMoveStopPropagation: false,
-    excludeElements: []
+    excludeElements: [],
+    injections: {
+      translate: translate
+    }
   };
   function optionFormatter(userOptions) {
     var options = _extends({}, defaultOptions, {}, userOptions);
@@ -124,9 +192,9 @@
     var logs = [];
 
     function push(position) {
-      logs.push(_extends({}, position, {
+      logs.push(_extends({
         time: Date.now()
-      }));
+      }, position));
     }
 
     function vector() {
@@ -183,62 +251,6 @@
     return state;
   }
 
-  function addClass(el, list) {
-    if (list === void 0) {
-      list = [];
-    }
-
-    if (!Array.isArray(list)) list = [list];
-    list.forEach(function (clz) {
-      return !el.classList.contains(clz) && el.classList.add(clz);
-    });
-  }
-  function removeClass(el, list) {
-    if (list === void 0) {
-      list = [];
-    }
-
-    if (!Array.isArray(list)) list = [list];
-    list.forEach(function (clz) {
-      return el.classList.contains(clz) && el.classList.remove(clz);
-    });
-  }
-  function attachListener(el, evtName, handler, opts) {
-    el.addEventListener(evtName, handler, opts);
-  }
-  function detachListener(el, evtName, handler) {
-    el.removeEventListener(evtName, handler);
-  }
-  function setAttr(el, attr, value) {
-    if (value === void 0) {
-      value = '';
-    }
-
-    el.setAttribute(attr, value);
-    return el;
-  }
-  function setStyle(el, style, forceRender) {
-    Object.keys(style).forEach(function (prop) {
-      // TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
-      el.style[prop] = style[prop];
-    }); // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-
-    forceRender && getComputedStyle(el);
-    return el;
-  }
-  function getTranslate(el, isHorizontal) {
-    var matrix = getComputedStyle(el).transform.replace(/[a-z]|\(|\)|\s/g, '').split(',').map(parseFloat);
-    var arr = [];
-
-    if (matrix.length === 16) {
-      arr = matrix.slice(12, 14);
-    } else if (matrix.length === 6) {
-      arr = matrix.slice(4, 6);
-    }
-
-    return arr[isHorizontal ? 0 : 1] || 0;
-  }
-
   function now() {
     return performance ? performance.now() : Date.now();
   }
@@ -293,7 +305,7 @@
     };
   }
 
-  function Motions(options, env, state, operations) {
+  function Actions(options, env, state, operations) {
     var initLayout = operations.initLayout,
         initStatus = operations.initStatus,
         render = operations.render,
@@ -360,8 +372,7 @@
         initStatus();
       } else {
         var vector = tracker.vector();
-        var velocity = vector[options.isHorizontal ? 'velocityX' : 'velocityY']; // console.log(tracker.getLogs())
-
+        var velocity = vector[options.isHorizontal ? 'velocityX' : 'velocityY'];
         animation.run(function (duration) {
           var offset = velocity * duration;
           velocity *= 0.98;
@@ -385,13 +396,13 @@
     };
   }
 
-  function Sensor(env, state, options, operations, injections) {
+  function Sensor(env, state, options, operations) {
     var touchable = env.touchable;
     var formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO'];
-    var motions = injections.get('Motions', Motions)(options, env, state, operations);
-    var preheat = motions.preheat,
-        move = motions.move,
-        stop = motions.stop;
+    var actions = Actions(options, env, state, operations);
+    var preheat = actions.preheat,
+        move = actions.move,
+        stop = actions.stop;
 
     function getPosition(e) {
       var touch = touchable ? e.changedTouches[0] : e;
@@ -453,17 +464,6 @@
     };
   }
 
-  function Element(el, options) {
-    var $el = typeof el === 'string' ? document.body.querySelector(el) : el;
-    var $wrapper = $el.querySelector("." + options.wrapperClass);
-    var $list = [].slice.call($el.getElementsByClassName(options.slideClass));
-    return {
-      $el: $el,
-      $wrapper: $wrapper,
-      $list: $list
-    };
-  }
-
   function Measure(options, element) {
     var $el = element.$el;
     var viewSize = options.isHorizontal ? $el.offsetWidth : $el.offsetHeight;
@@ -511,11 +511,10 @@
     return limitation;
   }
 
-  function Env(el, options) {
+  function Env(elem, options) {
     var env = {};
 
-    function update() {
-      var element = Element(el, options);
+    function update(element) {
       var measure = Measure(options, element);
       var limitation = Limitation(element, measure, options);
       var touchable = Boolean('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0 || window.DocumentTouch && document instanceof DocumentTouch);
@@ -528,7 +527,7 @@
     }
 
     env.update = update;
-    update();
+    update(elem);
     return env;
   }
 
@@ -557,19 +556,10 @@
       });
     }
 
-    function translate(state, $wrapper, // eslint-disable-next-line no-shadow
-    duration) {
-      var wrapperStyle = {
-        transition: state.isStart ? 'none' : "transform ease " + duration + "ms",
-        transform: options.isHorizontal ? "translate3d(" + state.transforms + "px, 0, 0)" : "translate3d(0, " + state.transforms + "px, 0)"
-      };
-      setStyle($wrapper, wrapperStyle);
-    }
-
     function render(state, duration, cb, force) {
       var $wrapper = env.element.$wrapper;
       var timing = duration === undefined ? options.speed : duration;
-      translate(state, $wrapper, timing); // Update slide style only if scroll action is end.
+      options.injections.translate(state, env, options, timing); // Update slide style only if scroll action is end.
 
       if (!state.isStart) updateItem(state);
       force && getComputedStyle($wrapper).transform;
@@ -787,32 +777,23 @@
     };
   }
 
-  function Injections() {
-    var injections = {};
-
-    function inject(key, injection) {
-      Object.defineProperty(injections, key, {
-        value: injection,
-        writable: false
-      });
-    }
-
-    function get(key, backup) {
-      return injections[key] || backup;
-    }
-
+  function Element(el, options) {
+    var $el = typeof el === 'string' ? document.body.querySelector(el) : el;
+    var $wrapper = $el.querySelector("." + options.wrapperClass);
+    var $list = [].slice.call($el.getElementsByClassName(options.slideClass));
     return {
-      inject: inject,
-      get: get
+      $el: $el,
+      $wrapper: $wrapper,
+      $list: $list
     };
   }
 
   var Swiper = function Swiper(el, userOptions) {
     var options = optionFormatter(userOptions);
     var eventHub = EventHub();
-    var env = Env(el, options);
+    var element = Element(el, options);
+    var env = Env(element, options);
     var state = State();
-    var injections = Injections();
     var on = eventHub.on,
         off = eventHub.off,
         emit = eventHub.emit;
@@ -830,7 +811,7 @@
 
     var renderer = Renderer(env, options);
     var operations = Operations(env, state, options, renderer, eventHub);
-    var sensor = Sensor(env, state, options, operations, injections);
+    var sensor = Sensor(env, state, options, operations);
 
     function destroy() {
       sensor.detach();
@@ -839,25 +820,23 @@
     }
 
     function updateSize() {
-      env.update();
+      env.update(Element(el, options));
       operations.update();
     }
 
     function update() {
       renderer.destroy();
-      env.update();
+      env.update(Element(el, options));
       renderer.init();
-      updateSize();
+      operations.update();
     }
 
     var slideTo = operations.slideTo;
-    var inject = injections.inject;
     Object.assign(instance, {
       update: update,
       destroy: destroy,
       slideTo: slideTo,
-      updateSize: updateSize,
-      inject: inject
+      updateSize: updateSize
     });
     renderer.init();
     sensor.attach();

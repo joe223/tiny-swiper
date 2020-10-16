@@ -78,7 +78,9 @@
             centeredSlides: true,
             initialSlide: 0,
             mousewheel: true
-        });
+        })
+
+        mySwiper.on('scroll', (index, state) => console.log(index, state))
     </script>
 </body>
 

@@ -74,7 +74,7 @@
             initialSlide: 2
         })
 
-        mySwiper.on('after-slide', e => console.log(e.progress))
+        mySwiper.on('after-slide', (index, state) => console.log(index, state))
     </script>
 </body>
 

@@ -1,4 +1,3 @@
-import { Position } from './trace'
 import { State } from './index'
 import { Limitation } from '../env/limitation'
 import { EventHub } from '../eventHub'

@@ -5,7 +5,7 @@ import { State } from '../state/index'
 import { Operations } from '../state/operations'
 import { Animation } from '../render/animation'
 
-export type Motions = {
+export type Actions = {
     preheat (
         originPosition: Position,
         originTransform: number
@@ -14,7 +14,7 @@ export type Motions = {
     stop (): void
 }
 
-export function Motions (
+export function Actions (
     options: Options,
     env: Env,
     state: State,
@@ -113,7 +113,6 @@ export function Motions (
 
             let velocity = vector[options.isHorizontal ? 'velocityX' : 'velocityY']
 
-            // console.log(tracker.getLogs())
             animation.run((duration: number) => {
                 const offset = velocity * duration
 

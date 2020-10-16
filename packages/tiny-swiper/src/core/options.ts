@@ -1,6 +1,17 @@
 import { SwiperPlugin } from './index'
+import { translate } from './render/layout'
+import { State } from './state/index'
+import { Env } from './env/index'
 
 export type Direction = 'horizontal' | 'vertical'
+export type Injections = {
+    translate: (
+        state: State,
+        env: Env,
+        options: Options,
+        duration: number
+    ) => void
+}
 
 export type Options = {
     direction: Direction
@@ -31,6 +42,7 @@ export type Options = {
     excludeElements: Array<HTMLElement | string>
     isHorizontal: boolean
     plugins?: Array<SwiperPlugin>
+    injections: Injections
 }
 
 export type UserOptions = Partial<Options>
@@ -62,7 +74,10 @@ const defaultOptions: UserOptions = {
     touchStartPreventDefault: true,
     touchStartForcePreventDefault: false,
     touchMoveStopPropagation: false,
-    excludeElements: []
+    excludeElements: [],
+    injections: {
+        translate
+    }
 }
 
 export function optionFormatter (userOptions: UserOptions): Options {

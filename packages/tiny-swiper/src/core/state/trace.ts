@@ -98,8 +98,8 @@ export function Tracker (): Tracker {
 
     function push (position: Position): void {
         logs.push({
-            ...position,
-            time: Date.now()
+            time: Date.now(),
+            ...position
         })
     }
 

@@ -3,9 +3,8 @@ import { Env } from '../env/index'
 import { attachListener, detachListener, getTranslate } from '../render/dom'
 import { Options } from '../options'
 import { Position } from '../state/trace'
-import { Motions } from './motions'
+import { Actions } from './actions'
 import { Operations } from '../state/operations'
-import { Injections } from '../injections'
 
 export type Sensor = {
     attach: () => void
@@ -17,8 +16,7 @@ export function Sensor (
     env: Env,
     state: State,
     options: Options,
-    operations: Operations,
-    injections: Injections
+    operations: Operations
 ): Sensor {
     const {
         touchable
@@ -31,13 +29,12 @@ export function Sensor (
         'BUTTON',
         'VIDEO'
     ]
-    const motions = injections.get('Motions', Motions)(options, env, state, operations)
+    const actions = Actions(options, env, state, operations)
     const {
         preheat,
         move,
         stop
-    } = motions
-
+    } = actions
 
     function getPosition (e: Event): Position {
         const touch = touchable ? (<TouchEvent>e).changedTouches[0] : <MouseEvent>e

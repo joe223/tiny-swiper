@@ -5,7 +5,7 @@ import { Sensor } from './sensor/index'
 import { Env } from './env/index'
 import { Renderer } from './render/index'
 import { Operations } from './state/operations'
-import { Injections } from './injections'
+import { Element } from './env/element'
 
 export type SwiperInstance = {
     on: (evtName: string, cb: Function) => void
@@ -33,9 +33,12 @@ const Swiper: Swiper = <Swiper> function (
 ): SwiperInstance {
     const options = optionFormatter(userOptions)
     const eventHub = EventHub()
-    const env = Env(el, options)
+    const element = Element(
+        el,
+        options
+    )
+    const env = Env(element, options)
     const state = State()
-    const injections = Injections()
     const {
         on,
         off,
@@ -73,8 +76,7 @@ const Swiper: Swiper = <Swiper> function (
         env,
         state,
         options,
-        operations,
-        injections
+        operations
     )
 
     function destroy (): void {
@@ -84,31 +86,32 @@ const Swiper: Swiper = <Swiper> function (
     }
 
     function updateSize (): void {
-        env.update()
+        env.update(Element(
+            el,
+            options
+        ))
         operations.update()
     }
 
     function update (): void {
         renderer.destroy()
-        env.update()
+        env.update(Element(
+            el,
+            options
+        ))
         renderer.init()
-
-        updateSize()
+        operations.update()
     }
 
     const {
         slideTo
     } = operations
-    const {
-        inject
-    } = injections
 
     Object.assign(instance, {
         update,
         destroy,
         slideTo,
-        updateSize,
-        inject
+        updateSize
     })
 
     renderer.init()

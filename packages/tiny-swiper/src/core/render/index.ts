@@ -54,24 +54,6 @@ export function Renderer (
         })
     }
 
-    function translate (
-        state: State,
-        $wrapper: HTMLElement,
-        // eslint-disable-next-line no-shadow
-        duration?: number
-    ): void {
-        const wrapperStyle = {
-            transition: state.isStart
-                ? 'none'
-                : `transform ease ${duration}ms`,
-            transform: options.isHorizontal
-                ? `translate3d(${state.transforms}px, 0, 0)`
-                : `translate3d(0, ${state.transforms}px, 0)`
-        }
-
-        setStyle($wrapper, wrapperStyle)
-    }
-
     function render (
         state: State,
         duration?: number,
@@ -83,7 +65,7 @@ export function Renderer (
         } = env.element
         const timing = duration === undefined ? options.speed : duration
 
-        translate(state, $wrapper, timing)
+        options.injections.translate(state, env, options, timing)
 
         // Update slide style only if scroll action is end.
         if (!state.isStart) updateItem(state)
