@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.SwiperPluginKeyboardControl = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   function _extends() {
     _extends = Object.assign || function (target) {
@@ -53,54 +53,55 @@
   /**
    * TinySwiper plugin for keyboard control.
    *
-   * @param {TinySwiper} instance
+   * @param {SwiperInstance} instance
+   * @param {Options}
    */
 
 
-  function SwiperPluginKeyboardControl(instance) {
-    var config = instance.config;
-    if (!config.keyboard) return;
-    instance.keyboard = {
+  function SwiperPluginKeyboardControl(instance, options) {
+    if (!options.keyboard) return;
+    var keyboard = {
       enable: function enable() {
-        instance.config.keyboard.enabled = true;
+        options.keyboard.enabled = true;
       },
       disable: function disable() {
-        instance.config.keyboard.enabled = false;
+        options.keyboard.enabled = false;
       },
       onKeyDown: function onKeyDown(e) {
         var key = e.key;
-        if (instance.config.keyboard.onlyInViewport && !isElementInView(instance.$el) || !instance.config.keyboard.enabled) return;
+        if (options.keyboard.onlyInViewport && !isElementInView(instance.env.element.$el) || !options.keyboard.enabled) return;
 
-        if (instance.isHorizontal) {
+        if (options.isHorizontal) {
           if (key === DIRECTION.left) {
-            instance.scroll(instance.index - 1);
+            instance.slideTo(instance.state.index - 1);
           } else if (key === DIRECTION.right) {
-            instance.scroll(instance.index + 1);
+            instance.slideTo(instance.state.index + 1);
           }
         } else {
           if (key === DIRECTION.down) {
-            instance.scroll(instance.index - 1);
+            instance.slideTo(instance.state.index - 1);
           } else if (key === DIRECTION.up) {
-            instance.scroll(instance.index + 1);
+            instance.slideTo(instance.state.index + 1);
           }
         }
       }
     };
-    instance.on('before-init', function (tinyswiper) {
-      config.keyboard = _extends({
+    instance.on('before-init', function () {
+      options.keyboard = _extends({
         enabled: true,
         onlyInViewport: true
-      }, config.keyboard);
-      attachListener(window, 'keydown', tinyswiper.keyboard.onKeyDown);
+      }, options.keyboard);
+      instance.keyboard = keyboard;
+      attachListener(window, 'keydown', keyboard.onKeyDown);
     });
-    instance.on('after-destroy', function (tinyswiper) {
-      if (!tinyswiper.keyboard) return;
-      detachListener(window, 'keydown', tinyswiper.keyboard.onKeyDown);
-      delete tinyswiper.keyboard;
+    instance.on('after-destroy', function () {
+      if (!keyboard) return;
+      detachListener(window, 'keydown', keyboard.onKeyDown);
+      delete instance.keyboard;
     });
   }
 
   return SwiperPluginKeyboardControl;
 
-}));
+})));
 //# sourceMappingURL=keyboardControl.js.map

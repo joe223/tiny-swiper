@@ -46,6 +46,10 @@ export function Sensor (
     }
 
     function onTouchStart (e: Event): void {
+        for (let i = 0; i < options.excludeElements.length; i++) {
+            if (options.excludeElements[i].contains(e.target as Node)) return
+        }
+
         const {
             $wrapper
         } = env.element

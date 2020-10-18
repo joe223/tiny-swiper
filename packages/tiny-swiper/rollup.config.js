@@ -11,10 +11,11 @@ const entries = [
     {
         input: 'index.ts',
         compress: isBuildProd,
+        serve: true,
         options: {
             name: 'Swiper'
         }
-    }
+    },
     // {
     //     input: 'index.full.ts',
     //     compress: isBuildProd,
@@ -32,27 +33,27 @@ const entries = [
     //         entryFileNames: '[name].js'
     //     }
     // },
-    // {
-    //     input: 'modules/pagination.js',
-    //     compress: isBuildProd,
-    //     options: {
-    //         name: 'SwiperPluginPagination'
-    //     }
-    // },
-    // {
-    //     input: 'modules/lazyload.js',
-    //     compress: isBuildProd,
-    //     options: {
-    //         name: 'SwiperPluginLazyload'
-    //     }
-    // },
-    // {
-    //     input: 'modules/keyboardControl.js',
-    //     compress: isBuildProd,
-    //     options: {
-    //         name: 'SwiperPluginKeyboardControl'
-    //     }
-    // }
+    {
+        input: 'modules/pagination.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginPagination'
+        }
+    },
+    {
+        input: 'modules/lazyload.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginLazyload'
+        }
+    },
+    {
+        input: 'modules/keyboardControl.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginKeyboardControl'
+        }
+    }
 ]
 const extensions = [
     '.js', '.jsx', '.ts', '.tsx'
@@ -67,14 +68,12 @@ const plugins = [
 ]
 
 function genConfig (options) {
-    console.log('genConfig', isBuildProd)
-
     return options.map(entry => ({
         input: path.resolve('src', entry.input),
         plugins: [
             ...plugins,
             entry.compress ? uglify() : null,
-            isBuildProd ? null : serve(path.resolve(__dirname))
+            (isBuildProd || !entry.serve) ? null : serve(path.resolve(__dirname))
         ],
         output: {
             dir: path.resolve('lib', path.dirname(entry.input)),

@@ -147,14 +147,15 @@ export function Operations (
             render(0, undefined, true)
         }
 
-        state.index = computedIndex
         eventHub.emit('before-slide',
-            targetIndex,
-            state)
+            state.index,
+            state,
+            computedIndex)
+        state.index = computedIndex
         transform(offset)
         render(duration, () => {
             eventHub.emit('after-slide',
-                targetIndex,
+                computedIndex,
                 state)
         })
     }

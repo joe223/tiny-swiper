@@ -17,7 +17,7 @@ export function removeClass (
 }
 
 export function attachListener (
-    el: HTMLElement | Document,
+    el: HTMLElement | Document | Window,
     evtName: string,
     handler: EventListenerOrEventListenerObject,
     opts?: boolean | AddEventListenerOptions
@@ -26,7 +26,7 @@ export function attachListener (
 }
 
 export function detachListener (
-    el: HTMLElement | Document,
+    el: HTMLElement | Document | Window,
     evtName: string,
     handler: EventListenerOrEventListenerObject
 ): void {

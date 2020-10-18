@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.SwiperPluginLazyload = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   function _extends() {
     _extends = Object.assign || function (target) {
@@ -46,24 +46,24 @@
   /**
    * TinySwiper plugin for image lazy loading.
    *
-   * @param {*} tinyswiper
+   * @param {SwiperInstance} instance
+   * @param {Options}
    */
 
-  function SwiperPluginLazyload(instance) {
-    var config = instance.config;
-    if (!config.lazyload) return;
-    instance.lazyload = {
+  function SwiperPluginLazyload(instance, options) {
+    if (!options.lazyload) return;
+    var lazyload = {
       load: function load(index) {
-        var $slide = instance.$list[index];
+        var $slide = instance.env.element.$list[index];
         if (!$slide) return;
-        var $imgs = [].slice.call($slide.getElementsByClassName(config.lazyload.elementClass));
-        var $preloaders = [].slice.call($slide.getElementsByClassName(config.lazyload.preloaderClass));
+        var $imgs = [].slice.call($slide.getElementsByClassName(options.lazyload.elementClass));
+        var $preloaders = [].slice.call($slide.getElementsByClassName(options.lazyload.preloaderClass));
 
         function handleLoaded($img) {
           $img.removeAttribute('data-src');
-          addClass($img, [config.lazyload.loadedClass]);
-          removeClass($img, [config.lazyload.loadingClass]);
-          $img.onloaded = null;
+          addClass($img, [options.lazyload.loadedClass]);
+          removeClass($img, [options.lazyload.loadingClass]);
+          $img.onload = null;
           $img.onerror = null;
           $img.isLoaded = true;
 
@@ -79,8 +79,8 @@
         $imgs.forEach(function ($img) {
           if (!$img.hasAttribute('data-src')) return;
           var src = $img.getAttribute('data-src');
-          addClass($img, [config.lazyload.loadingClass]);
-          removeClass($img, [config.lazyload.loadedClass]);
+          addClass($img, [options.lazyload.loadingClass]);
+          removeClass($img, [options.lazyload.loadedClass]);
           $img.src = src;
 
           $img.onload = function () {
@@ -93,18 +93,18 @@
         });
       },
       loadRange: function loadRange(index, range) {
-        instance.lazyload.load(index);
+        lazyload.load(index);
 
-        if (config.lazyload.loadPrevNext && range >= 1) {
+        if (options.lazyload.loadPrevNext && range >= 1) {
           for (var i = 1; i <= range; i++) {
-            instance.lazyload.load(index + i);
-            instance.lazyload.load(index - i);
+            lazyload.load(index + i);
+            lazyload.load(index - i);
           }
         }
       }
     };
     instance.on('before-init', function () {
-      config.lazyload = _extends({
+      options.lazyload = _extends({
         loadPrevNext: false,
         loadPrevNextAmount: 1,
         loadOnTransitionStart: false,
@@ -112,26 +112,26 @@
         loadingClass: 'swiper-lazy-loading',
         loadedClass: 'swiper-lazy-loaded',
         preloaderClass: 'swiper-lazy-preloader'
-      }, config.lazyload);
+      }, options.lazyload);
     });
 
-    if (config.lazyload.loadOnTransitionStart) {
-      instance.on('before-slide', function (oldIndex, tinyswiper, newIndex) {
-        tinyswiper.lazyload.loadRange(newIndex, config.lazyload.loadPrevNextAmount);
+    if (options.lazyload.loadOnTransitionStart) {
+      instance.on('before-slide', function (oldIndex, state, newIndex) {
+        lazyload.loadRange(newIndex, options.lazyload.loadPrevNextAmount);
       });
     } else {
-      instance.on('after-slide', function (index, tinyswiper) {
-        tinyswiper.lazyload.loadRange(index, config.lazyload.loadPrevNextAmount);
+      instance.on('after-slide', function (index, state) {
+        lazyload.loadRange(index, options.lazyload.loadPrevNextAmount);
       });
     }
 
-    instance.on('after-destroy', function (tinyswiper) {
-      if (!tinyswiper.config.lazyload) return;
-      delete tinyswiper.lazyload;
+    instance.on('after-destroy', function () {
+      if (!instance.lazyload) return;
+      delete instance.lazyload;
     });
   }
 
   return SwiperPluginLazyload;
 
-}));
+})));
 //# sourceMappingURL=lazyload.js.map

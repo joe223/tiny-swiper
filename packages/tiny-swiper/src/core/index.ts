@@ -12,7 +12,7 @@ export type SwiperInstance = {
     off: (evtName: string, cb: Function) => void
     update: () => void
     destroy: () => void
-    slideTo: (index: number, duration: number) => void
+    slideTo: (index: number, duration?: number) => void
     options: Options
     env: Env
     state: State
@@ -116,7 +116,7 @@ const Swiper: Swiper = <Swiper> function (
 
     renderer.init()
     sensor.attach()
-    operations.slideTo(
+    slideTo(
         options.initialSlide,
         0
     )

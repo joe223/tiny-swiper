@@ -22,7 +22,6 @@ export type Options = {
     loop: boolean
     freeMode: boolean
     mousewheel: boolean
-    pagination: boolean
     passiveListeners: boolean
     resistance: boolean
     resistanceRatio: number
@@ -39,7 +38,7 @@ export type Options = {
     touchStartPreventDefault: boolean
     touchStartForcePreventDefault: boolean
     touchMoveStopPropagation: boolean
-    excludeElements: Array<HTMLElement | string>
+    excludeElements: Array<HTMLElement>
     isHorizontal: boolean
     plugins?: Array<SwiperPlugin>
     injections: Injections
@@ -57,7 +56,6 @@ const defaultOptions: UserOptions = {
     loop: false,
     freeMode: false,
     mousewheel: false,
-    pagination: false,
     passiveListeners: true,
     resistance: true,
     resistanceRatio: 0.85,

@@ -97,7 +97,6 @@
     loop: false,
     freeMode: false,
     mousewheel: false,
-    pagination: false,
     passiveListeners: true,
     resistance: true,
     resistanceRatio: 0.85,
@@ -413,6 +412,10 @@
     }
 
     function onTouchStart(e) {
+      for (var i = 0; i < options.excludeElements.length; i++) {
+        if (options.excludeElements[i].contains(e.target)) return;
+      }
+
       var $wrapper = env.element.$wrapper;
       var shouldPreventDefault = options.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1 || options.touchStartForcePreventDefault;
       if (shouldPreventDefault && !options.passiveListeners) e.preventDefault();
@@ -706,11 +709,11 @@
         render(0, undefined, true);
       }
 
+      eventHub.emit('before-slide', state.index, state, computedIndex);
       state.index = computedIndex;
-      eventHub.emit('before-slide', targetIndex, state);
       transform(offset);
       render(duration, function () {
-        eventHub.emit('after-slide', targetIndex, state);
+        eventHub.emit('after-slide', computedIndex, state);
       });
     }
 
@@ -840,7 +843,7 @@
     });
     renderer.init();
     sensor.attach();
-    operations.slideTo(options.initialSlide, 0);
+    slideTo(options.initialSlide, 0);
     emit('after-init', instance);
     return instance;
   };

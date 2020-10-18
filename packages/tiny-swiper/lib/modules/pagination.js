@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.SwiperPluginPagination = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   function _extends() {
     _extends = Object.assign || function (target) {
@@ -43,55 +43,57 @@
     });
   }
 
-  function SwiperPluginPagination(instance) {
-    instance.on('before-init', function (tinyswiper) {
-      var config = tinyswiper.config;
-
-      if (config.pagination) {
-        config.pagination = _extends({
+  function SwiperPluginPagination(instance, options) {
+    var pagination = {
+      $pageList: [],
+      $pagination: null
+    };
+    instance.on('before-init', function () {
+      if (options.pagination) {
+        options.pagination = _extends({
           clickable: false,
           bulletClass: 'swiper-pagination-bullet',
           bulletActiveClass: 'swiper-pagination-bullet-active'
-        }, config.pagination);
+        }, options.pagination);
       }
     });
-    instance.on('after-init', function (tinyswiper) {
-      var config = tinyswiper.config;
-      if (!config.pagination) return;
-      var _config$pagination = config.pagination,
-          bulletClass = _config$pagination.bulletClass,
-          bulletActiveClass = _config$pagination.bulletActiveClass;
-      var $pagination = typeof config.pagination.el === 'string' ? document.body.querySelector(config.pagination.el) : config.pagination.el;
+    instance.on('after-init', function () {
+      if (!options.pagination) return;
+      var _options$pagination = options.pagination,
+          bulletClass = _options$pagination.bulletClass,
+          bulletActiveClass = _options$pagination.bulletActiveClass;
+      var element = instance.env.element;
+      var $list = element.$list;
+      var $pagination = typeof options.pagination.el === 'string' ? document.body.querySelector(options.pagination.el) : options.pagination.el;
       var $pageList = [];
       var $group = document.createDocumentFragment();
-      config.excludeElements.push($pagination);
-      tinyswiper.$pagination = $pagination;
-      tinyswiper.$pageList = $pageList;
-      tinyswiper.$list.forEach(function (item, index) {
+      options.excludeElements.push($pagination);
+      pagination.$pagination = $pagination;
+      pagination.$pageList = $pageList;
+      $list.forEach(function (item, index) {
         var $page = document.createElement('div');
-        addClass($page, index === tinyswiper.index ? [bulletClass, bulletActiveClass] : bulletClass);
+        addClass($page, index === instance.state.index ? [bulletClass, bulletActiveClass] : bulletClass);
         $pageList.push($page);
         $group.appendChild($page);
       });
       $pagination.appendChild($group);
 
-      if (config.pagination.clickable) {
+      if (options.pagination.clickable) {
         $pagination.addEventListener('click', function (e) {
-          tinyswiper.scroll($pageList.indexOf(e.target));
+          instance.slideTo($pageList.indexOf(e.target));
           e.stopPropagation();
         });
       }
     });
-    instance.on('after-destroy', function (tinyswiper) {
-      var config = tinyswiper.config;
-      if (!config.pagination) return;
-      tinyswiper.$pagination.innerHTML = '';
-      tinyswiper.$pageList = [];
-      tinyswiper.$pagination = null;
+    instance.on('after-destroy', function () {
+      if (!options.pagination) return;
+      pagination.$pagination.innerHTML = '';
+      pagination.$pageList = [];
+      pagination.$pagination = null;
     });
-    instance.on('after-slide', function (currentIndex, tinyswiper) {
-      var bulletActiveClass = tinyswiper.config.pagination.bulletActiveClass;
-      tinyswiper.$pageList && tinyswiper.$pageList.forEach(function ($page, index) {
+    instance.on('after-slide', function (currentIndex) {
+      var bulletActiveClass = options.pagination.bulletActiveClass;
+      pagination.$pageList && pagination.$pageList.forEach(function ($page, index) {
         if (index === currentIndex) {
           addClass($page, bulletActiveClass);
         } else {
@@ -103,5 +105,5 @@
 
   return SwiperPluginPagination;
 
-}));
+})));
 //# sourceMappingURL=pagination.js.map
