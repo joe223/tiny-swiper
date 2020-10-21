@@ -1,0 +1,27 @@
+{
+  "version-1.x/someSidebar": [
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Guide",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.x/get-started"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.x/api"
+        }
+      ]
+    },
+    {
+      "type": "doc",
+      "id": "version-1.x/demo"
+    },
+    {
+      "type": "doc",
+      "id": "version-1.x/changelog"
+    }
+  ]
+}

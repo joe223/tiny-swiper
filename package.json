@@ -15,8 +15,5 @@
       "prepare-commit-msg": "exec < /dev/tty && git-cz --hook || true"
     }
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "repository": "https://github.com/joe223/tiny-swiper.git"
 }

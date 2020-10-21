@@ -15,8 +15,6 @@
 
 <h1 align="center">Tiny-Swiper</h1>
 
-## Introduction
-
 Lightweight, extensible and powerful JavaScript carousel with native-like experience for the web.
 Zero dependency, written in vanilla JavaScript, used for free and without any attribution.
 
