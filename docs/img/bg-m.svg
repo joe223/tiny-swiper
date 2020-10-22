@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="375px" height="587px" viewBox="0 0 375 587" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 7</title>
+    <defs>
+        <polygon id="path-1" points="9.98550201e-14 0 375 0 375 587 0 587"></polygon>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="桌面端-HD" transform="translate(-1654.000000, -116.000000)">
+            <g id="编组-7" transform="translate(1654.000000, 116.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="矩形"></g>
+                <polyline id="路径-4" stroke="#FF8585" stroke-width="200" opacity="0.116187686" stroke-linecap="round" stroke-linejoin="round" mask="url(#mask-2)" points="402.455698 13 146.576302 132.863919 67.2350299 170.030475 146.654061 213.363176 369.23503 334.808056 -98 541.808056"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>
