@@ -42,8 +42,9 @@ function Home() {
                         className={styles.logo}
                         src={useBaseUrl('img/logo.svg')}
                         alt="Tiny-Swiper logo"/>
-                    <div className={styles.sloganPc}>The Powerful <br/>
+                    <div className={clsx(styles.slogan, styles.sloganPc)}>The Powerful <br/>
                         JavaScript Carousels</div>
+                    <div className={clsx(styles.slogan, styles.sloganMobile)}>Tiny-Swiper</div>
                 </main>
 
                 <div className={styles.desc}>Lightweight yet fully configurable and extensible web carousel with native-like behavior.
@@ -53,15 +54,17 @@ function Home() {
                     </Link>
                 </div>
 
+                <div className={styles.descMobile}>Lightweight yet fully configurable and extensible web carousel with native-like behavior.</div>
+
                 <div className={styles.btnGroup}>
                     <Link
-                        to='./docs'
-                        className={clsx([styles.button, styles.btnStart])}>
+                        to={useBaseUrl('./docs')}
+                        className={clsx(styles.button, styles.btnStart)}>
                         GET STARTED
                     </Link>
                     <Link
                         to='https://github.com/joe223/tiny-swiper'
-                        className={clsx([styles.button, styles.btnGithub])}>
+                        className={clsx(styles.button, styles.btnGithub)}>
                         GITHUB
                     </Link>
                 </div>

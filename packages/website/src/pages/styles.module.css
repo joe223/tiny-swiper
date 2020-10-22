@@ -2,13 +2,7 @@
     margin: 0 auto;
     padding-bottom: 4em;
     max-width: 700px;
-    font-family: TsukuARdGothic-Regular;
-}
-
-@media screen and (max-width: 700px) {
-    .container {
-        width: 100%;
-    }
+    font-family: TsukuARdGothic-Regular,  "Helvetica Neue", Arial, sans-serif;
 }
 
 .head {
@@ -27,12 +21,21 @@
     height: 162px;
 }
 
+.slogan {
+    font-family: TsukuARdGothic-Regular,  "Helvetica Neue", Arial, sans-serif;
+}
+
 .sloganPc {
     display: block;
-    font-family: TsukuARdGothic-Regular;
     font-size: 48px;
     letter-spacing: 1px;
     line-height: 50px;
+}
+
+.sloganMobile {
+    display: none;
+    margin-bottom: 10px;
+    font-size: 28px;
 }
 
 .desc {
@@ -41,6 +44,13 @@
     letter-spacing: 0.57px;
     text-align: center;
     line-height: 30px;
+}
+
+.descMobile {
+    display: none;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
 }
 
 .btnGroup {
@@ -62,6 +72,11 @@
     font-size: 16px;
     letter-spacing: 0.46px;
     text-align: center;
+    cursor: pointer;
+}
+
+.button:hover {
+    text-decoration: none;
 }
 
 .btnStart {
@@ -69,9 +84,17 @@
     background-image: linear-gradient(149deg, #FF0074, #FF6612);
 }
 
+.btnStart:hover {
+    color: #FFF;
+}
+
 .btnGithub {
     margin-left: 37px;
     border: 1px solid #FF5F1A;
+    color: #FF5F1A;
+}
+
+.btnGithub:hover {
     color: #FF5F1A;
 }
 
@@ -84,4 +107,45 @@ iframe {
     height: 400px;
     border: 1px solid #D3D3D3;
     border-radius: 5px;
+}
+
+@media screen and (max-width: 700px) {
+    .container {
+        width: 100%;
+        padding: 1rem 2rem;
+        background: no-repeat url("/img/bg-m.svg") top center/100% auto;
+    }
+
+    .head {
+        margin-top: 96px;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .logo {
+        margin: 0 auto;
+        width: 120px;
+    }
+
+    .sloganMobile {
+        display: block !important;
+    }
+
+    .sloganPc {
+        display: none !important;
+    }
+
+    .desc {
+        display: none;
+    }
+
+    .descMobile {
+        display: block;
+    }
+
+    .button {
+        width: 154px;
+        height: 40px;
+        font-size: 14px;
+    }
 }
