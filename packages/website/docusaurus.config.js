@@ -1,8 +1,8 @@
 module.exports = {
     title: 'Tiny-Swiper',
     tagline: 'The tagline of my site',
-    url: 'https://joe223.com',
-    baseUrl: '/tiny-swiper/',
+    url: 'https://tiny-swiper.joe223.com',
+    baseUrl: '/',
     onBrokenLinks: 'throw',
     favicon: 'img/favicon.ico',
     organizationName: 'joe223', // Usually your GitHub org/user name.
