@@ -32,12 +32,13 @@ export default function SwiperPluginPagination (instance) {
             : config.pagination.el
         const $pageList = []
         const $group = document.createDocumentFragment()
+        const dotCount = tinyswiper.$list.length - Math.ceil(config.slidesPerView) + 1
 
         config.excludeElements.push($pagination)
         tinyswiper.$pagination = $pagination
         tinyswiper.$pageList = $pageList
 
-        tinyswiper.$list.forEach((item, index) => {
+        for (let index = 0; index < dotCount; index++) {
             const $page = document.createElement('div')
 
             addClass(
@@ -46,7 +47,7 @@ export default function SwiperPluginPagination (instance) {
             )
             $pageList.push($page)
             $group.appendChild($page)
-        })
+        }
 
         $pagination.appendChild($group)
 
