@@ -246,7 +246,11 @@ export default class Swiper {
 
                 if ((Math.abs(deltaY) - Math.abs(wheelStatus.wheelDelta) > 0 || !wheelStatus.wheeling)
                     && Math.abs(deltaY) >= config.mousewheel.sensitivity) {
-                    this.scroll(deltaY > 0 ? index - 1 : index + 1)
+                    if (config.mousewheel.invert === true) {
+                        this.scroll(deltaY < 0 ? index - 1 : index + 1)
+                    } else {
+                        this.scroll(deltaY > 0 ? index - 1 : index + 1)
+                    }
                 }
                 wheelStatus.wheelDelta = deltaY
                 clearTimeout(wheelStatus.wheelingTimer)
