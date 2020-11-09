@@ -1,3 +1,7 @@
+# v1.3.1 - Released on 2020/10/30
+
+- Fix: #27 Calculating the total of pagination bullet with slidesPerView.
+
 # v1.3.0 - Released on 2019/12/30
 
 - Add: `slidesPerView` parameter
