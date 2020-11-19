@@ -1,4 +1,3 @@
-
 export type EventHub = {
     on (evtName: string, cb: Function): void
     off (evtName: string, cb: Function): void

@@ -29,7 +29,6 @@ export function isExceedingLimits (
         || velocity < 0 && transform < (limitation.min)
 }
 
-
 /**
  * Get transform exceed value
  * Return zero if is not reached border.

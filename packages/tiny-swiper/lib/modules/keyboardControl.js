@@ -60,16 +60,17 @@
 
   function SwiperPluginKeyboardControl(instance, options) {
     if (!options.keyboard) return;
+    var keyboardOptions = options.keyboard;
     var keyboard = {
       enable: function enable() {
-        options.keyboard.enabled = true;
+        keyboardOptions.enabled = true;
       },
       disable: function disable() {
-        options.keyboard.enabled = false;
+        keyboardOptions.enabled = false;
       },
       onKeyDown: function onKeyDown(e) {
         var key = e.key;
-        if (options.keyboard.onlyInViewport && !isElementInView(instance.env.element.$el) || !options.keyboard.enabled) return;
+        if (keyboardOptions.onlyInViewport && !isElementInView(instance.env.element.$el) || !keyboardOptions.enabled) return;
 
         if (options.isHorizontal) {
           if (key === DIRECTION.left) {

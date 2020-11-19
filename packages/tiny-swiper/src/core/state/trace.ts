@@ -92,7 +92,6 @@ export function Vector (
     }
 }
 
-
 export function Tracker (): Tracker {
     let logs: TraceLogs = []
 

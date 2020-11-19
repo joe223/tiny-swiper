@@ -52,17 +52,18 @@
 
   function SwiperPluginLazyload(instance, options) {
     if (!options.lazyload) return;
+    var lazyloadOptions = options.lazyload;
     var lazyload = {
       load: function load(index) {
         var $slide = instance.env.element.$list[index];
         if (!$slide) return;
-        var $imgs = [].slice.call($slide.getElementsByClassName(options.lazyload.elementClass));
-        var $preloaders = [].slice.call($slide.getElementsByClassName(options.lazyload.preloaderClass));
+        var $imgs = [].slice.call($slide.getElementsByClassName(lazyloadOptions.elementClass));
+        var $preloaders = [].slice.call($slide.getElementsByClassName(lazyloadOptions.preloaderClass));
 
         function handleLoaded($img) {
           $img.removeAttribute('data-src');
-          addClass($img, [options.lazyload.loadedClass]);
-          removeClass($img, [options.lazyload.loadingClass]);
+          addClass($img, [lazyloadOptions.loadedClass]);
+          removeClass($img, [lazyloadOptions.loadingClass]);
           $img.onload = null;
           $img.onerror = null;
           $img.isLoaded = true;
@@ -79,8 +80,8 @@
         $imgs.forEach(function ($img) {
           if (!$img.hasAttribute('data-src')) return;
           var src = $img.getAttribute('data-src');
-          addClass($img, [options.lazyload.loadingClass]);
-          removeClass($img, [options.lazyload.loadedClass]);
+          addClass($img, [lazyloadOptions.loadingClass]);
+          removeClass($img, [lazyloadOptions.loadedClass]);
           $img.src = src;
 
           $img.onload = function () {
@@ -95,7 +96,7 @@
       loadRange: function loadRange(index, range) {
         lazyload.load(index);
 
-        if (options.lazyload.loadPrevNext && range >= 1) {
+        if (lazyloadOptions.loadPrevNext && range >= 1) {
           for (var i = 1; i <= range; i++) {
             lazyload.load(index + i);
             lazyload.load(index - i);
@@ -115,13 +116,13 @@
       }, options.lazyload);
     });
 
-    if (options.lazyload.loadOnTransitionStart) {
+    if (lazyloadOptions.loadOnTransitionStart) {
       instance.on('before-slide', function (oldIndex, state, newIndex) {
-        lazyload.loadRange(newIndex, options.lazyload.loadPrevNextAmount);
+        lazyload.loadRange(newIndex, lazyloadOptions.loadPrevNextAmount);
       });
     } else {
       instance.on('after-slide', function (index, state) {
-        lazyload.loadRange(index, options.lazyload.loadPrevNextAmount);
+        lazyload.loadRange(index, lazyloadOptions.loadPrevNextAmount);
       });
     }
 

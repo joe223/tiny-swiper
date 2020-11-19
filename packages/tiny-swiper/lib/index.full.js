@@ -852,7 +852,233 @@
     Swiper.plugins = plugins;
   };
 
+  /**
+   * TinySwiper plugin for image lazy loading.
+   *
+   * @param {SwiperInstance} instance
+   * @param {Options}
+   */
+
+  function SwiperPluginLazyload(instance, options) {
+    if (!options.lazyload) return;
+    var lazyloadOptions = options.lazyload;
+    var lazyload = {
+      load: function load(index) {
+        var $slide = instance.env.element.$list[index];
+        if (!$slide) return;
+        var $imgs = [].slice.call($slide.getElementsByClassName(lazyloadOptions.elementClass));
+        var $preloaders = [].slice.call($slide.getElementsByClassName(lazyloadOptions.preloaderClass));
+
+        function handleLoaded($img) {
+          $img.removeAttribute('data-src');
+          addClass($img, [lazyloadOptions.loadedClass]);
+          removeClass($img, [lazyloadOptions.loadingClass]);
+          $img.onload = null;
+          $img.onerror = null;
+          $img.isLoaded = true;
+
+          if ($imgs.every(function (item) {
+            return item.isLoaded;
+          })) {
+            $preloaders.forEach(function ($preloader) {
+              $preloader.parentElement.removeChild($preloader);
+            });
+          }
+        }
+
+        $imgs.forEach(function ($img) {
+          if (!$img.hasAttribute('data-src')) return;
+          var src = $img.getAttribute('data-src');
+          addClass($img, [lazyloadOptions.loadingClass]);
+          removeClass($img, [lazyloadOptions.loadedClass]);
+          $img.src = src;
+
+          $img.onload = function () {
+            return handleLoaded($img);
+          };
+
+          $img.onerror = function () {
+            return handleLoaded($img);
+          };
+        });
+      },
+      loadRange: function loadRange(index, range) {
+        lazyload.load(index);
+
+        if (lazyloadOptions.loadPrevNext && range >= 1) {
+          for (var i = 1; i <= range; i++) {
+            lazyload.load(index + i);
+            lazyload.load(index - i);
+          }
+        }
+      }
+    };
+    instance.on('before-init', function () {
+      options.lazyload = _extends({
+        loadPrevNext: false,
+        loadPrevNextAmount: 1,
+        loadOnTransitionStart: false,
+        elementClass: 'swiper-lazy',
+        loadingClass: 'swiper-lazy-loading',
+        loadedClass: 'swiper-lazy-loaded',
+        preloaderClass: 'swiper-lazy-preloader'
+      }, options.lazyload);
+    });
+
+    if (lazyloadOptions.loadOnTransitionStart) {
+      instance.on('before-slide', function (oldIndex, state, newIndex) {
+        lazyload.loadRange(newIndex, lazyloadOptions.loadPrevNextAmount);
+      });
+    } else {
+      instance.on('after-slide', function (index, state) {
+        lazyload.loadRange(index, lazyloadOptions.loadPrevNextAmount);
+      });
+    }
+
+    instance.on('after-destroy', function () {
+      if (!instance.lazyload) return;
+      delete instance.lazyload;
+    });
+  }
+
+  function SwiperPluginPagination(instance, options) {
+    var pagination = {
+      $pageList: [],
+      $pagination: null
+    };
+    instance.on('before-init', function () {
+      if (options.pagination) {
+        options.pagination = _extends({
+          clickable: false,
+          bulletClass: 'swiper-pagination-bullet',
+          bulletActiveClass: 'swiper-pagination-bullet-active'
+        }, options.pagination);
+      }
+    });
+    instance.on('after-init', function () {
+      if (!options.pagination) return;
+      var _options$pagination = options.pagination,
+          bulletClass = _options$pagination.bulletClass,
+          bulletActiveClass = _options$pagination.bulletActiveClass;
+      var element = instance.env.element;
+      var $list = element.$list;
+      var $pagination = typeof options.pagination.el === 'string' ? document.body.querySelector(options.pagination.el) : options.pagination.el;
+      var $pageList = [];
+      var $group = document.createDocumentFragment();
+      options.excludeElements.push($pagination);
+      pagination.$pagination = $pagination;
+      pagination.$pageList = $pageList;
+      $list.forEach(function (item, index) {
+        var $page = document.createElement('div');
+        addClass($page, index === instance.state.index ? [bulletClass, bulletActiveClass] : bulletClass);
+        $pageList.push($page);
+        $group.appendChild($page);
+      });
+      $pagination.appendChild($group);
+
+      if (options.pagination.clickable) {
+        $pagination.addEventListener('click', function (e) {
+          instance.slideTo($pageList.indexOf(e.target));
+          e.stopPropagation();
+        });
+      }
+    });
+    instance.on('after-destroy', function () {
+      if (!options.pagination) return;
+      pagination.$pagination.innerHTML = '';
+      pagination.$pageList = [];
+      pagination.$pagination = null;
+    });
+    instance.on('after-slide', function (currentIndex) {
+      var bulletActiveClass = options.pagination.bulletActiveClass;
+      pagination.$pageList && pagination.$pageList.forEach(function ($page, index) {
+        if (index === currentIndex) {
+          addClass($page, bulletActiveClass);
+        } else {
+          removeClass($page, bulletActiveClass);
+        }
+      });
+    });
+  }
+
+  var DIRECTION = {
+    up: 'ArrowUp',
+    right: 'ArrowRight',
+    down: 'ArrowDown',
+    left: 'ArrowLeft'
+  };
+
+  function isVisible(el) {
+    if (!el) return false;
+    var style = getComputedStyle(el);
+    var visible = style.visibility !== 'hidden' && style.display !== 'none';
+    if (!visible) return false;
+    return el.parentElement && el.parentElement.nodeType === 1 ? isVisible(el.parentElement) : true;
+  }
+
+  function isElementInView(el) {
+    var visibility = isVisible(el);
+    var boundary = el.getBoundingClientRect();
+    var isInView = boundary.top >= 0 && boundary.bottom <= window.innerHeight && boundary.left >= 0 && boundary.right <= window.innerWidth;
+    return isInView && visibility;
+  }
+  /**
+   * TinySwiper plugin for keyboard control.
+   *
+   * @param {SwiperInstance} instance
+   * @param {Options}
+   */
+
+
+  function SwiperPluginKeyboardControl(instance, options) {
+    if (!options.keyboard) return;
+    var keyboardOptions = options.keyboard;
+    var keyboard = {
+      enable: function enable() {
+        keyboardOptions.enabled = true;
+      },
+      disable: function disable() {
+        keyboardOptions.enabled = false;
+      },
+      onKeyDown: function onKeyDown(e) {
+        var key = e.key;
+        if (keyboardOptions.onlyInViewport && !isElementInView(instance.env.element.$el) || !keyboardOptions.enabled) return;
+
+        if (options.isHorizontal) {
+          if (key === DIRECTION.left) {
+            instance.slideTo(instance.state.index - 1);
+          } else if (key === DIRECTION.right) {
+            instance.slideTo(instance.state.index + 1);
+          }
+        } else {
+          if (key === DIRECTION.down) {
+            instance.slideTo(instance.state.index - 1);
+          } else if (key === DIRECTION.up) {
+            instance.slideTo(instance.state.index + 1);
+          }
+        }
+      }
+    };
+    instance.on('before-init', function () {
+      options.keyboard = _extends({
+        enabled: true,
+        onlyInViewport: true
+      }, options.keyboard);
+      instance.keyboard = keyboard;
+      attachListener(window, 'keydown', keyboard.onKeyDown);
+    });
+    instance.on('after-destroy', function () {
+      if (!keyboard) return;
+      detachListener(window, 'keydown', keyboard.onKeyDown);
+      delete instance.keyboard;
+    });
+  }
+
+  // eslint-disable-next-line import/no-named-default
+  var plugins = [SwiperPluginLazyload, SwiperPluginPagination, SwiperPluginKeyboardControl];
+  Swiper.use(plugins);
+
   return Swiper;
 
 })));
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.full.js.map

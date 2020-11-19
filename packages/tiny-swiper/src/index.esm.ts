@@ -5,12 +5,10 @@ import SwiperPluginLazyload from './modules/lazyload'
 import SwiperPluginPagination from './modules/pagination'
 import SwiperPluginKeyboardControl from './modules/keyboardControl'
 
-const plugins = [
+export {
     SwiperPluginLazyload,
     SwiperPluginPagination,
     SwiperPluginKeyboardControl
-]
-
-Swiper.use(plugins as Array<SwiperPlugin>)
+}
 
 export default Swiper

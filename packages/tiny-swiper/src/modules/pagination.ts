@@ -55,7 +55,6 @@ export default function SwiperPluginPagination (
             $list
         } = element
 
-
         const $pagination = (typeof options.pagination.el === 'string'
             ? document.body.querySelector(options.pagination.el)
             : options.pagination.el) as HTMLElement
