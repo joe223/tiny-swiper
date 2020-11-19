@@ -5,7 +5,7 @@ import {
 import { SwiperInstance } from '../core/index'
 import { Options } from '../core/options'
 
-declare type SwiperPluginPaginationOptions = Options & {
+export type SwiperPluginPaginationOptions = Options & {
     pagination: {
         el: string
         clickable: false
@@ -14,7 +14,7 @@ declare type SwiperPluginPaginationOptions = Options & {
     }
 }
 
-declare type SwiperPluginPaginationInstance = {
+export type SwiperPluginPaginationInstance = {
     $pageList: HTMLElement[]
     $pagination: HTMLElement | null
 }

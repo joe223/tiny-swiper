@@ -6,19 +6,17 @@ import { SwiperInstance } from '../core/index'
 import { Options } from '../core/options'
 import { State } from '../core/state/index'
 
-declare type SwiperPluginLazyloadOptions = Options & {
-    lazyload: {
-        loadPrevNext: false
-        loadPrevNextAmount: 1
-        loadOnTransitionStart: false
-        elementClass: 'swiper-lazy'
-        loadingClass: 'swiper-lazy-loading'
-        loadedClass: 'swiper-lazy-loaded'
-        preloaderClass: 'swiper-lazy-preloader'
-    }
+export type SwiperPluginLazyloadOptions = {
+    loadPrevNext: false
+    loadPrevNextAmount: 1
+    loadOnTransitionStart: false
+    elementClass: 'swiper-lazy'
+    loadingClass: 'swiper-lazy-loading'
+    loadedClass: 'swiper-lazy-loaded'
+    preloaderClass: 'swiper-lazy-preloader'
 }
 
-declare type SwiperPluginLazyloadHTMLElement = HTMLImageElement & {
+export type SwiperPluginLazyloadHTMLElement = HTMLImageElement & {
     isLoaded: boolean
 }
 
@@ -38,23 +36,24 @@ export default function SwiperPluginLazyload (
             ): void
         }
     },
-    options: SwiperPluginLazyloadOptions
+    options: Options
 ) {
     if (!options.lazyload) return
 
+    const lazyloadOptions = <SwiperPluginLazyloadOptions>options.lazyload
     const lazyload = {
         load (index: number): void {
             const $slide = instance.env.element.$list[index]
 
             if (!$slide) return
 
-            const $imgs = [].slice.call($slide.getElementsByClassName(options.lazyload.elementClass))
-            const $preloaders: HTMLElement[] = [].slice.call($slide.getElementsByClassName(options.lazyload.preloaderClass))
+            const $imgs = [].slice.call($slide.getElementsByClassName(lazyloadOptions.elementClass))
+            const $preloaders: HTMLElement[] = [].slice.call($slide.getElementsByClassName(lazyloadOptions.preloaderClass))
 
             function handleLoaded ($img: SwiperPluginLazyloadHTMLElement) {
                 $img.removeAttribute('data-src')
-                addClass($img, [options.lazyload.loadedClass])
-                removeClass($img, [options.lazyload.loadingClass])
+                addClass($img, [lazyloadOptions.loadedClass])
+                removeClass($img, [lazyloadOptions.loadingClass])
                 $img.onload = null
                 $img.onerror = null
                 $img.isLoaded = true
@@ -71,8 +70,8 @@ export default function SwiperPluginLazyload (
 
                 const src = $img.getAttribute('data-src')
 
-                addClass($img, [options.lazyload.loadingClass])
-                removeClass($img, [options.lazyload.loadedClass])
+                addClass($img, [lazyloadOptions.loadingClass])
+                removeClass($img, [lazyloadOptions.loadedClass])
                 $img.src = src as string
                 $img.onload = () => handleLoaded($img)
                 $img.onerror = () => handleLoaded($img)
@@ -85,7 +84,7 @@ export default function SwiperPluginLazyload (
         ): void {
             lazyload.load(index)
 
-            if (options.lazyload.loadPrevNext && range >= 1) {
+            if (lazyloadOptions.loadPrevNext && range >= 1) {
                 for (let i = 1; i <= range; i++) {
                     lazyload.load(index + i)
                     lazyload.load(index - i)
@@ -107,20 +106,20 @@ export default function SwiperPluginLazyload (
         }
     })
 
-    if (options.lazyload.loadOnTransitionStart) {
+    if (lazyloadOptions.loadOnTransitionStart) {
         instance.on('before-slide', (
             oldIndex: number,
             state: State,
             newIndex: number
         ) => {
-            lazyload.loadRange(newIndex, options.lazyload.loadPrevNextAmount)
+            lazyload.loadRange(newIndex, lazyloadOptions.loadPrevNextAmount)
         })
     } else {
         instance.on('after-slide', (
             index: number,
             state: State
         ) => {
-            lazyload.loadRange(index, options.lazyload.loadPrevNextAmount)
+            lazyload.loadRange(index, lazyloadOptions.loadPrevNextAmount)
         })
     }
 

@@ -2,6 +2,9 @@ import { SwiperPlugin } from './index'
 import { translate } from './render/layout'
 import { State } from './state/index'
 import { Env } from './env/index'
+import { SwiperPluginLazyloadOptions } from '../modules/lazyload'
+import { SwiperPluginPaginationOptions } from '../modules/pagination'
+import { SwiperPluginKeyboardControlOptions } from '../modules/keyboardControl'
 
 export type Direction = 'horizontal' | 'vertical'
 export type Injections = {
@@ -42,6 +45,11 @@ export type Options = {
     isHorizontal: boolean
     plugins?: Array<SwiperPlugin>
     injections: Injections
+
+    // Plugins
+    lazyload?: SwiperPluginLazyloadOptions
+    keyboard?: SwiperPluginKeyboardControlOptions
+    pagination?: SwiperPluginPaginationOptions
 }
 
 export type UserOptions = Partial<Options>

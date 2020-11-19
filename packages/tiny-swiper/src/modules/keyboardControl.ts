@@ -5,11 +5,9 @@ import {
 import { SwiperInstance } from '../core/index'
 import { Options } from '../core/options'
 
-declare type SwiperPluginKeyboardControlOptions = Options & {
-    keyboard: {
-        enabled: boolean
-        onlyInViewport: boolean
-    }
+export type SwiperPluginKeyboardControlOptions = {
+    enabled: boolean
+    onlyInViewport: boolean
 }
 
 const DIRECTION = {
@@ -55,22 +53,23 @@ export default function SwiperPluginKeyboardControl (
             disable (): void
         }
     },
-    options: SwiperPluginKeyboardControlOptions
+    options: Options
 ): void {
     if (!options.keyboard) return
 
+    const keyboardOptions = <SwiperPluginKeyboardControlOptions>options.keyboard
     const keyboard = {
         enable (): void {
-            options.keyboard.enabled = true
+            keyboardOptions.enabled = true
         },
         disable (): void {
-            options.keyboard.enabled = false
+            keyboardOptions.enabled = false
         },
         onKeyDown (e: KeyboardEvent): void {
             const { key } = e
 
-            if ((options.keyboard.onlyInViewport && !isElementInView(instance.env.element.$el))
-                || !options.keyboard.enabled) return
+            if ((keyboardOptions.onlyInViewport && !isElementInView(instance.env.element.$el))
+                || !keyboardOptions.enabled) return
 
             if (options.isHorizontal) {
                 if (key === DIRECTION.left) {

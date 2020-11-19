@@ -5,7 +5,7 @@ import Link from '@docusaurus/Link'
 import CodeBlock from '@theme/CodeBlock'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import useBaseUrl from '@docusaurus/useBaseUrl'
-import styles from './styles.module.css'
+import styles from './styles.module.scss'
 
 const demoJavaScript = `import Swiper, {
     SwiperPluginLazyload,

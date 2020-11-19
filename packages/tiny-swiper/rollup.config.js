@@ -16,23 +16,23 @@ const entries = [
             name: 'Swiper'
         }
     },
-    // {
-    //     input: 'index.full.ts',
-    //     compress: isBuildProd,
-    //     options: {
-    //         name: 'Swiper',
-    //         entryFileNames: '[name].js'
-    //     }
-    // },
-    // {
-    //     input: 'index.esm.ts',
-    //     compress: false,
-    //     options: {
-    //         name: 'Swiper',
-    //         format: 'es',
-    //         entryFileNames: '[name].js'
-    //     }
-    // },
+    {
+        input: 'index.full.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'Swiper',
+            entryFileNames: '[name].js'
+        }
+    },
+    {
+        input: 'index.esm.ts',
+        compress: false,
+        options: {
+            name: 'Swiper',
+            format: 'es',
+            entryFileNames: '[name].js'
+        }
+    },
     {
         input: 'modules/pagination.ts',
         compress: isBuildProd,
