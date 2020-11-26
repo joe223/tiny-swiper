@@ -23,6 +23,7 @@ describe('Sensor', () => {
     })
 
     test('attach and detach - touchable equal true', () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         window.ontouchstart = (): void => {}
 
         const {

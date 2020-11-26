@@ -1,7 +1,8 @@
 module.exports = {
     'parser': '@typescript-eslint/parser',
     'plugins': [
-        '@typescript-eslint'
+        '@typescript-eslint',
+        'import'
     ],
     'env': {
         'jest': true,
@@ -11,9 +12,8 @@ module.exports = {
         'mocha': true
     },
     'extends': [
-        'airbnb-typescript/base',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended'
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
     ],
     'globals': {
         'Atomics': 'readonly',
@@ -44,10 +44,6 @@ module.exports = {
             'error',
             'single'
         ],
-        '@typescript-eslint/semi': [
-            'error',
-            'never'
-        ],
         '@typescript-eslint/member-delimiter-style': [
             'error',
             {
@@ -56,10 +52,8 @@ module.exports = {
                 }
             }
         ],
-        'semi': [
-            'error',
-            'never'
-        ],
+        '@typescript-eslint/ban-types': ['off'],
+        'semi': 'off',
         'comma-dangle': ['error', {
             'arrays': 'never',
             'objects': 'never',
@@ -69,9 +63,6 @@ module.exports = {
         }],
         'prefer-arrow-callback': ['off'],
         'func-names': ['off'],
-        'no-param-reassign': ['error', {
-            'props': false
-        }],
         'import/extensions': ['error', {
             'js': 'never'
         }],
@@ -80,8 +71,7 @@ module.exports = {
         'max-len': ['error', {
             code: 140
         }],
-        'space-before-function-paren': ['error', 'always'],
-        'arrow-parens': ['error', 'as-needed'],
+        'arrow-parens': ['off'],
         'no-lonely-if': ['off'],
         'no-plusplus': ['off'],
         'no-unused-expressions': ['off'],

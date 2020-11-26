@@ -85,7 +85,6 @@ describe('Operations', () => {
             expect(state.transforms).toEqual(limitation.min - 9)
         })
 
-
         test('enable resistance with resistanceRatio equal 1', () => {
             const {
                 state,

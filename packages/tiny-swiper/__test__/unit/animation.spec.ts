@@ -40,7 +40,6 @@ describe('Tick', () => {
 })
 
 describe('Animation', () => {
-
     test('init', () => {
         const animation = Animation()
 

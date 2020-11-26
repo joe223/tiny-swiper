@@ -1072,4 +1072,3 @@ function SwiperPluginKeyboardControl(instance, options) {
 
 export default Swiper;
 export { SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginPagination };
-//# sourceMappingURL=index.esm.js.map

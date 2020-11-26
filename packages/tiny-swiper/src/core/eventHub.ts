@@ -1,4 +1,5 @@
 export type EventHub = {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     on (evtName: string, cb: Function): void
     off (evtName: string, cb: Function): void
     emit (evtName: string, ...data: Array<any>): void
