@@ -1,1 +1,6 @@
-export { default } from './core/index'
+export {
+    Swiper,
+    SwiperInstance,
+    SwiperPlugin,
+    default
+} from './core/index'
