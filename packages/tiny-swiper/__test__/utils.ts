@@ -1,9 +1,9 @@
-import { optionFormatter, UserOptions } from './src/core/options'
-import { EventHub } from './src/core/eventHub'
-import { Env } from './src/core/env/index'
-import { State } from './src/core/state/index'
-import { Renderer } from './src/core/render/index'
-import { Operations } from './src/core/state/operations'
+import { optionFormatter, UserOptions } from '../src/core/options'
+import { EventHub } from '../src/core/eventHub'
+import { Env } from '../src/core/env/index'
+import { State } from '../src/core/state/index'
+import { Renderer } from '../src/core/render/index'
+import { Operations } from '../src/core/state/operations'
 
 Object.defineProperties(window.HTMLElement.prototype, {
     offsetLeft: {

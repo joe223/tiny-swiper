@@ -1,7 +1,7 @@
 import {
     Sensor
 } from '../../src/core/sensor/index'
-import { createOperationsInstance } from '../../utils'
+import { createOperationsInstance } from '../utils'
 
 describe('Sensor', () => {
     test('init', () => {

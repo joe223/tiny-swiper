@@ -2,7 +2,7 @@ import { Operations } from '../../src/core/state/operations'
 import { Position } from '../../src/core/state/trace'
 import {
     createOperationsInstance
-} from '../../utils'
+} from '../utils'
 
 describe('Operations', () => {
     test('init', () => {

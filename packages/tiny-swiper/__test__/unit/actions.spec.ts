@@ -3,7 +3,7 @@ import {
 } from '../../src/core/sensor/actions'
 import {
     createOperationsInstance
-} from '../../utils'
+} from '../utils'
 
 describe('Actions', () => {
     test('init', () => {
