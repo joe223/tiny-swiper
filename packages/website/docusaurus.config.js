@@ -7,6 +7,7 @@ module.exports = {
     favicon: 'img/favicon.ico',
     organizationName: 'joe223', // Usually your GitHub org/user name.
     projectName: 'tiny-swiper', // Usually your repo name.
+    plugins: ['docusaurus-plugin-sass'],
     themeConfig: {
         prism: {
             theme: require('prism-react-renderer/themes/github'),

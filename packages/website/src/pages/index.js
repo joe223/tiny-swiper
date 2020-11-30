@@ -49,7 +49,7 @@ function Home() {
 
                 <div className={styles.desc}>Lightweight yet fully configurable and extensible web carousel with native-like behavior.
                     Zero dependency, written in vanilla JavaScript, used for free and without any attribution.
-                    <Link to={useBaseUrl('./docs')}>
+                    <Link to={useBaseUrl('docs')}>
                         More Details
                     </Link>
                 </div>
@@ -58,7 +58,7 @@ function Home() {
 
                 <div className={styles.btnGroup}>
                     <Link
-                        to={useBaseUrl('./docs')}
+                        to={useBaseUrl('docs')}
                         className={clsx(styles.button, styles.btnStart)}>
                         GET STARTED
                     </Link>
