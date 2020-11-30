@@ -1,3 +1,7 @@
+# v1.3.2 - Released on 2020/12/1
+
+- Fix: #29 Invert mousewheel.
+
 # v1.3.1 - Released on 2020/10/30
 
 - Fix: #27 Calculating the total of pagination bullet with slidesPerView.
