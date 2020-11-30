@@ -1,5 +1,5 @@
 import { UserOptions, optionFormatter, Options } from './options'
-import { EventHub } from './eventHub'
+import { EventHub, LIFE_CYCLES } from './eventHub'
 import { State } from './state/index'
 import { Sensor } from './sensor/index'
 import { Env } from './env/index'
@@ -58,7 +58,7 @@ const Swiper: Swiper = <Swiper> function (
             options
         ))
 
-    emit('before-init', instance)
+    emit(LIFE_CYCLES.BEFORE_INIT, instance)
 
     // Initialize internal module
     const renderer = Renderer(
@@ -80,9 +80,11 @@ const Swiper: Swiper = <Swiper> function (
     )
 
     function destroy (): void {
+        emit(LIFE_CYCLES.BEFORE_DESTROY)
         sensor.detach()
         renderer.destroy()
         eventHub.clear()
+        emit(LIFE_CYCLES.AFTER_DESTROY)
     }
 
     function updateSize (): void {
@@ -120,7 +122,7 @@ const Swiper: Swiper = <Swiper> function (
         options.initialSlide,
         0
     )
-    emit('after-init', instance)
+    emit(LIFE_CYCLES.AFTER_INIT, instance)
 
     return instance
 }

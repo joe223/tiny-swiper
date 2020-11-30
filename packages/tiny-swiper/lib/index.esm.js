@@ -150,7 +150,7 @@ function SwiperPluginLazyload(instance, options) {
       lazyload.loadRange(newIndex, lazyloadOptions.loadPrevNextAmount);
     });
   } else {
-    instance.on('after-slide', function (index, state) {
+    instance.on('after-slide', function (index) {
       lazyload.loadRange(index, lazyloadOptions.loadPrevNextAmount);
     });
   }
@@ -168,7 +168,7 @@ function SwiperPluginPagination(instance, options) {
   };
   instance.on('before-init', function () {
     if (options.pagination) {
-      options.pagination = _extends({
+      options.pagination = Object.assign({
         clickable: false,
         bulletClass: 'swiper-pagination-bullet',
         bulletActiveClass: 'swiper-pagination-bullet-active'
@@ -342,6 +342,15 @@ function optionFormatter(userOptions) {
   });
 }
 
+var LIFE_CYCLES = {
+  BEFORE_INIT: 'before-init',
+  AFTER_INIT: 'after-init',
+  BEFORE_SLIDE: 'before-slide',
+  SCROLL: 'scroll',
+  AFTER_SLIDE: 'after-slide',
+  BEFORE_DESTROY: 'before-destroy',
+  AFTER_DESTROY: 'after-destroy'
+};
 function EventHub() {
   var hub = {};
 
@@ -695,7 +704,7 @@ function Measure(options, element) {
   };
 }
 
-function getExpand(options, element) {
+function getExpand(options) {
   if (options.loop) {
     // return options.slidesPerView >= element.$list.length
     //     ? options.slidesPerView - element.$list.length + 1
@@ -908,7 +917,7 @@ function Operations(env, state, options, renderer, eventHub) {
       state.progress = progress < 0 ? 0 : progress > 1 ? 1 : progress;
     }
 
-    eventHub.emit('scroll', _extends({}, state));
+    eventHub.emit(LIFE_CYCLES.SCROLL, _extends({}, state));
   }
 
   function slideTo(targetIndex, duration) {
@@ -925,11 +934,11 @@ function Operations(env, state, options, renderer, eventHub) {
       render(0, undefined, true);
     }
 
-    eventHub.emit('before-slide', state.index, state, computedIndex);
+    eventHub.emit(LIFE_CYCLES.BEFORE_SLIDE, state.index, state, computedIndex);
     state.index = computedIndex;
     transform(offset);
     render(duration, function () {
-      eventHub.emit('after-slide', computedIndex, state);
+      eventHub.emit(LIFE_CYCLES.AFTER_SLIDE, computedIndex, state);
     });
   }
 
@@ -1026,16 +1035,18 @@ var Swiper = function Swiper(el, userOptions) {
   (options.plugins || Swiper.plugins || []).forEach(function (plugin) {
     return plugin(instance, options);
   });
-  emit('before-init', instance); // Initialize internal module
+  emit(LIFE_CYCLES.BEFORE_INIT, instance); // Initialize internal module
 
   var renderer = Renderer(env, options);
   var operations = Operations(env, state, options, renderer, eventHub);
   var sensor = Sensor(env, state, options, operations);
 
   function destroy() {
+    emit(LIFE_CYCLES.BEFORE_DESTROY);
     sensor.detach();
     renderer.destroy();
     eventHub.clear();
+    emit(LIFE_CYCLES.AFTER_DESTROY);
   }
 
   function updateSize() {
@@ -1060,7 +1071,7 @@ var Swiper = function Swiper(el, userOptions) {
   renderer.init();
   sensor.attach();
   slideTo(options.initialSlide, 0);
-  emit('after-init', instance);
+  emit(LIFE_CYCLES.AFTER_INIT, instance);
   return instance;
 };
 
@@ -1069,5 +1080,4 @@ Swiper.use = function (plugins) {
 };
 
 export default Swiper;
-export { SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginPagination };
-//# sourceMappingURL=index.esm.js.map
+export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginPagination };

@@ -1,6 +1,6 @@
 import { State } from './index'
 import { Limitation } from '../env/limitation'
-import { EventHub } from '../eventHub'
+import { EventHub, LIFE_CYCLES } from '../eventHub'
 import { Renderer } from '../render/index'
 import { Options } from '../options'
 import { Env } from '../env/index'
@@ -109,7 +109,7 @@ export function Operations (
                     : progress
         }
 
-        eventHub.emit('scroll', {
+        eventHub.emit(LIFE_CYCLES.SCROLL, {
             ...state
         })
     }
@@ -146,14 +146,14 @@ export function Operations (
             render(0, undefined, true)
         }
 
-        eventHub.emit('before-slide',
+        eventHub.emit(LIFE_CYCLES.BEFORE_SLIDE,
             state.index,
             state,
             computedIndex)
         state.index = computedIndex
         transform(offset)
         render(duration, () => {
-            eventHub.emit('after-slide',
+            eventHub.emit(LIFE_CYCLES.AFTER_SLIDE,
                 computedIndex,
                 state)
         })

@@ -6,6 +6,16 @@ export type EventHub = {
     clear (): void
 }
 
+export const LIFE_CYCLES = {
+    BEFORE_INIT: 'before-init',
+    AFTER_INIT: 'after-init',
+    BEFORE_SLIDE: 'before-slide',
+    SCROLL: 'scroll',
+    AFTER_SLIDE: 'after-slide',
+    BEFORE_DESTROY: 'before-destroy',
+    AFTER_DESTROY: 'after-destroy'
+}
+
 export function EventHub (): EventHub {
     let hub: {
         [key: string]: Array<Function>

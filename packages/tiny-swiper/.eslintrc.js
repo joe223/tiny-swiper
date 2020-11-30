@@ -13,7 +13,7 @@ module.exports = {
     },
     'extends': [
         'eslint:recommended',
-        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended'
     ],
     'globals': {
         'Atomics': 'readonly',
@@ -25,6 +25,7 @@ module.exports = {
         'sourceType': 'module'
     },
     'rules': {
+        '@typescript-eslint/explicit-module-boundary-types': ['off'],
         '@typescript-eslint/consistent-type-assertions': ['off'],
         '@typescript-eslint/indent': [
             'error',

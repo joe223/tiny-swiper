@@ -13,8 +13,7 @@ export type Limitation = {
 }
 
 export function getExpand (
-    options: Options,
-    element: Element
+    options: Options
 ): number {
     if (options.loop) {
         // return options.slidesPerView >= element.$list.length
@@ -38,7 +37,7 @@ export function Limitation (
         slideSize,
         boxSize
     } = measure
-    const expand = getExpand(options, element)
+    const expand = getExpand(options)
     const buffer = expand * boxSize
     const base = -buffer + (options.centeredSlides
         ? (viewSize - slideSize) / 2

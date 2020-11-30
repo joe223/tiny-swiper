@@ -10,5 +10,5 @@ export declare type Limitation = {
     minIndex: number;
     maxIndex: number;
 };
-export declare function getExpand(options: Options, element: Element): number;
+export declare function getExpand(options: Options): number;
 export declare function Limitation(element: Element, measure: Measure, options: Options): Limitation;

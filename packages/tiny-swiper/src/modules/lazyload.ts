@@ -116,8 +116,7 @@ export default function SwiperPluginLazyload (
         })
     } else {
         instance.on('after-slide', (
-            index: number,
-            state: State
+            index: number
         ) => {
             lazyload.loadRange(index, lazyloadOptions.loadPrevNextAmount)
         })

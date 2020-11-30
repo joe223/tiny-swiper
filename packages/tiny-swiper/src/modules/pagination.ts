@@ -32,12 +32,11 @@ export default function SwiperPluginPagination (
 
     instance.on('before-init', () => {
         if (options.pagination) {
-            options.pagination = {
+            options.pagination = Object.assign({
                 clickable: false,
                 bulletClass: 'swiper-pagination-bullet',
-                bulletActiveClass: 'swiper-pagination-bullet-active',
-                ...options.pagination
-            }
+                bulletActiveClass: 'swiper-pagination-bullet-active'
+            }, options.pagination)
         }
     })
 

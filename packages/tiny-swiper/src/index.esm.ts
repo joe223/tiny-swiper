@@ -11,6 +11,10 @@ export {
 } from './core/index'
 
 export {
+    LIFE_CYCLES
+} from './core/eventHub'
+
+export {
     SwiperPluginLazyload,
     SwiperPluginPagination,
     SwiperPluginKeyboardControl
