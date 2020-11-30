@@ -53,6 +53,13 @@ const entries = [
         options: {
             name: 'SwiperPluginKeyboardControl'
         }
+    },
+    {
+        input: 'modules/mousewheel.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginMousewheel'
+        }
     }
 ]
 const extensions = [
