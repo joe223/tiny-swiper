@@ -46,7 +46,7 @@ module.exports = {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl:
-                        'https://github.com/joe223/tiny-swiper/edit/master/website/'
+                        'https://github.com/joe223/tiny-swiper/blob/dev_2.0/packages/website/docs'
                 },
                 blog: {
                     showReadingTime: true,
