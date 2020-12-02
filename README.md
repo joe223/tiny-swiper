@@ -89,7 +89,7 @@ import Swiper from 'tiny-swiper/lib/index.full.js'
 
 Tiny-Swiper keeps the core functions likes Touch/Resistance/Intermittent control, we usually did not use many features on mobile side after all. That the reason why it is smaller and the purpose I wrote it.
 
-If you are looking for some feature special or going to create a complicate slide project. Please check [APIs](#swiper-parameters) before importing to ensure the feature you want is supported. Full-featured SwiperJS should be a better choice sometimes.
+If you are looking for some feature special or going to create a complicate slide project. Please check [APIs](https://tiny-swiper.joe223.com/docs/api) before importing to ensure the feature you want is supported. Full-featured SwiperJS should be a better choice sometimes.
 
 
 ## Browsers support
