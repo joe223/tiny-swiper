@@ -269,8 +269,3 @@ var mySwiper = new Swiper('#swiper', {
 | enabled | boolean | true | Set to "true" to enable keyboard control function. |
 | onlyInViewport | boolean | true | Keyboard control will be enabled only if container element is displayed in viewport integrally. |
 | }
-<<<<<<< HEAD
-=======
-
-Do not forget, just keep Plugin parameter at the **first level** of configuration.
->>>>>>> 03400e325df61a0820c1869e95ea9d494a3fa2fb
