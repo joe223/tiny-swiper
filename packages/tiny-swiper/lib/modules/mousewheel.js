@@ -40,7 +40,7 @@
         wheelStatus.wheeling = true;
         wheelStatus.wheelingTimer = setTimeout(function () {
           initWheelStatus();
-        }, 200);
+        }, options.mousewheel.interval);
         e.preventDefault();
         e.stopPropagation();
       };
@@ -49,7 +49,8 @@
         if (options.mousewheel) {
           options.mousewheel = Object.assign({
             invert: false,
-            sensitivity: 1
+            sensitivity: 1,
+            interval: 400
           }, options.mousewheel);
         }
       });
@@ -62,6 +63,7 @@
       });
       instance.on('after-destroy', function () {
         if (!options.mousewheel) return;
+        delete mousewheel.$el;
         detachListener(mousewheel.$el, 'wheel', handler);
       });
     }

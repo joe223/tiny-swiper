@@ -134,7 +134,7 @@ export function Operations (
 
         // Slide over a cycle.
         if (state.index === computedIndex
-            && getOffsetSteps(offset - state.transforms) !== 0
+            && getOffsetSteps(offset - state.transforms) !== 0 && options.loop
         ) {
             const excess = getExcess(state.transforms, options, limitation)
 

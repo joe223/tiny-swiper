@@ -59,13 +59,14 @@ export default function SwiperPluginPagination (
             : options.pagination.el) as HTMLElement
         const $pageList: Array<HTMLElement> = []
         const $group = document.createDocumentFragment()
+        const dotCount = $list.length - Math.ceil(options.slidesPerView) + 1
 
         options.excludeElements.push($pagination as HTMLElement)
 
         pagination.$pagination = $pagination
         pagination.$pageList = $pageList
 
-        $list.forEach((item, index) => {
+        for (let index = 0; index < dotCount; index++) {
             const $page = document.createElement('div')
 
             addClass(
@@ -74,7 +75,7 @@ export default function SwiperPluginPagination (
             )
             $pageList.push($page)
             $group.appendChild($page)
-        })
+        }
 
         $pagination.appendChild($group)
 

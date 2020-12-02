@@ -185,15 +185,18 @@ function SwiperPluginPagination(instance, options) {
     var $pagination = typeof options.pagination.el === 'string' ? document.body.querySelector(options.pagination.el) : options.pagination.el;
     var $pageList = [];
     var $group = document.createDocumentFragment();
+    var dotCount = $list.length - Math.ceil(options.slidesPerView) + 1;
     options.excludeElements.push($pagination);
     pagination.$pagination = $pagination;
     pagination.$pageList = $pageList;
-    $list.forEach(function (item, index) {
+
+    for (var index = 0; index < dotCount; index++) {
       var $page = document.createElement('div');
       addClass($page, index === instance.state.index ? [bulletClass, bulletActiveClass] : bulletClass);
       $pageList.push($page);
       $group.appendChild($page);
-    });
+    }
+
     $pagination.appendChild($group);
 
     if (options.pagination.clickable) {
@@ -927,7 +930,7 @@ function Operations(env, state, options, renderer, eventHub) {
     var computedIndex = options.loop ? (targetIndex % len + len) % len : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex;
     var offset = -computedIndex * measure.boxSize + limitation.base; // Slide over a cycle.
 
-    if (state.index === computedIndex && getOffsetSteps(offset - state.transforms) !== 0) {
+    if (state.index === computedIndex && getOffsetSteps(offset - state.transforms) !== 0 && options.loop) {
       var excess = getExcess(state.transforms, options, limitation);
       transform(excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess); // Set initial offset for rebounding animation.
 
@@ -1081,3 +1084,4 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginPagination };
+//# sourceMappingURL=index.esm.js.map

@@ -121,7 +121,7 @@
         lazyload.loadRange(newIndex, lazyloadOptions.loadPrevNextAmount);
       });
     } else {
-      instance.on('after-slide', function (index, state) {
+      instance.on('after-slide', function (index) {
         lazyload.loadRange(index, lazyloadOptions.loadPrevNextAmount);
       });
     }
