@@ -225,7 +225,6 @@ describe('Initialization', function () {
         expect(data.instance).toMatchObject(match)
     })
 
-
     it('slidesPerView parameter - scroll to last slide', async function () {
         await page.addScriptTag({
             type: 'module',
@@ -262,7 +261,6 @@ describe('Initialization', function () {
         // eslint-disable-next-line
         expect(data.transform).toEqual(-parseInt(instance.slideSize * instance.$list.length - instance.viewSize - instance.config.spaceBetween, 10))
     })
-
 
     it('centeredSlides parameter', async function () {
         await page.addScriptTag({
