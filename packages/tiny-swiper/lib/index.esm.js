@@ -1084,4 +1084,3 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginPagination };
-//# sourceMappingURL=index.esm.js.map
