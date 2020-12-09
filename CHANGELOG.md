@@ -1,3 +1,7 @@
+# v1.3.3 - Released on 2020/12/9
+
+- Fix: #36 SwiperPluginKeyboardControl exported incorrectly
+
 # v1.3.2 - Released on 2020/12/1
 
 - Fix: #29 Invert mousewheel.
