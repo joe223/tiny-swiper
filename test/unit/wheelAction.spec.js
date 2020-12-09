@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer')
 const pti = require('puppeteer-to-istanbul')
-const helper = require('./../helper')
+const helper = require('../helper')
 
 describe('Wheel Action', () => {
     let page = null
