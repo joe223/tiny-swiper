@@ -24,7 +24,7 @@
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
-    "@rollup/plugin-typescript": "^6.1.0",
+    "@rollup/plugin-typescript": "^8.0.0",
     "@types/jest": "^25.1.4",
     "@typescript-eslint/eslint-plugin": "^4.8.2",
     "@typescript-eslint/parser": "^4.8.2",
@@ -78,7 +78,7 @@
       "**/*.js"
     ],
     "exclude": [
-      "test",
+      "__test__",
       "node_modules",
       "src/index.esm.js",
       "src/index.full.js"
