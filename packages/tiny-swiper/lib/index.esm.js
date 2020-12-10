@@ -297,6 +297,63 @@ function SwiperPluginKeyboardControl(instance, options) {
   });
 }
 
+function SwiperPluginMousewheel(instance, options) {
+  var mousewheel = {
+    $el: null
+  };
+  var wheelStatus = {
+    wheeling: false,
+    wheelDelta: 0,
+    wheelingTimer: 0
+  };
+
+  var initWheelStatus = function initWheelStatus() {
+    wheelStatus.wheeling = false;
+    wheelStatus.wheelDelta = 0;
+    wheelStatus.wheelingTimer = 0;
+  };
+
+  var handler = function handler(e) {
+    var delta = options.isHorizontal ? e.deltaX : e.deltaY;
+    var index = instance.state.index;
+
+    if ((Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 || !wheelStatus.wheeling) && Math.abs(delta) >= options.mousewheel.sensitivity) {
+      instance.slideTo(delta > 0 ? index - 1 : index + 1);
+    }
+
+    wheelStatus.wheelDelta = delta;
+    clearTimeout(wheelStatus.wheelingTimer);
+    wheelStatus.wheeling = true;
+    wheelStatus.wheelingTimer = setTimeout(function () {
+      initWheelStatus();
+    }, options.mousewheel.interval);
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  instance.on('before-init', function () {
+    if (options.mousewheel) {
+      options.mousewheel = Object.assign({
+        invert: false,
+        sensitivity: 1,
+        interval: 400
+      }, options.mousewheel);
+    }
+  });
+  instance.on('after-init', function () {
+    if (!options.mousewheel) return;
+    var element = instance.env.element;
+    var $el = element.$el;
+    mousewheel.$el = $el;
+    attachListener($el, 'wheel', handler);
+  });
+  instance.on('after-destroy', function () {
+    if (!options.mousewheel) return;
+    delete mousewheel.$el;
+    detachListener(mousewheel.$el, 'wheel', handler);
+  });
+}
+
 function translate(state, env, options, duration) {
   var $wrapper = env.element.$wrapper;
   var wrapperStyle = {
@@ -1083,4 +1140,4 @@ Swiper.use = function (plugins) {
 };
 
 export default Swiper;
-export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginPagination };
+export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginPagination };

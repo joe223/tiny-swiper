@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.SwiperPluginMousewheel = factory());
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.SwiperPluginMousewheel = factory());
 }(this, (function () { 'use strict';
 
     function attachListener(el, evtName, handler, opts) {

@@ -1,8 +1,8 @@
 import path from 'path'
-import babel from 'rollup-plugin-babel'
+import { babel } from '@rollup/plugin-babel'
 import serve from 'rollup-plugin-serve'
 import { uglify } from 'rollup-plugin-uglify'
-import { eslint } from 'rollup-plugin-eslint'
+import eslint from '@rollup/plugin-eslint'
 import typescript from '@rollup/plugin-typescript'
 
 const isBuildProd = process.env.NODE_ENV === 'production'

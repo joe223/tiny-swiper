@@ -1,7 +1,7 @@
-// eslint-disable-next-line import/no-named-default
 import SwiperPluginLazyload from './modules/lazyload'
 import SwiperPluginPagination from './modules/pagination'
 import SwiperPluginKeyboardControl from './modules/keyboardControl'
+import SwiperPluginMousewheel from './modules/mousewheel'
 
 export {
     Swiper,
@@ -17,5 +17,6 @@ export {
 export {
     SwiperPluginLazyload,
     SwiperPluginPagination,
-    SwiperPluginKeyboardControl
+    SwiperPluginKeyboardControl,
+    SwiperPluginMousewheel
 }
