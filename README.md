@@ -98,6 +98,15 @@ If you are looking for some feature special or going to create a complicate slid
 | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
 | IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions| last 2 versions
 
+## Contribution
+
+Please make sure to read the [Contributing Guide](.github/CONTRIBUTING.md) before making a pull request.
+
+Thanks goes to these wonderful people
+
+<a href="https://github.com/joe223/tiny-swiper/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=joe223/tiny-swiper" />
+</a>
 
 ## License
 
