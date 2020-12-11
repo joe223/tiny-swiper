@@ -17,7 +17,6 @@ export type SwiperInstance = {
     env: Env
     state: State
     updateSize: () => void
-    inject: (key: string, injection: Function) => void
 }
 export type SwiperPlugin = (instance: SwiperInstance, options: Options) => void
 
@@ -80,11 +79,11 @@ const Swiper: Swiper = <Swiper> function (
     )
 
     function destroy (): void {
-        emit(LIFE_CYCLES.BEFORE_DESTROY)
+        emit(LIFE_CYCLES.BEFORE_DESTROY, instance)
         sensor.detach()
         renderer.destroy()
         eventHub.clear()
-        emit(LIFE_CYCLES.AFTER_DESTROY)
+        emit(LIFE_CYCLES.AFTER_DESTROY, instance)
     }
 
     function updateSize (): void {

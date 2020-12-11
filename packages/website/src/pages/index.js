@@ -35,7 +35,7 @@ function Home() {
     return (
         <Layout
             title={siteConfig.title}
-            description="Lightweight yet fully configurable and extensible web carousel.">
+            description="Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.">
             <div className={styles.container}>
                 <main className={styles.head}>
                     <img
@@ -43,18 +43,18 @@ function Home() {
                         src={useBaseUrl('img/logo.svg')}
                         alt="Tiny-Swiper logo"/>
                     <div className={clsx(styles.slogan, styles.sloganPc)}>The Powerful <br/>
-                        JavaScript Carousels</div>
+                        JavaScript Carousel</div>
                     <div className={clsx(styles.slogan, styles.sloganMobile)}>Tiny-Swiper</div>
                 </main>
 
-                <div className={styles.desc}>Lightweight yet fully configurable and extensible web carousel with native-like behavior.
-                    Zero dependency, written in vanilla JavaScript, used for free and without any attribution.
+                <div className={styles.desc}>Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.
+                    Zero dependency, written in TypeScript, used for free and without any attribution.
                     <Link to={useBaseUrl('docs')}>
                         &nbsp;More Details
                     </Link>
                 </div>
 
-                <div className={styles.descMobile}>Lightweight yet fully configurable and extensible web carousel with native-like behavior.</div>
+                <div className={styles.descMobile}>Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.</div>
 
                 <div className={styles.btnGroup}>
                     <Link

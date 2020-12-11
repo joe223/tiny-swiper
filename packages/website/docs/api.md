@@ -1,5 +1,5 @@
 ---
-id: api 
+id: api
 title: APIs
 ---
 
@@ -53,7 +53,8 @@ title: APIs
 | Method | Description |
 |---|---|
 | update | Update instance status if you changed DOM manually. |
-| scroll(index: number, force?: boolean) | Slide to specific index. scroll will not work when instance's `scrolling` is `true` and `force` is `false`. |
+| updateSize | Update instance status if DOM size changed. |
+| slideTo (targetIndex: number, duration?: number) | Slide to specific index with specificated time duration. |
 | destroy | Destroy slider instance, detach all events listeners and reset style. |
 | on(eventName: string, cb: function) | Register life hooks callback function. |
 | off(eventName: string, cb: function) | Cancel life hooks callback function. |
@@ -65,12 +66,13 @@ You can do something at special moments by registering Tiny-Swiper instance life
 
 | HookName | Parameters | Description |
 |---|---|---|
-| `before-init` | `instance: TinySwiper` | Before Tiny-Swiper instance initialize. |
-| `after-init` |  `instance: TinySwiper` | After Tiny-Swiper instance initialize. |
-| `before-slide` | `currentIndex: number, instance: TinySwiper, newIndex: number` | Before Tiny-Swiper instance slide changes. `index` does not change yet. |
-| `after-slide` | `newIndex: number, instance: TinySwiper` | After Tiny-Swiper instance slide changes.  |
-| `before-destroy` | `instance: TinySwiper` | Before Tiny-Swiper instance is destroyed. |
-| `after-destroy` | `instance: TinySwiper` | After Tiny-Swiper instance is destroyed, every thing is restored. |
+| `before-init` | `instance: SwiperInstance` | Before Tiny-Swiper instance initialize. |
+| `after-init` |  `instance: SwiperInstance` | After Tiny-Swiper instance initialize. |
+| `before-slide` | `currentIndex: number, state: State, newIndex: number` | Before Tiny-Swiper instance slide changes. `index` does not change yet. |
+| `scroll` | `state: State` | Sliders is scrolling. |
+| `after-slide` | `newIndex: number, state: State` | After Tiny-Swiper instance slide changes.  |
+| `before-destroy` | `instance: SwiperInstance` | Before Tiny-Swiper instance is destroyed. |
+| `after-destroy` | `instance: SwiperInstance` | After Tiny-Swiper instance is destroyed, every thing is restored. |
 
 ## Using Plugins
 
@@ -134,3 +136,186 @@ Notice: Two configurations are mutually exclusive. Plugin parameter gets higher 
 :::
 
 Do not forget, just keep Plugin parameter at the **first level** of configuration.
+
+
+## Plugin List
+
+- [Pagination](#pagination)
+- [Lazyload](#lazyload)
+- [Keyboard Control](#keyboard-control)
+
+### Pagination
+
+Pagination is the indicator of siwper for indicating current `index`.
+
+- Global name on `window`: `SwiperPluginPagination`.
+- Configuration name: `pagination`.
+
+#### Usage
+
+```javascript
+import SwiperPluginPagination from 'tiny-swiper/lib/modules/pagination.min.js'
+
+const swiper = new Swiper(
+    swiperContainerElement,
+    {
+        // SwiperPluginPagination configuration.
+        pagination: {
+            clickable: true
+        },
+
+        // Add SwiperPluginPagination plugin.
+        plugins: [ SwiperPluginPagination ]
+    }
+)
+```
+
+**Notice**: Tiny-Swiper does not provide default CSS file. You have to define style yourself.
+
+#### Pagination Parameters
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| pagination | object/boolean | undefined | Object with navigation parameters. |
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| clickable | boolean | false | If true then clicking on pagination button will cause transition to appropriate slide |
+| bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
+| bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
+
+
+### Lazyload
+
+Try loading less images to reduce the number of HTTP requests.
+
+- Global name on `window`: `SwiperPluginLazyload`.
+- Configuration name: `lazyload`.
+
+#### Usage
+
+Using `data-src` attribute to enable lazyload. `.swiper-lazy-preloader` will keep display till image is loaded/error. Viewing the [demonstration](https://joe223.com/tiny-swiper/#plugins).
+
+```html
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+
+        <!-- Lazy image -->
+        <div class="swiper-slide">
+            <img data-src="path/to/picture-1.jpg" class="swiper-lazy">
+            <div class="swiper-lazy-preloader"></div>
+        </div>
+
+        <div class="swiper-slide">
+            <img data-src="path/to/picture-2.jpg" class="swiper-lazy">
+            <div class="swiper-lazy-preloader"></div>
+        </div>
+
+        <div class="swiper-slide">
+            <img data-src="path/to/picture-3.jpg" class="swiper-lazy">
+            <div class="swiper-lazy-preloader"></div>
+        </div>
+    </div>
+</div>
+```
+
+```javascript
+Swiper.use([ SwiperPluginLazyload ])
+
+var mySwiper = new Swiper('#swiper', {
+    lazyload: {
+        loadPrevNext: false,
+        loadPrevNextAmount: 1,
+        loadOnTransitionStart: false,
+        elementClass: 'swiper-lazy',
+        loadingClass: 'swiper-lazy-loading',
+        loadedClass: 'swiper-lazy-loaded',
+        preloaderClass: 'swiper-lazy-preloader'
+    }
+})
+```
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| lazyload | object/boolean | undefined | Object with parameters. |
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| loadPrevNext | boolean | false | Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images) |
+| loadPrevNextAmount | number | 1 | Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView |
+| loadOnTransitionStart | boolean | false | Loading image on `before-slide` event. loading on `after-slide` if set to `false`. |
+| elementClass | string | 'swiper-lazy'	| CSS class name of lazy element |
+| loadingClass | string | 'swiper-lazy-loading' | CSS class name of lazy loading element |
+| loadedClass |	string | 'swiper-lazy-loaded' | CSS class name of lazy loaded element |
+| preloaderClass |	string | 'swiper-lazy-preloader' | CSS class name of lazy preloader |
+
+
+### Keyboard Control
+
+Control Tiny-Swiper with directional arrow keys on keyboard.
+
+- Global name on `window`: `SwiperPluginKeyboardControl`.
+- Configuration name: `keyboard`.
+
+#### Usage
+
+```javascript
+Swiper.use([ SwiperPluginKeyboardControl ])
+
+var mySwiper = new Swiper('#swiper', {
+    keyboard: {
+        enabled: true,
+        onlyInViewport: true
+    }
+})
+```
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| keyboard | object/boolean | undefined | Object with parameters. |
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| enabled | boolean | true | Set to "true" to enable keyboard control function. |
+| onlyInViewport | boolean | true | Keyboard control will be enabled only if container element is displayed in viewport integrally. |
+
+
+### Mousewheel
+
+Control Tiny-Swiper with mouse.
+
+- Global name on `window`: `SwiperPluginMousewheel`.
+- Configuration name: `mousewheel`.
+
+#### Usage
+
+```javascript
+import SwiperPluginMousewheel from 'tiny-swiper/lib/modules/mousewheel.min.js'
+
+const swiper = new Swiper(
+    swiperContainerElement,
+    {
+        // SwiperPluginMousewheel configuration.
+        mousewheel: {
+            interval: 1000
+        },
+
+        // Add SwiperPluginMousewheel plugin.
+        plugins: [ SwiperPluginMousewheel ]
+    }
+)
+```
+
+**Notice**: SwiperPluginMousewheel was completely stripped from core module since `v2.x`.
+
+#### Mousewheel Parameters
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| mousewheel | object/boolean | undefined | Object with mousewheel parameters. |
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| invert | boolean | false | Invert the direction of scroll wheel on the mouse |
+| sensitivity | number | 1 | The threshold value of scroll distance |
+| interval | number | 400 | Time to suspend slide between two swip actions |

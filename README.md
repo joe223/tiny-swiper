@@ -18,7 +18,7 @@
 
 <p align="center">
 Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.
-Zero dependency, written in vanilla JavaScript, used for free and without any attribution.
+Zero dependency, written in TypeScript, used for free and without any attribution.
 </p>
 
 <p align="center">

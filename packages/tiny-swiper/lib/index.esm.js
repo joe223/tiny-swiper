@@ -1102,11 +1102,11 @@ var Swiper = function Swiper(el, userOptions) {
   var sensor = Sensor(env, state, options, operations);
 
   function destroy() {
-    emit(LIFE_CYCLES.BEFORE_DESTROY);
+    emit(LIFE_CYCLES.BEFORE_DESTROY, instance);
     sensor.detach();
     renderer.destroy();
     eventHub.clear();
-    emit(LIFE_CYCLES.AFTER_DESTROY);
+    emit(LIFE_CYCLES.AFTER_DESTROY, instance);
   }
 
   function updateSize() {

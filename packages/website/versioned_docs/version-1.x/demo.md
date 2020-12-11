@@ -14,7 +14,7 @@ title: Demo
 
 <div className="demo">
     <h4>Vertical Slider</h4>
-    <iframe src="https://codier.io/embed/Byqb1D4YS?tab=javascript%2Cpreview"
+    <iframe src="https://codier.io/embed/SJTgik_2w?tab=javascript%2Cpreview"
             sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
 </div>
 
@@ -26,7 +26,7 @@ title: Demo
 
 <div className="demo">
     <h4>Mousewheel Control</h4>
-    <iframe src="https://codier.io/embed/BymYF8VYr?tab=javascript%2Cpreview"
+    <iframe src="https://codier.io/embed/H1mUikWnw?tab=javascript%2Cpreview"
             sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
 </div>
 
@@ -55,7 +55,7 @@ title: Demo
 <div className="demo">
     <h4>Pagination</h4>
     <p>You need to implement CSS code yourself.</p>
-    <iframe src="https://codier.io/embed/r1agRINtr?tab=javascript%2Cpreview"
+    <iframe src="https://codier.io/embed/BJeAnybnP?tab=javascript%2Cpreview"
             sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin" scrolling="no"></iframe>
 </div>
 

@@ -173,11 +173,13 @@ const swiper = new Swiper(
 | Parameter | Type | default | Description |
 |---|---|---|---|
 | pagination | object/boolean | undefined | Object with navigation parameters. |
-| {
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
 | clickable | boolean | false | If true then clicking on pagination button will cause transition to appropriate slide |
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
-| }
+
 
 #### Lazyload
 
@@ -232,7 +234,9 @@ var mySwiper = new Swiper('#swiper', {
 | Parameter | Type | default | Description |
 |---|---|---|---|
 | lazyload | object/boolean | undefined | Object with parameters. |
-| {
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
 | loadPrevNext | boolean | false | Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images) |
 | loadPrevNextAmount | number | 1 | Amount of next/prev slides to preload lazy images in. Can't be less than slidesPerView |
 | loadOnTransitionStart | boolean | false | Loading image on `before-slide` event. loading on `after-slide` if set to `false`. |
@@ -240,7 +244,7 @@ var mySwiper = new Swiper('#swiper', {
 | loadingClass | string | 'swiper-lazy-loading' | CSS class name of lazy loading element |
 | loadedClass |	string | 'swiper-lazy-loaded' | CSS class name of lazy loaded element |
 | preloaderClass |	string | 'swiper-lazy-preloader' | CSS class name of lazy preloader |
-| }
+
 
 #### Keyboard Control
 
@@ -265,7 +269,9 @@ var mySwiper = new Swiper('#swiper', {
 | Parameter | Type | default | Description |
 |---|---|---|---|
 | keyboard | object/boolean | undefined | Object with parameters. |
-| {
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
 | enabled | boolean | true | Set to "true" to enable keyboard control function. |
 | onlyInViewport | boolean | true | Keyboard control will be enabled only if container element is displayed in viewport integrally. |
-| }
+
