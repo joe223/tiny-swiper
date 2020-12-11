@@ -1,7 +1,7 @@
 {
   "name": "tiny-swiper",
   "version": "1.3.0",
-  "description": "2kb modular JS library alternative to SwiperJS with same modern API for carousel/slider/slideshow.",
+  "description": "Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.",
   "main": "lib/index.min.js",
   "module": "lib/index.esm.js",
   "types": "types/index.esm.d.ts",

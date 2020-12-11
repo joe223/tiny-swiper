@@ -50,7 +50,7 @@ function Home() {
                 <div className={styles.desc}>Lightweight yet fully configurable and extensible web carousel with native-like behavior.
                     Zero dependency, written in vanilla JavaScript, used for free and without any attribution.
                     <Link to={useBaseUrl('docs')}>
-                        More Details
+                        &nbsp;More Details
                     </Link>
                 </div>
 

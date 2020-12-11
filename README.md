@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/joe223/tiny-swiper" target="_blank">
-        <img width="120" src="https://user-images.githubusercontent.com/10026019/96370953-3068bd00-1192-11eb-818a-936282fb9616.png">
+        <img width="110" src="https://user-images.githubusercontent.com/10026019/96370953-3068bd00-1192-11eb-818a-936282fb9616.png">
     </a>
 </p>
 
@@ -11,30 +11,39 @@
     <a href="https://coveralls.io/github/joe223/tiny-swiper?branch=dev" target="_blank"><img src="https://img.shields.io/coveralls/github/joe223/tiny-swiper/master"></a>
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="NPM" src="https://img.shields.io/npm/l/tiny-swiper"></a>
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="GitHub issues" src="https://img.shields.io/github/issues/joe223/tiny-swiper"></a>
+    <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img src="https://img.shields.io/npm/dt/tiny-swiper.svg"></a>
 </p>
 
 <h1 align="center">Tiny-Swiper</h1>
 
-Lightweight, extensible and powerful JavaScript carousel with native-like experience for the web.
+<p align="center">
+Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.
 Zero dependency, written in vanilla JavaScript, used for free and without any attribution.
+</p>
 
-## Documentation
+<p align="center">
+Looking for more details and APIs, visit <a href="https://tiny-swiper.joe223.com" target="_blank">tiny-swiper.joe223.com</a>
+</p>
 
-To check out live examples and docs, visit https://joe223.com/tiny-swiper.
+## Usage
 
-## Guide to usage
-
-Install Swiper via npm or yarn:
+### Installation
 
 ```shell
+# via npm
 $ npm install tiny-swiper --save
+
+# via yarn
+$ yarn add tiny-swiper
 ```
 
-If you prefer CDN, just make sure constructor `Swiper` is defined in browser global environment.
+If you prefer CDN
 
 ```html
 <script src="https://unpkg.com/tiny-swiper@latest"></script>
 ```
+
+### Initialization
 
 Html code:
 
@@ -83,16 +92,9 @@ import Swiper from 'tiny-swiper/lib/index.full.js'
 <script src="https://unpkg.com/tiny-swiper@latest/lib/index.full.js"></script>
 ```
 
-## FAQ
-
-#### 1. Should I use Tiny-Swiper?
-
-Tiny-Swiper keeps the core functions likes Touch/Resistance/Intermittent control, we usually did not use many features on mobile side after all. That the reason why it is smaller and the purpose I wrote it.
-
-If you are looking for some feature special or going to create a complicate slide project. Please check [APIs](https://tiny-swiper.joe223.com/docs/api) before importing to ensure the feature you want is supported. Full-featured SwiperJS should be a better choice sometimes.
-
-
 ## Browsers support
+
+All modern browsers are supported, include IE10+.
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>iOS Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Samsung | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)<br>Opera |
 | --------- | --------- | --------- | --------- | --------- | --------- | --------- |

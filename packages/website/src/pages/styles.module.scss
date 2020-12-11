@@ -2,7 +2,7 @@
     margin: 0 auto;
     padding-bottom: 4em;
     max-width: 700px;
-    font-family: TsukuARdGothic-Regular,  "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Source Sans Pro', TsukuARdGothic-Regular,  "Helvetica Neue", Arial, sans-serif;
 }
 
 .head {
@@ -21,21 +21,19 @@
     height: 162px;
 }
 
-.slogan {
-    font-family: TsukuARdGothic-Regular,  "Helvetica Neue", Arial, sans-serif;
-}
-
 .sloganPc {
     display: block;
     font-size: 48px;
     letter-spacing: 1px;
     line-height: 50px;
+    text-align: left;
 }
 
 .sloganMobile {
     display: none;
     margin-bottom: 10px;
     font-size: 28px;
+    font-weight: 600;
 }
 
 .desc {
@@ -65,7 +63,7 @@
     align-items: center;
     justify-content: center;
     width: 182px;
-    height: 40px;
+    height: 50px;
     border: none;
     border-radius: 30.5px;
     font-family: PingFangSC-Semibold;
@@ -145,7 +143,7 @@ iframe {
 
     .button {
         width: 154px;
-        height: 40px;
+        height: 44px;
         font-size: 14px;
     }
 }

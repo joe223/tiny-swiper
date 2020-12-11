@@ -4,6 +4,7 @@
  * bundles Infima by default. Infima is a CSS framework designed to
  * work well for content-centric websites.
  */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;600;900&display=swap');
 
 /* You can override the default Infima variables here. */
 :root {
@@ -26,4 +27,9 @@
 
 .navbar {
     box-shadow: none;
+}
+
+.navbar__title {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 900;
 }
