@@ -7,7 +7,9 @@ module.exports = {
     favicon: 'img/favicon.ico',
     organizationName: 'joe223', // Usually your GitHub org/user name.
     projectName: 'tiny-swiper', // Usually your repo name.
-    plugins: ['docusaurus-plugin-sass'],
+    plugins: [
+        'docusaurus-plugin-sass'
+    ],
     themeConfig: {
         prism: {
             theme: require('prism-react-renderer/themes/github'),
@@ -37,6 +39,11 @@ module.exports = {
                     position: 'right'
                 }
             ]
+        },
+        googleAnalytics: {
+            trackingID: 'UA-153214295-1',
+            // Optional fields.
+            anonymizeIP: true, // Should IPs be anonymized
         }
     },
     presets: [
