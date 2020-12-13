@@ -42,4 +42,4 @@ export declare type Options = {
     pagination?: SwiperPluginPaginationOptions;
 };
 export declare type UserOptions = Partial<Options>;
-export declare function optionFormatter(userOptions: UserOptions): Options;
+export declare function optionFormatter(userOptions?: UserOptions): Options;

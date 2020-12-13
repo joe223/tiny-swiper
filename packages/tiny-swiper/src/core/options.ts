@@ -86,7 +86,7 @@ const defaultOptions: UserOptions = {
     }
 }
 
-export function optionFormatter (userOptions: UserOptions): Options {
+export function optionFormatter (userOptions?: UserOptions): Options {
     const options = <Options>{
         ...defaultOptions,
         ...userOptions

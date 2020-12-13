@@ -34,7 +34,6 @@ function Home() {
     const {siteConfig = {}} = context
     return (
         <Layout
-            title={siteConfig.title}
             description="Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.">
             <div className={styles.container}>
                 <main className={styles.head}>

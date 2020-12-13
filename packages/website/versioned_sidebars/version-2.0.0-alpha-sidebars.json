@@ -1,0 +1,36 @@
+{
+  "version-2.0.0-alpha/someSidebar": [
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Guide",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-2.0.0-alpha/get-started"
+        },
+        {
+          "type": "doc",
+          "id": "version-2.0.0-alpha/api"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "APIs",
+      "items": []
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Changelog",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-2.0.0-alpha/changelog"
+        }
+      ]
+    }
+  ]
+}

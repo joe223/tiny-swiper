@@ -1,5 +1,5 @@
 module.exports = {
-    title: 'Tiny-Swiper',
+    title: 'Tiny-Swiper | Ingenious JavaScript Carousel powered by wonderful plugins',
     tagline: 'The tagline of my site',
     url: 'https://tiny-swiper.joe223.com',
     baseUrl: '/',
