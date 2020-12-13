@@ -16,6 +16,8 @@ title: APIs
 |---|---|---|---|
 | direction | string | 'horizontal' | Could be 'horizontal' or 'vertical' (for vertical slider). |
 | speed | number | 300 | Duration of transition between slides (in ms) |
+| loop | boolean | false | Set to true to enable continuous loop mode. |
+| freeMode | boolean | false | Set to true to disable slides fixed position. |
 | intermittent | number | 0 | Time to suspend between two swip actions. Only for mousewheel mode. |
 | initialSlide | number | 0 | Index number of initial slide. |
 | spaceBetween | number | 0 | Distance between slides in px. |

@@ -14,7 +14,7 @@
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img src="https://img.shields.io/npm/dt/tiny-swiper.svg"></a>
 </p>
 
-<h1 align="center">Tiny-Swiper</h1>
+<h2 align="center">Tiny-Swiper</h2>
 
 <p align="center">
 Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.
