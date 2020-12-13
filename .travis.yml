@@ -8,8 +8,8 @@ addons:
 node_js:
   - stable
   - '10'
-before_install:
-  - sh ./build/setup_puppeteer.sh
+#before_install:
+#  - sh ./build/setup_puppeteer.sh
 install:
   - yarn
 script:

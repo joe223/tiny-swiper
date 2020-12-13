@@ -23,10 +23,10 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run:
-          name: Workaround for GoogleChrome/puppeteer#290
-          command: 'sh ./build/setup_puppeteer.sh'
-      - run: yarn
+#      - run:
+#          name: Workaround for GoogleChrome/puppeteer#290
+#          command: 'sh ./build/setup_puppeteer.sh'
+      - run: npm run bootstrap
       - save_cache:
           paths:
             - node_modules

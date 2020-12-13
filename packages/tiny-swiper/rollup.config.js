@@ -80,7 +80,9 @@ function genConfig (options) {
         plugins: [
             ...plugins,
             entry.compress ? uglify() : null,
-            (isBuildProd || !entry.serve) ? null : serve(path.resolve(__dirname))
+            (isBuildProd || !entry.serve) ? null : serve(path.resolve(__dirname), {
+                openPage: '/demo/default.html'
+            })
         ],
         output: {
             dir: path.resolve('lib', path.dirname(entry.input)),
