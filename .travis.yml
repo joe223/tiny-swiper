@@ -8,10 +8,11 @@ addons:
 node_js:
   - stable
   - '10'
-#before_install:
+before_install:
 #  - sh ./build/setup_puppeteer.sh
 install:
-  - yarn
+  - npm install lerna
+  - npm run boostrap
 script:
   - npm run build
   - npm run test
