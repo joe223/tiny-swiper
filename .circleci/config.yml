@@ -26,6 +26,7 @@ jobs:
 #      - run:
 #          name: Workaround for GoogleChrome/puppeteer#290
 #          command: 'sh ./build/setup_puppeteer.sh'
+      - run: npm install lerna
       - run: npm run bootstrap
       - save_cache:
           paths:
