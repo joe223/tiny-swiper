@@ -6,7 +6,7 @@
 
 <p align="center">
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="npm" src="https://img.shields.io/npm/v/tiny-swiper"></a>
-    <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img src="https://img.badgesize.io/joe223/tiny-swiper/master/lib/index.min.js?compression=gzip"></a>
+    <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img src="https://img.badgesize.io/joe223/tiny-swiper/dev/packages/tiny-swiper/lib/index.min.js?compression=gzip"></a>
     <a href="https://travis-ci.com/joe223/tiny-swiper" target="_blank"><img src="https://img.shields.io/travis/com/joe223/tiny-swiper"></a>
     <a href="https://coveralls.io/github/joe223/tiny-swiper?branch=dev" target="_blank"><img src="https://img.shields.io/coveralls/github/joe223/tiny-swiper/master"></a>
     <a href="https://www.npmjs.com/package/tiny-swiper" target="_blank"><img alt="NPM" src="https://img.shields.io/npm/l/tiny-swiper"></a>
