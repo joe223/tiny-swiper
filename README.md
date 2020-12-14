@@ -92,6 +92,13 @@ import Swiper from 'tiny-swiper/lib/index.full.js'
 <script src="https://unpkg.com/tiny-swiper@latest/lib/index.full.js"></script>
 ```
 
+## Demonstration
+
+![https://user-gold-cdn.xitu.io/2019/12/9/16ee8abb06c66145?imageslim](https://user-gold-cdn.xitu.io/2019/12/9/16ee8abb06c66145?imageslim)
+![https://user-gold-cdn.xitu.io/2019/12/9/16ee8aa758637b4b?imageslim](https://user-gold-cdn.xitu.io/2019/12/9/16ee8aa758637b4b?imageslim)
+
+More example 👉 [Demo](https://tiny-swiper.joe223.com/docs/1.x/demo)
+
 ## Browsers support
 
 All modern browsers are supported, include IE10+.
