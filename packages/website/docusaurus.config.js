@@ -28,6 +28,12 @@ module.exports = {
                     label: 'Docs',
                     position: 'left'
                 },
+                {
+                    to: 'docs/demo/',
+                    activeBasePath: 'docs',
+                    label: 'Demos',
+                    position: 'left'
+                },
                 // right
                 {
                     type: 'docsVersionDropdown',
