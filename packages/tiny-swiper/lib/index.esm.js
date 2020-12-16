@@ -354,6 +354,75 @@ function SwiperPluginMousewheel(instance, options) {
   });
 }
 
+function SwiperPluginNavigation(instance, options) {
+  var navigation = {
+    $nextEl: null,
+    $prevEl: null
+  };
+
+  var nextClickHandler = function nextClickHandler(e) {
+    var el = e.target;
+
+    if (checkIsDisable(el)) {
+      return;
+    }
+
+    var index = instance.state.index;
+    var $list = instance.env.element.$list;
+
+    if (index < $list.length - 1) {
+      instance.slideTo(index + 1);
+    }
+  };
+
+  var prevClickHandler = function prevClickHandler(e) {
+    var el = e.target;
+
+    if (checkIsDisable(el)) {
+      return;
+    }
+
+    var index = instance.state.index;
+
+    if (index > 0) {
+      instance.slideTo(index - 1);
+    }
+  };
+
+  var checkIsDisable = function checkIsDisable(e) {
+    if (e.className.split(' ').includes(options.navigation.disabledClass) || e.className.split(' ').includes(options.navigation.lockClass)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  instance.on('before-init', function () {
+    if (options.navigation) {
+      options.navigation = Object.assign({
+        hideOnClick: false,
+        disabledClass: 'swiper-button-disabled',
+        hiddenClass: 'swiper-button-hidden',
+        lockClass: 'swiper-button-lock'
+      }, options.navigation);
+    }
+  });
+  instance.on('after-init', function () {
+    if (!options.navigation) return;
+    navigation.$nextEl = typeof options.navigation.$nextEl === 'string' ? document.body.querySelector(options.navigation.$nextEl) : options.navigation.$nextEl;
+    navigation.$prevEl = typeof options.navigation.$prevEl === 'string' ? document.body.querySelector(options.navigation.$prevEl) : options.navigation.$prevEl;
+    attachListener(navigation.$nextEl, 'click', nextClickHandler);
+    attachListener(navigation.$prevEl, 'click', prevClickHandler);
+  });
+  instance.on('after-destroy', function () {
+    if (!options.navigation) return;
+    delete navigation.$nextEl;
+    delete navigation.$prevEl;
+    detachListener(navigation.$nextEl, 'click', nextClickHandler);
+    detachListener(navigation.$prevEl, 'click', nextClickHandler);
+  });
+}
+
 function translate(state, env, options, duration) {
   var $wrapper = env.element.$wrapper;
   var wrapperStyle = {
@@ -1140,4 +1209,4 @@ Swiper.use = function (plugins) {
 };
 
 export default Swiper;
-export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginPagination };
+export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginNavigation, SwiperPluginPagination };
