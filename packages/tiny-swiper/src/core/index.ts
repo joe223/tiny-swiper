@@ -82,8 +82,8 @@ const Swiper: Swiper = <Swiper> function (
         emit(LIFE_CYCLES.BEFORE_DESTROY, instance)
         sensor.detach()
         renderer.destroy()
-        eventHub.clear()
         emit(LIFE_CYCLES.AFTER_DESTROY, instance)
+        eventHub.clear()
     }
 
     function updateSize (): void {

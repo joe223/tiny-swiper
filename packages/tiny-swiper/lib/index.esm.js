@@ -349,8 +349,8 @@ function SwiperPluginMousewheel(instance, options) {
   });
   instance.on('after-destroy', function () {
     if (!options.mousewheel) return;
-    delete mousewheel.$el;
     detachListener(mousewheel.$el, 'wheel', handler);
+    delete mousewheel.$el;
   });
 }
 
@@ -1113,8 +1113,8 @@ var Swiper = function Swiper(el, userOptions) {
     emit(LIFE_CYCLES.BEFORE_DESTROY, instance);
     sensor.detach();
     renderer.destroy();
-    eventHub.clear();
     emit(LIFE_CYCLES.AFTER_DESTROY, instance);
+    eventHub.clear();
   }
 
   function updateSize() {

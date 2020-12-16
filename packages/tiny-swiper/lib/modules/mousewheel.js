@@ -63,8 +63,8 @@
       });
       instance.on('after-destroy', function () {
         if (!options.mousewheel) return;
-        delete mousewheel.$el;
         detachListener(mousewheel.$el, 'wheel', handler);
+        delete mousewheel.$el;
       });
     }
 

@@ -84,7 +84,7 @@ export default function SwiperPluginMousewheel (
     instance.on('after-destroy', () => {
         if (!options.mousewheel) return
 
-        delete mousewheel.$el
         detachListener(mousewheel.$el, 'wheel', <EventListener>handler)
+        delete mousewheel.$el
     })
 }
