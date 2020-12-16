@@ -44,7 +44,8 @@ import Demo from '../../src/components/Demo'
 <Demo
     option={{
         loop: true
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-loop-mode">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -73,7 +74,8 @@ import Demo from '../../src/components/Demo'
     option={{
         freeMode: true,
         loop: true
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-freemode">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -100,7 +102,8 @@ import Demo from '../../src/components/Demo'
 <Demo
     option={{
         direction: 'vertical'
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-vertical-slider">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -127,7 +130,8 @@ import Demo from '../../src/components/Demo'
 <Demo
     option={{
         spaceBetween: 100
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-space-between-slides">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -154,7 +158,8 @@ import Demo from '../../src/components/Demo'
 <Demo
     option={{
         speed: 2000
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-speed-control">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -183,7 +188,8 @@ With less resistanceRatio comes bigger resistance.
 <Demo
     option={{
         resistance: false
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-resistance-control">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -223,7 +229,8 @@ You need to implement CSS code yourself.
         plugins: [
             SwiperPluginPagination
         ]
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-plugin-pagination">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -262,7 +269,8 @@ You need to implement CSS code yourself.
         plugins: [
             SwiperPluginLazyload
         ]
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-plugin-plugin-lazyload">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -313,7 +321,8 @@ Keys `up` and `down` work only when `direction: vertical`, so do `right` and `le
         plugins: [
             SwiperPluginKeyboardControl
         ]
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-plugin-plugin-keyboardcontrol">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -347,7 +356,8 @@ Keys `up` and `down` work only when `direction: vertical`, so do `right` and `le
         plugins: [
             SwiperPluginMousewheel
         ]
-    }}>
+    }}
+    demoID="tiny-swiper2-demo-plugin-plugin-mousewheel">
     <div className="swiper-container">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
