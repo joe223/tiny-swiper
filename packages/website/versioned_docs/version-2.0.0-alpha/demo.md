@@ -5,7 +5,8 @@ title: Demos
 import {
     SwiperPluginPagination,
     SwiperPluginLazyload,
-    SwiperPluginKeyboardControl
+    SwiperPluginKeyboardControl,
+    SwiperPluginNavigation
 } from 'tiny-swiper/lib/index.esm'
 import Demo from '../../src/components/Demo'
 
@@ -334,8 +335,8 @@ You need to implement CSS code yourself.
             <img src="https://user-images.githubusercontent.com/10026019/102230508-ed279200-3f27-11eb-9765-88fe733eeb8c.png"/>
             </div>
         </div>
-        <div className="swiper-plugin-navigation-nextEl"></div>
-        <div className="swiper-plugin-navigation-prevEl"></div>
+        <button className="swiper-plugin-navigation-nextEl">--</button>
+        <button className="swiper-plugin-navigation-prevEl">++</button>
     </div>
 </Demo>
 
