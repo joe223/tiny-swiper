@@ -298,6 +298,47 @@ You need to implement CSS code yourself.
     </div>
 </Demo>
 
+### Navigation
+
+You need to implement CSS code yourself.
+
+<Demo
+    option={{
+        navigation: {
+            $nextEl: '.swiper-plugin-navigation-nextEl',
+            $prevEl: '.swiper-plugin-navigation-prevEl',
+            hideOnClick: false,
+            disabledClass: 'swiper-button-disabled',
+            hiddenClass: 'swiper-button-hidden',
+            lockClass: 'swiper-button-lock'
+        },
+    plugins: [
+        SwiperPluginNavigation
+    ]
+}}>
+    <div className="swiper-container">
+        <div className="swiper-wrapper">
+            <div className="swiper-slide">
+            <img src="https://user-images.githubusercontent.com/10026019/102231248-ba31ce00-3f28-11eb-953e-60001e810876.png"/>
+            </div>
+            <div className="swiper-slide">
+            <img src="https://user-images.githubusercontent.com/10026019/102232334-eef25500-3f29-11eb-857b-fcb744045fe8.png"/>
+            </div>
+            <div className="swiper-slide">
+            <img src="https://user-images.githubusercontent.com/10026019/102230734-32e45a80-3f28-11eb-9d78-697b8049caea.png"/>
+            </div>
+            <div className="swiper-slide">
+            <img src="https://user-images.githubusercontent.com/10026019/102230550-f7e22700-3f27-11eb-8d81-687c02919745.png"/>
+            </div>
+            <div className="swiper-slide">
+            <img src="https://user-images.githubusercontent.com/10026019/102230508-ed279200-3f27-11eb-9765-88fe733eeb8c.png"/>
+            </div>
+        </div>
+        <div className="swiper-plugin-navigation-nextEl"></div>
+        <div className="swiper-plugin-navigation-prevEl"></div>
+    </div>
+</Demo>
+
 ### Keyboard Control
 
 Using `up` `right` `down` `left` keys to control swiper instance.

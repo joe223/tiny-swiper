@@ -56,9 +56,6 @@ export default function SwiperPluginNavigation(
         const {
             index
         } = instance.state
-        const {
-            $list
-        } = instance.env.element
 
         if ( index > 0 ) {
             instance.slideTo(index - 1);
@@ -67,7 +64,8 @@ export default function SwiperPluginNavigation(
     };
 
     const checkIsDisable = (e: HTMLElement) => {
-        if (e.className.split(' ').includes(options.navigation.disabledClass)) {
+        if (e.className.split(' ').includes(options.navigation.disabledClass)
+        || e.className.split(' ').includes(options.navigation.lockClass)) {
             return true
         }
         return false
