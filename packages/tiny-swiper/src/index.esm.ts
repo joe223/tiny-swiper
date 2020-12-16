@@ -2,6 +2,7 @@ import SwiperPluginLazyload from './modules/lazyload'
 import SwiperPluginPagination from './modules/pagination'
 import SwiperPluginKeyboardControl from './modules/keyboardControl'
 import SwiperPluginMousewheel from './modules/mousewheel'
+import SwiperPluginNavigation from './modules/navigation'
 
 export {
     Swiper,
@@ -18,5 +19,6 @@ export {
     SwiperPluginLazyload,
     SwiperPluginPagination,
     SwiperPluginKeyboardControl,
-    SwiperPluginMousewheel
+    SwiperPluginMousewheel,
+    SwiperPluginNavigation
 }
