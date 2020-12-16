@@ -1,17 +1,15 @@
 import React, { createRef, useEffect } from 'react'
-import Swiper, {
-    SwiperPluginPagination
-} from 'tiny-swiper/lib/index.esm'
+import Swiper from 'tiny-swiper/lib/index.esm'
 import './index.scss'
 import StackblitzIcon from '../../../static/img/stackblitz-icon.svg'
 
-console.log(SwiperPluginPagination);
 export default function Demo (props) {
     const EditLink = () => {
         return props.demoID ?
             <a
                 className="edit-link"
-                href={`https://stackblitz.com/edit/${props.demoID}?file=index.html`}>
+                href={`https://stackblitz.com/edit/${props.demoID}?file=index.html`}
+                target="_blank">
                 <StackblitzIcon className="edit-icon"/>
                 Edit in Stackblitz
             </a> : null
