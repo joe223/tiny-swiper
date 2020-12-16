@@ -312,3 +312,51 @@ const swiper = new Swiper(
 | invert | boolean | false | Invert the direction of scroll wheel on the mouse |
 | sensitivity | number | 1 | The threshold value of scroll distance |
 | interval | number | 400 | Time to suspend slide between two swip actions |
+
+### Navigation
+
+Control Tiny-Swiper with Navigation Button.
+
+- Global name on `window`: `SwiperPluginNavigation`.
+- Configuration name: `navigation`.
+
+#### Usage
+
+```javascript
+import SwiperPluginNavigation from 'tiny-swiper/lib/modules/navigation.min.js'
+
+const swiper = new Swiper(
+    swiperContainerElement,
+    {
+        // SwiperPluginMousewheel configuration.
+        navigation: {
+            $nextEl: 'className | HTMLElement',
+            $prevEl: 'className | HTMLElement',
+            hideOnClick: false,
+            disabledClass: 'swiper-button-disabled',
+            hiddenClass: 'swiper-button-hidden',
+            lockClass: 'swiper-button-lock'
+        },
+
+        // Add SwiperPluginMousewheel plugin.
+        plugins: [ SwiperPluginNavigation ]
+    }
+)
+```
+
+**Notice**: SwiperPluginNavigation was completely stripped from core module since `v2.x`.
+
+#### Navigation Parameters
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| navigation | object/boolean | undefined | Object with navigation parameters. |
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| $nextEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "next" button after click on it |
+| $prevEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "prev" button after click on it |
+| hideOnClick | boolean | false | Toggle navigation buttons visibility after click on Slider's container |
+| disabledClass | string | 'swiper-button-disabled' | CSS class name added to navigation button when it becomes disabled |
+| hiddenClass | string | 'swiper-button-hidden' | CSS class name added to navigation button when it becomes hidden |
+| lockClass | string | 'swiper-button-lock' | CSS class name added to navigation button when it is disabled |
