@@ -80,8 +80,8 @@ export function Vector (
         y: trace.y - formerTrace.y
     }
     const duration = trace.time - formerTrace.time
-    const velocityX = diff.x / duration
-    const velocityY = diff.y / duration
+    const velocityX = diff.x / duration || 0
+    const velocityY = diff.y / duration || 0
     const angle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * delta
 
     return {

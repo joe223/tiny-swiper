@@ -188,8 +188,8 @@
       y: trace.y - formerTrace.y
     };
     var duration = trace.time - formerTrace.time;
-    var velocityX = diff.x / duration;
-    var velocityY = diff.y / duration;
+    var velocityX = diff.x / duration || 0;
+    var velocityY = diff.y / duration || 0;
     var angle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * delta;
     return _extends({}, diff, {
       angle: angle,
