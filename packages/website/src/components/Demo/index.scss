@@ -1,0 +1,135 @@
+.demo-container {
+    margin-bottom: 56px;
+
+    .edit-link {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 16px;
+        line-height: 20px;
+        text-decoration: none;
+    }
+
+    .edit-icon {
+        width: 14px;
+    }
+}
+
+.demo-block {
+    height: 400px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(107, 107, 107, .1);
+
+    /* basic */
+    .swiper-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .swiper-container,
+    .swiper-wrapper {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-slide {
+        position: relative;
+        display: flex;
+        flex-shrink: 0;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        font-size: 18px;
+        align-items: center;
+        cursor: grab;
+    }
+
+    .swiper-slide img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+    }
+
+    /* plugin pagination */
+    .swiper-plugin-pagination {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: 2.2rem;
+        width: 0.5rem;
+        transform: translateY(-50%);
+
+        &__item {
+            display: block;
+            margin: 100% 0;
+            width: 100%;
+            padding-top: 100%;
+            height: 0;
+            border-radius: 50% !important;
+            border: none;
+            background: #FFF;
+            transition: background ease 0.2s;
+            cursor: pointer;
+        }
+
+        &__item.is-active {
+            background: #333;
+        }
+    }
+
+    /* image lazyload */
+    .swiper-lazy {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: all ease 300ms;
+    }
+
+    .swiper-lazy-preloader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .swiper-lazy-loaded {
+        opacity: 1;
+    }
+
+    .swiper-lazy-preloader::after {
+        display: block;
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin: -15px 0 0 -15px;
+        width: 30px;
+        height: 30px;
+        border: 2px solid rgba(0, 0, 0, .88);
+        border-radius: 50%;
+        border-bottom-color: transparent;
+        transform-origin: 50%;
+        animation: rotate 1s infinite linear;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate3d(0, 0, 0, 0);
+        }
+
+        100% {
+            transform: rotate3d(0, 0, 1, 360deg);
+        }
+    }
+
+    /* external */
+}
+
+

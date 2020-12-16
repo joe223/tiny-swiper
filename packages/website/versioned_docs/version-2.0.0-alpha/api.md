@@ -16,9 +16,8 @@ title: APIs
 |---|---|---|---|
 | direction | string | 'horizontal' | Could be 'horizontal' or 'vertical' (for vertical slider). |
 | speed | number | 300 | Duration of transition between slides (in ms) |
-| loop | boolean | false | Set to true to enable continuous loop mode. |
-| freeMode | boolean | false | Set to true to disable slides fixed position. |
-| intermittent | number | 0 | Time to suspend between two swip actions. Only for mousewheel mode. |
+| loop | boolean | false | Set to true to enable continuous loop mode. (v2.0.0+) |
+| freeMode | boolean | false | Set to true to disable slides fixed position. (v2.0.0+) |
 | initialSlide | number | 0 | Index number of initial slide. |
 | spaceBetween | number | 0 | Distance between slides in px. |
 | longSwipesMs | number | 300 | Minimal duration (in ms) to trigger swipe to next/previous slide during long swipes |
@@ -41,14 +40,6 @@ title: APIs
 | excludeElements | HTMLElements[] | `[]` | An HTMLElement array which contains all elements that do not trigger swipe. |
 | slidesPerView | number | 1 | Number of slides per view (slides visible at the same time on slider's container). |
 | centeredSlides | boolean | false | If true, then active slide will be centered, not always on the left side. |
-
-### Mousewheel Control Parameters
-
-| Parameter | Type | default | Description |
-|---|---|---|---|
-| sensitivity | number | 1 | Multiplier of mousewheel data, allows to tweak mouse wheel sensitivity |
-| invert | boolean | false | Set to true to invert sliding direction |
-
 
 ## Methods
 

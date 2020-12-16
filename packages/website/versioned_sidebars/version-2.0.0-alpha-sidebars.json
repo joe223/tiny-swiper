@@ -16,6 +16,10 @@
       ]
     },
     {
+      "type": "doc",
+      "id": "version-2.0.0-alpha/demo"
+    },
+    {
       "collapsed": true,
       "type": "category",
       "label": "APIs",
