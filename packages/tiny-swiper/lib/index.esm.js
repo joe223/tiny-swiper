@@ -457,7 +457,8 @@ function EventHub() {
 var delta = 180 / Math.PI;
 function Vector(logs, index) {
   var trace = logs[index];
-  var formerTrace = logs[index - 1];
+  var formerTrace = logs[index - 1] || trace; // In case click action, there will be only one log data
+
   var diff = {
     x: trace.x - formerTrace.x,
     y: trace.y - formerTrace.y
@@ -589,6 +590,13 @@ function Animation() {
   };
 }
 
+function resetState(state, operations) {
+  var tracker = state.tracker;
+  var initStatus = operations.initStatus;
+  tracker.clear();
+  initStatus();
+}
+
 function Actions(options, env, state, operations) {
   var initLayout = operations.initLayout,
       initStatus = operations.initStatus,
@@ -637,23 +645,24 @@ function Actions(options, env, state, operations) {
     var index = state.index,
         tracker = state.tracker;
     var measure = env.measure;
+    if (!state.isStart) return;
     state.isStart = false;
 
-    if (!options.freeMode || tracker.getLogs().length < 2) {
+    if (!options.freeMode) {
       var duration = tracker.getDuration();
       var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
       var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
       var longSwipeIndex = getOffsetSteps(trans);
 
       if (duration > options.longSwipesMs) {
+        // long swipe action
         slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
       } else {
-        // short swipe
+        // short swipe action
         slideTo(trans > 0 ? index - jump : index + jump);
       }
 
-      tracker.clear();
-      initStatus();
+      resetState(state, operations);
     } else {
       var vector = tracker.vector();
       var velocity = vector[options.isHorizontal ? 'velocityX' : 'velocityY'];
@@ -661,10 +670,9 @@ function Actions(options, env, state, operations) {
         var offset = velocity * duration;
         velocity *= 0.98;
 
-        if (Math.abs(offset) < 0.004) {
+        if (Math.abs(offset) < 0.01) {
           animation.stop();
-          tracker.clear();
-          initStatus();
+          resetState(state, operations);
         } else {
           scrollPixel(offset);
           render(0);

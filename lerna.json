@@ -4,5 +4,10 @@
   ],
   "npmClient": "yarn",
   "version": "independent",
+  "command": {
+    "publish": {
+      "message": "Chore(release): publish"
+    }
+  },
   "userWorkspaces": true
 }

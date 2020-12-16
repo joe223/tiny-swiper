@@ -14,6 +14,21 @@ export type Actions = {
     stop (): void
 }
 
+function resetState (
+    state: State,
+    operations: Operations
+): void {
+    const {
+        tracker
+    } = state
+    const {
+        initStatus
+    } = operations
+
+    tracker.clear()
+    initStatus()
+}
+
 export function Actions (
     options: Options,
     env: Env,
@@ -91,23 +106,25 @@ export function Actions (
             measure
         } = env
 
+        if (!state.isStart) return
+
         state.isStart = false
 
-        if (!options.freeMode || tracker.getLogs().length < 2) {
+        if (!options.freeMode) {
             const duration = tracker.getDuration()
             const trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y']
             const jump = Math.ceil(Math.abs(trans) / measure.boxSize)
             const longSwipeIndex = getOffsetSteps(trans)
 
             if (duration > options.longSwipesMs) {
+                // long swipe action
                 slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1))
             } else {
-                // short swipe
+                // short swipe action
                 slideTo(trans > 0 ? index - jump : index + jump)
             }
 
-            tracker.clear()
-            initStatus()
+            resetState(state, operations)
         } else {
             const vector = tracker.vector()
 
@@ -118,10 +135,9 @@ export function Actions (
 
                 velocity *= 0.98
 
-                if (Math.abs(offset) < 0.004) {
+                if (Math.abs(offset) < 0.01) {
                     animation.stop()
-                    tracker.clear()
-                    initStatus()
+                    resetState(state, operations)
                 } else {
                     scrollPixel(offset)
                     render(0)
