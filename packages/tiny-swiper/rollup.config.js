@@ -41,6 +41,13 @@ const entries = [
         }
     },
     {
+        input: 'modules/navigation.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginNavigation'
+        }
+    },
+    {
         input: 'modules/lazyload.ts',
         compress: isBuildProd,
         options: {
