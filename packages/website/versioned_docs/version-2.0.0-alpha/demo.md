@@ -304,7 +304,6 @@ Using `up` `right` `down` `left` keys to control swiper instance.
 
 Keys `up` and `down` work only when `direction: vertical`, so do `right` and `left`.
 
-
 <Demo
     option={{
         keyboard: {

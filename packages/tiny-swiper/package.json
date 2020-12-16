@@ -18,8 +18,8 @@
     "test": "jest",
     "test:e2e:local": "cross-env TEST_MODE=local npm run test:e2e",
     "report": "nyc npm run test && nyc report --reporter=text-lcov | coveralls",
-    "lint": "eslint 'src/**' '__test__/**'",
-    "lint:fix": "eslint 'src/**' --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
