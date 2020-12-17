@@ -306,8 +306,8 @@ You need to implement CSS code yourself.
 <Demo
     option={{
         navigation: {
-            $nextEl: '.swiper-plugin-navigation-nextEl',
-            $prevEl: '.swiper-plugin-navigation-prevEl',
+            nextEl: '.swiper-plugin-navigation-nextEl',
+            prevEl: '.swiper-plugin-navigation-prevEl',
             hideOnClick: false,
             disabledClass: 'swiper-button-disabled',
             hiddenClass: 'swiper-button-hidden',
@@ -317,7 +317,7 @@ You need to implement CSS code yourself.
         SwiperPluginNavigation
     ]
 }}>
-    <div className="swiper-container" style={{position:'relative'}}>
+    <div className="swiper-container swiper-navigation" style={{position:'relative'}}>
         <div className="swiper-wrapper">
             <div className="swiper-slide">
             < img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
@@ -335,12 +335,8 @@ You need to implement CSS code yourself.
             < img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
             </div>
         </div>
-        <button className="swiper-plugin-navigation-prevEl" style={{position:'absolute', left:
-'20px', top: '50%', padding: '5px 20px', background: '#ff0074', border: 0, borderRadius: '4px', 
-color: '#fff', fontWeight: 700}}>--</button>
-        <button className="swiper-plugin-navigation-nextEl" style={{position:'absolute', right: 
-'20px', top: '50%', padding: '5px 20px', background: '#ff0074', border: 0, borderRadius: '4px',
-color: '#fff', fontWeight: 700}} >++</button>
+        <button className="swiper-plugin-navigation-prevEl">--</button>
+        <button className="swiper-plugin-navigation-nextEl">++</button>
     </div>
 </Demo>
 

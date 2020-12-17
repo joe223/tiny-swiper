@@ -328,17 +328,17 @@ import SwiperPluginNavigation from 'tiny-swiper/lib/modules/navigation.min.js'
 const swiper = new Swiper(
     swiperContainerElement,
     {
-        // SwiperPluginMousewheel configuration.
+        // SwiperPluginNavigation configuration.
         navigation: {
-            $nextEl: 'className | HTMLElement',
-            $prevEl: 'className | HTMLElement',
+            nextEl: 'className | HTMLElement',
+            prevEl: 'className | HTMLElement',
             hideOnClick: false,
             disabledClass: 'swiper-button-disabled',
             hiddenClass: 'swiper-button-hidden',
             lockClass: 'swiper-button-lock'
         },
 
-        // Add SwiperPluginMousewheel plugin.
+        // Add SwiperPluginNavigation plugin.
         plugins: [ SwiperPluginNavigation ]
     }
 )
@@ -354,8 +354,8 @@ const swiper = new Swiper(
 
 | Parameter | Type | default | Description |
 |---|---|---|---|
-| $nextEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "next" button after click on it |
-| $prevEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "prev" button after click on it |
+| nextEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "next" button after click on it |
+| prevEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "prev" button after click on it |
 | hideOnClick | boolean | false | Toggle navigation buttons visibility after click on Slider's container |
 | disabledClass | string | 'swiper-button-disabled' | CSS class name added to navigation button when it becomes disabled |
 | hiddenClass | string | 'swiper-button-hidden' | CSS class name added to navigation button when it becomes hidden |

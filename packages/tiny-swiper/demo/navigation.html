@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Demo</title>
-	<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Demo</title>
+    <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
         }
@@ -69,7 +69,7 @@
         .prevEl {
             left: 20px;
         }
-	</style>
+    </style>
 </head>
 <body>
 <script src="/lib/index.js"></script>
@@ -77,27 +77,27 @@
 
 <!-- Slider main container -->
 <div class="swiper-container" id="swiper1">
-	<!-- Additional required wrapper -->
-	<div class="swiper-wrapper">
-		<!-- Slides -->
-		<div class="a swiper-slide">1</div>
-		<div class="b swiper-slide">2</div>
-		<div class="a swiper-slide">3</div>
-		<div class="b swiper-slide">4</div>
-	</div>
-	<!-- If we need pagination -->
-	<div class="swiper-pagination"></div>
-	<button class="nextEl btn swiper-button-disabled">++</button>
-	<button class="prevEl btn">--</button>
+    <!-- Additional required wrapper -->
+    <div class="swiper-wrapper">
+        <!-- Slides -->
+        <div class="a swiper-slide">1</div>
+        <div class="b swiper-slide">2</div>
+        <div class="a swiper-slide">3</div>
+        <div class="b swiper-slide">4</div>
+    </div>
+    <!-- If we need pagination -->
+    <div class="swiper-pagination"></div>
+    <button class="nextEl btn swiper-button-disabled">++</button>
+    <button class="prevEl btn">--</button>
 </div>
 
 <script>
-    Swiper.use([ SwiperPluginNavigation ])
+    Swiper.use([SwiperPluginNavigation])
 
     var mySwiper = new Swiper('#swiper1', {
         navigation: {
-            $nextEl: '.nextEl',
-            $prevEl: '.prevEl'
+            nextEl: '.nextEl',
+            prevEl: '.prevEl'
         }
     });
 </script>

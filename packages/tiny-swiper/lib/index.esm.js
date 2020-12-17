@@ -356,41 +356,41 @@ function SwiperPluginMousewheel(instance, options) {
 
 function SwiperPluginNavigation(instance, options) {
   var navigation = {
-    $nextEl: null,
-    $prevEl: null
+    nextEl: null,
+    prevEl: null
   };
 
   var nextClickHandler = function nextClickHandler(e) {
-    var el = e.target;
+    clickHandler(e.target, 'next');
+  };
 
-    if (checkIsDisable(el)) {
+  var prevClickHandler = function prevClickHandler(e) {
+    clickHandler(e.target, 'prev');
+  };
+
+  var clickHandler = function clickHandler(e, type) {
+    if (checkIsDisable(e)) {
       return;
     }
 
     var index = instance.state.index;
     var $list = instance.env.element.$list;
 
-    if (index < $list.length - 1) {
-      instance.slideTo(index + 1);
-    }
-  };
-
-  var prevClickHandler = function prevClickHandler(e) {
-    var el = e.target;
-
-    if (checkIsDisable(el)) {
-      return;
+    if (type === 'next') {
+      if (index < $list.length - 1) {
+        instance.slideTo(index + 1);
+      }
     }
 
-    var index = instance.state.index;
-
-    if (index > 0) {
-      instance.slideTo(index - 1);
+    if (type === 'prev') {
+      if (index > 0) {
+        instance.slideTo(index - 1);
+      }
     }
   };
 
   var checkIsDisable = function checkIsDisable(e) {
-    if (e.className.split(' ').includes(options.navigation.disabledClass) || e.className.split(' ').includes(options.navigation.lockClass)) {
+    if (e.classList.contains(options.navigation.disabledClass) || e.classList.contains(options.navigation.lockClass)) {
       return true;
     }
 
@@ -409,17 +409,17 @@ function SwiperPluginNavigation(instance, options) {
   });
   instance.on('after-init', function () {
     if (!options.navigation) return;
-    navigation.$nextEl = typeof options.navigation.$nextEl === 'string' ? document.body.querySelector(options.navigation.$nextEl) : options.navigation.$nextEl;
-    navigation.$prevEl = typeof options.navigation.$prevEl === 'string' ? document.body.querySelector(options.navigation.$prevEl) : options.navigation.$prevEl;
-    attachListener(navigation.$nextEl, 'click', nextClickHandler);
-    attachListener(navigation.$prevEl, 'click', prevClickHandler);
+    navigation.nextEl = typeof options.navigation.nextEl === 'string' ? document.body.querySelector(options.navigation.nextEl) : options.navigation.nextEl;
+    navigation.prevEl = typeof options.navigation.prevEl === 'string' ? document.body.querySelector(options.navigation.prevEl) : options.navigation.prevEl;
+    attachListener(navigation.nextEl, 'click', nextClickHandler);
+    attachListener(navigation.prevEl, 'click', prevClickHandler);
   });
   instance.on('after-destroy', function () {
     if (!options.navigation) return;
-    delete navigation.$nextEl;
-    delete navigation.$prevEl;
-    detachListener(navigation.$nextEl, 'click', nextClickHandler);
-    detachListener(navigation.$prevEl, 'click', nextClickHandler);
+    delete navigation.nextEl;
+    delete navigation.prevEl;
+    detachListener(navigation.nextEl, 'click', nextClickHandler);
+    detachListener(navigation.prevEl, 'click', nextClickHandler);
   });
 }
 
