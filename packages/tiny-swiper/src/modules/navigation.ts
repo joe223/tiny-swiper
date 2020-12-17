@@ -104,6 +104,6 @@ export default function SwiperPluginNavigation (
         delete navigation.prevEl;
 
         detachListener(navigation.nextEl, 'click', <EventListener> nextClickHandler)
-        detachListener(navigation.prevEl, 'click', <EventListener> nextClickHandler)
+        detachListener(navigation.prevEl, 'click', <EventListener> prevClickHandler)
     })
 }
