@@ -332,10 +332,7 @@ const swiper = new Swiper(
         navigation: {
             nextEl: 'className | HTMLElement',
             prevEl: 'className | HTMLElement',
-            hideOnClick: false,
             disabledClass: 'swiper-button-disabled',
-            hiddenClass: 'swiper-button-hidden',
-            lockClass: 'swiper-button-lock'
         },
 
         // Add SwiperPluginNavigation plugin.
@@ -356,7 +353,4 @@ const swiper = new Swiper(
 |---|---|---|---|
 | nextEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "next" button after click on it |
 | prevEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "prev" button after click on it |
-| hideOnClick | boolean | false | Toggle navigation buttons visibility after click on Slider's container |
 | disabledClass | string | 'swiper-button-disabled' | CSS class name added to navigation button when it becomes disabled |
-| hiddenClass | string | 'swiper-button-hidden' | CSS class name added to navigation button when it becomes hidden |
-| lockClass | string | 'swiper-button-lock' | CSS class name added to navigation button when it is disabled |

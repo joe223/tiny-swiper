@@ -308,16 +308,12 @@ You need to implement CSS code yourself.
         navigation: {
             nextEl: '.swiper-plugin-navigation-nextEl',
             prevEl: '.swiper-plugin-navigation-prevEl',
-            hideOnClick: false,
-            disabledClass: 'swiper-button-disabled',
-            hiddenClass: 'swiper-button-hidden',
-            lockClass: 'swiper-button-lock'
         },
     plugins: [
         SwiperPluginNavigation
     ]
 }}>
-    <div className="swiper-container swiper-navigation" style={{position:'relative'}}>
+    <div className="swiper-container swiper-navigation">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
             < img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>

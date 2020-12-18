@@ -93,7 +93,11 @@
             border-radius: 4px;
             color: #fff;
             font-weight: 700;
-
+            z-index: 3;
+            &.swiper-button-disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
             &:nth-child(2) {
                 left: 20px;
             }

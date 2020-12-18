@@ -69,11 +69,16 @@
         .prevEl {
             left: 20px;
         }
+
+        .swiper-button-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
-<script src="/lib/index.js"></script>
-<script src="/lib/modules/navigation.js"></script>
+<script src="../lib/index.js"></script>
+<script src="../lib/modules/navigation.js"></script>
 
 <!-- Slider main container -->
 <div class="swiper-container" id="swiper1">
@@ -87,7 +92,7 @@
     </div>
     <!-- If we need pagination -->
     <div class="swiper-pagination"></div>
-    <button class="nextEl btn swiper-button-disabled">++</button>
+    <button class="nextEl btn ">++</button>
     <button class="prevEl btn">--</button>
 </div>
 
