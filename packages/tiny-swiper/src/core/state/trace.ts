@@ -74,14 +74,14 @@ export function Vector (
     index: number
 ): Vector {
     const trace = logs[index]
-    const formerTrace = logs[index - 1]
+    const formerTrace = logs[index - 1] || trace // In case click action, there will be only one log data
     const diff = {
         x: trace.x - formerTrace.x,
         y: trace.y - formerTrace.y
     }
     const duration = trace.time - formerTrace.time
-    const velocityX = diff.x / duration
-    const velocityY = diff.y / duration
+    const velocityX = diff.x / duration || 0
+    const velocityY = diff.y / duration || 0
     const angle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * delta
 
     return {

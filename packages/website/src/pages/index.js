@@ -46,7 +46,8 @@ function Home() {
                     <div className={clsx(styles.slogan, styles.sloganMobile)}>Tiny-Swiper</div>
                 </main>
 
-                <div className={styles.desc}>Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.
+                <div className={styles.desc}>Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience.
+                    Lightweight yet extensible. Import plugins as needed, No more, no less.
                     Zero dependency, written in TypeScript, used for free and without any attribution.
                     <Link to={useBaseUrl('docs')}>
                         &nbsp;More Details

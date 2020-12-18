@@ -6,6 +6,7 @@ import {
     SwiperPluginPagination,
     SwiperPluginLazyload,
     SwiperPluginKeyboardControl,
+    SwiperPluginMousewheel,
     SwiperPluginNavigation
 } from 'tiny-swiper/lib/index.esm'
 import Demo from '../../src/components/Demo'
@@ -309,32 +310,33 @@ You need to implement CSS code yourself.
             nextEl: '.swiper-plugin-navigation-nextEl',
             prevEl: '.swiper-plugin-navigation-prevEl',
         },
-    plugins: [
-        SwiperPluginNavigation
-    ]
-}}>
+        plugins: [
+            SwiperPluginNavigation
+        ]
+    }}>
     <div className="swiper-container swiper-navigation">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
-            < img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
+                < img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
             </div>
             <div className="swiper-slide">
-            < img src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png"/>
+                < img src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png"/>
             </div>
             <div className="swiper-slide">
-            < img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+                < img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
             </div>
             <div className="swiper-slide">
-            < img src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png"/>
+                < img src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png"/>
             </div>
             <div className="swiper-slide">
-            < img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+                < img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
             </div>
         </div>
         <button className="swiper-plugin-navigation-prevEl">--</button>
         <button className="swiper-plugin-navigation-nextEl">++</button>
     </div>
 </Demo>
+
 
 ### Keyboard Control
 
@@ -370,5 +372,40 @@ Keys `up` and `down` work only when `direction: vertical`, so do `right` and `le
             </div>
         </div>
         <div className="swiper-plugin-pagination"></div>
+    </div>
+</Demo>
+
+
+### Mousewheel
+
+<Demo
+    option={{
+        mousewheel: {
+            invert: false,
+            interval: 100
+        },
+    plugins: [
+        SwiperPluginMousewheel
+    ]
+    }}
+    demoID="tiny-swiper2-demo-plugin-plugin-mousewheel">
+    <div className="swiper-container">
+        <div className="swiper-wrapper">
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+            </div>
+        </div>
     </div>
 </Demo>

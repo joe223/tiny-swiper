@@ -66,4 +66,27 @@ describe('Trace', () => {
         tracker.clear()
         expect(tracker.getLogs()).toEqual([])
     })
+
+    test('click action (only one log data)', () => {
+        const tracker = Tracker()
+
+        tracker.push({
+            x: 0,
+            y: 0,
+            time: 0
+        } as Position)
+
+        expect(tracker.getDuration()).toEqual(0)
+        expect(tracker.getOffset()).toEqual({
+            x: 0,
+            y: 0
+        })
+        expect(tracker.vector()).toEqual({
+            x: 0,
+            y: 0,
+            velocityX: 0,
+            velocityY: 0,
+            angle: 0
+        })
+    })
 })

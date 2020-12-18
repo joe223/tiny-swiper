@@ -17,7 +17,8 @@
 <h2 align="center">Tiny-Swiper</h2>
 
 <p align="center">
-Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.
+Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience. 
+Lightweight yet extensible. Import plugins as needed, No more, no less.
 Zero dependency, written in TypeScript, used for free and without any attribution.
 </p>
 

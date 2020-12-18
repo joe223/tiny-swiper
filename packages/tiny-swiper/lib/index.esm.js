@@ -349,8 +349,8 @@ function SwiperPluginMousewheel(instance, options) {
   });
   instance.on('after-destroy', function () {
     if (!options.mousewheel) return;
-    delete mousewheel.$el;
     detachListener(mousewheel.$el, 'wheel', handler);
+    delete mousewheel.$el;
   });
 }
 
@@ -580,14 +580,15 @@ function EventHub() {
 var delta = 180 / Math.PI;
 function Vector(logs, index) {
   var trace = logs[index];
-  var formerTrace = logs[index - 1];
+  var formerTrace = logs[index - 1] || trace; // In case click action, there will be only one log data
+
   var diff = {
     x: trace.x - formerTrace.x,
     y: trace.y - formerTrace.y
   };
   var duration = trace.time - formerTrace.time;
-  var velocityX = diff.x / duration;
-  var velocityY = diff.y / duration;
+  var velocityX = diff.x / duration || 0;
+  var velocityY = diff.y / duration || 0;
   var angle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * delta;
   return _extends({}, diff, {
     angle: angle,
@@ -712,6 +713,13 @@ function Animation() {
   };
 }
 
+function resetState(state, operations) {
+  var tracker = state.tracker;
+  var initStatus = operations.initStatus;
+  tracker.clear();
+  initStatus();
+}
+
 function Actions(options, env, state, operations) {
   var initLayout = operations.initLayout,
       initStatus = operations.initStatus,
@@ -760,23 +768,24 @@ function Actions(options, env, state, operations) {
     var index = state.index,
         tracker = state.tracker;
     var measure = env.measure;
+    if (!state.isStart) return;
     state.isStart = false;
 
-    if (!options.freeMode || tracker.getLogs().length < 2) {
+    if (!options.freeMode) {
       var duration = tracker.getDuration();
       var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
       var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
       var longSwipeIndex = getOffsetSteps(trans);
 
       if (duration > options.longSwipesMs) {
+        // long swipe action
         slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
       } else {
-        // short swipe
+        // short swipe action
         slideTo(trans > 0 ? index - jump : index + jump);
       }
 
-      tracker.clear();
-      initStatus();
+      resetState(state, operations);
     } else {
       var vector = tracker.vector();
       var velocity = vector[options.isHorizontal ? 'velocityX' : 'velocityY'];
@@ -784,10 +793,9 @@ function Actions(options, env, state, operations) {
         var offset = velocity * duration;
         velocity *= 0.98;
 
-        if (Math.abs(offset) < 0.004) {
+        if (Math.abs(offset) < 0.01) {
           animation.stop();
-          tracker.clear();
-          initStatus();
+          resetState(state, operations);
         } else {
           scrollPixel(offset);
           render(0);
@@ -1228,8 +1236,8 @@ var Swiper = function Swiper(el, userOptions) {
     emit(LIFE_CYCLES.BEFORE_DESTROY, instance);
     sensor.detach();
     renderer.destroy();
-    eventHub.clear();
     emit(LIFE_CYCLES.AFTER_DESTROY, instance);
+    eventHub.clear();
   }
 
   function updateSize() {
