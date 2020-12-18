@@ -307,26 +307,20 @@ function SwiperPluginMousewheel(instance, options) {
     wheelingTimer: 0
   };
 
-  var initWheelStatus = function initWheelStatus() {
-    wheelStatus.wheeling = false;
-    wheelStatus.wheelDelta = 0;
-    wheelStatus.wheelingTimer = 0;
-  };
-
   var handler = function handler(e) {
-    var delta = options.isHorizontal ? e.deltaX : e.deltaY;
+    var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     var index = instance.state.index;
 
-    if ((Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 || !wheelStatus.wheeling) && Math.abs(delta) >= options.mousewheel.sensitivity) {
-      instance.slideTo(delta > 0 ? index - 1 : index + 1);
+    if (Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 && !wheelStatus.wheeling && Math.abs(delta) >= options.mousewheel.sensitivity) {
+      var step = options.mousewheel.invert ? -1 : 1;
+      instance.slideTo(delta > 0 ? index - step : index + step);
+      wheelStatus.wheeling = true;
+      wheelStatus.wheelingTimer = setTimeout(function () {
+        wheelStatus.wheeling = false;
+      }, options.mousewheel.interval);
     }
 
     wheelStatus.wheelDelta = delta;
-    clearTimeout(wheelStatus.wheelingTimer);
-    wheelStatus.wheeling = true;
-    wheelStatus.wheelingTimer = setTimeout(function () {
-      initWheelStatus();
-    }, options.mousewheel.interval);
     e.preventDefault();
     e.stopPropagation();
   };
