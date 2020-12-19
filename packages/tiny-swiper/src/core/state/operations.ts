@@ -29,6 +29,25 @@ export function isExceedingLimits (
         || velocity < 0 && transform < (limitation.min)
 }
 
+export function getShortestWay (
+    currentIndex: number,
+    targetIndex: number,
+    limitation: Limitation,
+    defaultWay: number
+): number {
+    const {
+        maxIndex,
+        minIndex
+    } = limitation
+    const shortcut = defaultWay > 0
+        ? minIndex - currentIndex + (targetIndex - maxIndex) - 1
+        : maxIndex - currentIndex + (targetIndex - minIndex) + 1
+
+    return Math.abs(defaultWay) > Math.abs(shortcut)
+        ? shortcut
+        : defaultWay
+}
+
 /**
  * Get transform exceed value
  * Return zero if is not reached border.
@@ -52,6 +71,18 @@ export function getExcess (
             : 0
 }
 
+/**
+ * The Set of state operations.
+ * Every external Render/Sensor/DomHandler are called by this Internal state machine.
+ * That gives us the possibility to run Tiny-Swiper in different platform.
+ *
+ * @param env
+ * @param state
+ * @param options
+ * @param renderer
+ * @param eventHub
+ * @constructor
+ */
 export function Operations (
     env: Env,
     state: State,
@@ -59,6 +90,12 @@ export function Operations (
     renderer: Renderer,
     eventHub: EventHub
 ): Operations {
+
+    /**
+     * Calculate the steps amount (boxSize) of offset.
+     *  eg: offset = 100, boxSize: 50, steps may equal to 2.
+     * @param offset
+     */
     function getOffsetSteps (offset: number): number {
         const {
             measure
@@ -66,6 +103,12 @@ export function Operations (
         return Math.ceil(Math.abs(offset) / measure.boxSize - options.longSwipesRatio)
     }
 
+    /**
+     * Call renderer's render function with default params.
+     * @param duration
+     * @param cb
+     * @param force
+     */
     function render (
         duration?: number,
         cb?: Function,
@@ -79,6 +122,10 @@ export function Operations (
         )
     }
 
+    /**
+     * Update Swiper transform attr.
+     * @param trans
+     */
     function transform (trans: number): void {
         const {
             min,
@@ -114,6 +161,11 @@ export function Operations (
         })
     }
 
+    /**
+     * Update Swiper transform state with certain Index.
+     * @param targetIndex
+     * @param duration
+     */
     function slideTo (
         targetIndex: number,
         duration?: number
@@ -130,19 +182,31 @@ export function Operations (
                 : targetIndex < limitation.minIndex
                     ? limitation.minIndex
                     : targetIndex
-        const offset = -computedIndex * measure.boxSize + limitation.base
+        const newTransform = -computedIndex * measure.boxSize + limitation.base
 
-        // Slide over a cycle.
-        if (state.index === computedIndex
-            && getOffsetSteps(offset - state.transforms) !== 0
+        // Slide over a cycle while touch end.
+        // Old condition: state.index === computedIndex
+        if (getOffsetSteps(newTransform - state.transforms) !== 0
             && options.loop
         ) {
             const excess = getExcess(state.transforms, options, limitation)
+            const defaultWay = computedIndex - state.index
+            const shortcut = getShortestWay(
+                state.index,
+                computedIndex,
+                limitation,
+                defaultWay
+            )
 
-            transform(excess > 0
-                ? limitation.min - measure.boxSize + excess
-                : limitation.max + measure.boxSize + excess)
-
+            if (shortcut !== defaultWay && !excess) {
+                transform(shortcut < 0
+                    ? limitation.min - measure.boxSize
+                    : limitation.max + measure.boxSize)
+            } else if (state.index === computedIndex) {
+                transform(excess > 0
+                    ? limitation.min - measure.boxSize + excess
+                    : limitation.max + measure.boxSize + excess)
+            }
             // Set initial offset for rebounding animation.
             render(0, undefined, true)
         }
@@ -152,7 +216,7 @@ export function Operations (
             state,
             computedIndex)
         state.index = computedIndex
-        transform(offset)
+        transform(newTransform)
         render(duration, () => {
             eventHub.emit(LIFE_CYCLES.AFTER_SLIDE,
                 computedIndex,
@@ -160,6 +224,10 @@ export function Operations (
         })
     }
 
+    /**
+     * Scroll pixel by pixel while user dragging.
+     * @param px
+     */
     function scrollPixel (px: number): void {
         const {
             transforms
