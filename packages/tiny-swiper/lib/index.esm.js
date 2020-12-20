@@ -935,13 +935,34 @@ function Renderer(env, options) {
   };
 }
 
-function isExceedingLimits(velocity, transform, options, limitation) {
+/**
+ * Detect whether slides is rush out boundary.
+ * @param velocity - Velocity larger than zero means that slides move to the right direction
+ * @param transform
+ * @param limitation
+ */
+
+function isExceedingLimits(velocity, transform, limitation) {
   return velocity > 0 && transform > limitation.max || velocity < 0 && transform < limitation.min;
 }
+/**
+ * Return the shortest way to target Index.
+ *      Negative number indicate the left direction, Index's value is decreasing.
+ *      Positive number means index should increase.
+ * @param currentIndex
+ * @param targetIndex
+ * @param limitation
+ * @param defaultWay
+ */
+
 function getShortestWay(currentIndex, targetIndex, limitation, defaultWay) {
   var maxIndex = limitation.maxIndex,
-      minIndex = limitation.minIndex;
-  var shortcut = defaultWay > 0 ? minIndex - currentIndex + (targetIndex - maxIndex) - 1 : maxIndex - currentIndex + (targetIndex - minIndex) + 1;
+      minIndex = limitation.minIndex; // Source expression show below:
+  // const shortcut = defaultWay > 0
+  //     ? minIndex - currentIndex + (targetIndex - maxIndex) - 1
+  //     : maxIndex - currentIndex + (targetIndex - minIndex) + 1
+
+  var shortcut = (defaultWay > 0 ? 1 : -1) * (minIndex - maxIndex - 1) + targetIndex - currentIndex;
   return Math.abs(defaultWay) > Math.abs(shortcut) ? shortcut : defaultWay;
 }
 /**
@@ -949,11 +970,10 @@ function getShortestWay(currentIndex, targetIndex, limitation, defaultWay) {
  * Return zero if is not reached border.
  *
  * @param transform
- * @param options
  * @param limitation
  */
 
-function getExcess(transform, options, limitation) {
+function getExcess(transform, limitation) {
   var exceedLeft = transform - limitation.max;
   var exceedRight = transform - limitation.min;
   return exceedLeft > 0 ? exceedLeft : exceedRight < 0 ? exceedRight : 0;
@@ -1029,11 +1049,12 @@ function Operations(env, state, options, renderer, eventHub) {
         limitation = env.limitation;
     var len = limitation.maxIndex - limitation.minIndex + 1;
     var computedIndex = options.loop ? (targetIndex % len + len) % len : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex;
-    var newTransform = -computedIndex * measure.boxSize + limitation.base; // Slide over a cycle while touch end.
+    var newTransform = -computedIndex * measure.boxSize + limitation.base; // Slide to wrapper's boundary while touch end.
+    //  Math.abs(excess) ≥ 0
     // Old condition: state.index === computedIndex
 
     if (getOffsetSteps(newTransform - state.transforms) !== 0 && options.loop) {
-      var excess = getExcess(state.transforms, options, limitation);
+      var excess = getExcess(state.transforms, limitation);
       var defaultWay = computedIndex - state.index;
       var shortcut = getShortestWay(state.index, computedIndex, limitation, defaultWay);
 
@@ -1081,9 +1102,9 @@ function Operations(env, state, options, renderer, eventHub) {
     if (options.loop) {
       var vector = state.tracker.vector();
       var velocity = options.isHorizontal ? vector.velocityX : vector.velocityY;
-      var excess = getExcess(transforms, options, limitation);
+      var excess = getExcess(transforms, limitation);
 
-      if (excess && isExceedingLimits(velocity, transforms, options, limitation)) {
+      if (excess && isExceedingLimits(velocity, transforms, limitation)) {
         newTransform = excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess;
       }
     }
@@ -1199,3 +1220,4 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginPagination };
+//# sourceMappingURL=index.esm.js.map

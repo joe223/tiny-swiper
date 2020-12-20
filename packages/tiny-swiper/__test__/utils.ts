@@ -31,20 +31,34 @@ export function mockElement (width = 100, height = 100) {
     return el
 }
 
-export function createElementsInstance () {
+export function createElementsInstance (
+    listLength = 3,
+    boundary = {
+        width: 300,
+        height: 300
+    }
+) {
+    const $list = new Array(listLength)
+        .fill(null)
+        .map(() => mockElement())
+
+
     return {
         $el: mockElement(),
-        $wrapper: mockElement(300, 300),
-        $list: [
-            mockElement(),
-            mockElement(),
-            mockElement()
-        ]
+        $wrapper: mockElement(boundary.width, boundary.height),
+        $list
     }
 }
 
-export function createOperationsInstance (userOptions: UserOptions = {}) {
-    const element = createElementsInstance()
+export function createOperationsInstance (
+    userOptions: UserOptions = {},
+    listLength = 3,
+    elementsOptions?: { width: number; height: number } | undefined
+) {
+    const element = createElementsInstance(
+        listLength,
+        elementsOptions
+    )
     const options = optionFormatter(userOptions)
     const eventHub = EventHub()
     const env = Env(element, options)

@@ -19,16 +19,30 @@ export interface Operations {
     getOffsetSteps (offset: number): number
 }
 
+/**
+ * Detect whether slides is rush out boundary.
+ * @param velocity - Velocity larger than zero means that slides move to the right direction
+ * @param transform
+ * @param limitation
+ */
 export function isExceedingLimits (
     velocity: number,
     transform: number,
-    options: Options,
     limitation: Limitation
 ): boolean {
     return velocity > 0 && transform > (limitation.max)
         || velocity < 0 && transform < (limitation.min)
 }
 
+/**
+ * Return the shortest way to target Index.
+ *      Negative number indicate the left direction, Index's value is decreasing.
+ *      Positive number means index should increase.
+ * @param currentIndex
+ * @param targetIndex
+ * @param limitation
+ * @param defaultWay
+ */
 export function getShortestWay (
     currentIndex: number,
     targetIndex: number,
@@ -39,9 +53,14 @@ export function getShortestWay (
         maxIndex,
         minIndex
     } = limitation
-    const shortcut = defaultWay > 0
-        ? minIndex - currentIndex + (targetIndex - maxIndex) - 1
-        : maxIndex - currentIndex + (targetIndex - minIndex) + 1
+
+    // Source expression show below:
+    // const shortcut = defaultWay > 0
+    //     ? minIndex - currentIndex + (targetIndex - maxIndex) - 1
+    //     : maxIndex - currentIndex + (targetIndex - minIndex) + 1
+
+    const shortcut = (defaultWay > 0 ? 1 : -1) * (minIndex - maxIndex - 1)
+        + targetIndex - currentIndex
 
     return Math.abs(defaultWay) > Math.abs(shortcut)
         ? shortcut
@@ -53,12 +72,10 @@ export function getShortestWay (
  * Return zero if is not reached border.
  *
  * @param transform
- * @param options
  * @param limitation
  */
 export function getExcess (
     transform: number,
-    options: Options,
     limitation: Limitation
 ): number {
     const exceedLeft = transform - limitation.max
@@ -184,12 +201,13 @@ export function Operations (
                     : targetIndex
         const newTransform = -computedIndex * measure.boxSize + limitation.base
 
-        // Slide over a cycle while touch end.
+        // Slide to wrapper's boundary while touch end.
+        //  Math.abs(excess) ≥ 0
         // Old condition: state.index === computedIndex
         if (getOffsetSteps(newTransform - state.transforms) !== 0
             && options.loop
         ) {
-            const excess = getExcess(state.transforms, options, limitation)
+            const excess = getExcess(state.transforms, limitation)
             const defaultWay = computedIndex - state.index
             const shortcut = getShortestWay(
                 state.index,
@@ -255,12 +273,11 @@ export function Operations (
         if (options.loop) {
             const vector = state.tracker.vector()
             const velocity = options.isHorizontal ? vector.velocityX : vector.velocityY
-            const excess = getExcess(transforms, options, limitation)
+            const excess = getExcess(transforms, limitation)
 
             if (excess && isExceedingLimits(
                 velocity,
                 transforms,
-                options,
                 limitation
             )) {
                 newTransform = excess > 0
