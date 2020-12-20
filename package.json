@@ -9,7 +9,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "release": "lerna publish --conventional-commits --dist-tag=next",
-    "build": "lerna run build",
+    "build": "lerna run lint && lerna run build",
+    "lint": "lerna run lint",
     "test": "lerna run test",
     "report": "lerna run report"
   },
