@@ -54,7 +54,10 @@ module.exports = {
             }
         ],
         '@typescript-eslint/ban-types': ['off'],
-        'semi': 'off',
+        'semi': [
+            'error',
+            'never'
+        ],
         'comma-dangle': ['error', {
             'arrays': 'never',
             'objects': 'never',
