@@ -704,8 +704,11 @@ function Sensor(env, state, options, operations) {
     }
 
     var $wrapper = env.element.$wrapper;
-    var shouldPreventDefault = options.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1 || options.touchStartForcePreventDefault;
-    if (shouldPreventDefault && !options.passiveListeners) e.preventDefault();
+    var shouldPreventDefault = options.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1 || options.touchStartForcePreventDefault; // `preventDefault` can not be called with `passiveListeners`
+    //      See: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+    //      And: https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
+
+    if (!touchable && shouldPreventDefault) e.preventDefault();
     preheat(getPosition(e), getTranslate($wrapper, options.isHorizontal));
   }
 
@@ -1220,3 +1223,4 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginPagination };
+//# sourceMappingURL=index.esm.js.map

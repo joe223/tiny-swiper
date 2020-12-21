@@ -56,7 +56,10 @@ export function Sensor (
         const shouldPreventDefault = (options.touchStartPreventDefault && formEls.indexOf((<HTMLElement>e.target).nodeName) === -1)
             || options.touchStartForcePreventDefault
 
-        if (shouldPreventDefault && !options.passiveListeners) e.preventDefault()
+        // `preventDefault` can not be called with `passiveListeners`
+        //      See: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+        //      And: https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
+        if (!touchable && shouldPreventDefault) e.preventDefault()
 
         preheat(
             getPosition(e),
