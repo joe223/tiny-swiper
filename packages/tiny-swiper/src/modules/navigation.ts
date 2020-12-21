@@ -5,6 +5,7 @@ import {
 import { SwiperInstance } from '../core/index'
 import { Options } from '../core/options'
 
+
 export type SwiperPluginNavigationOptions = Options & {
     navigation: {
         nextEl: HTMLElement | string
@@ -44,9 +45,6 @@ export default function SwiperPluginNavigation(
         const {
             index
         } = instance.state
-        const {
-            $list
-        } = instance.env.element
 
         if ( type === 'next' ) {
             instance.slideTo(index + 1)
@@ -58,33 +56,41 @@ export default function SwiperPluginNavigation(
     }
 
     const checkSwiperDisabledClass = (
-        index: number, last: number) => {
+        index: number) => {
+        const {
+            minIndex,
+            maxIndex
+        } = instance.env.limitation
         if ( instance.options.loop ) {
-            if ( index === 0 ) {
-                instance.slideTo(last)
+            if ( index === minIndex ) {
+                instance.slideTo(maxIndex)
             }
-            if ( index === last ) {
-                instance.slideTo(0)
+            if ( index === maxIndex ) {
+                instance.slideTo(minIndex)
             }
         } else {
-            if ( instance.state.index === 0 ) {
+            if ( instance.state.index === minIndex ) {
                 navigation.prevEl.classList.add(options.navigation.disabledClass)
             }
-            if ( instance.state.index === last ) {
+            if ( instance.state.index === maxIndex ) {
                 navigation.nextEl.classList.add(options.navigation.disabledClass)
             }
         }
     }
 
-    const checkNavBtnDisabledClass = (index: number, last: number) => {
+    const checkNavBtnDisabledClass = (index: number) => {
+        const {
+            minIndex,
+            maxIndex
+        } = instance.env.limitation
         if ( navigation && navigation.nextEl ) {
             if ( navigation.nextEl.classList.contains(options.navigation.disabledClass)
-                && index > 0 ) {
+                && index > minIndex ) {
                 navigation.nextEl.classList.remove(options.navigation.disabledClass)
             }
 
             if ( navigation.prevEl.classList.contains(options.navigation.disabledClass)
-                && index < last ) {
+                && index < maxIndex ) {
                 navigation.prevEl.classList.remove(options.navigation.disabledClass)
             }
         }
@@ -104,20 +110,23 @@ export default function SwiperPluginNavigation(
         const {
             $list
         } = instance.env.element
-        if ( index === 0 ) {
+        const {
+            minIndex
+        } = instance.env.limitation
+        if ( index === minIndex) {
             navigation.prevEl.classList.add(options.navigation.disabledClass)
         }
-        if ( $list.length === 1 ) {
+        if ( $list.length === minIndex ) {
             navigation.nextEl.classList.add(options.navigation.disabledClass)
         }
     }
 
     instance.on('after-slide', (currentIndex: number) => {
-        checkSwiperDisabledClass(currentIndex, instance.env.element.$list.length - 1)
+        checkSwiperDisabledClass(currentIndex)
     })
 
     instance.on('before-slide', (currentIndex: number, state: any, newIndex: number) => {
-        checkNavBtnDisabledClass(newIndex, instance.env.element.$list.length - 1)
+        checkNavBtnDisabledClass(newIndex)
     })
 
     instance.on('before-init', () => {
