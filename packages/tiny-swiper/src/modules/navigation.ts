@@ -61,20 +61,11 @@ export default function SwiperPluginNavigation(
             minIndex,
             maxIndex
         } = instance.env.limitation
-        if ( instance.options.loop ) {
-            if ( index === minIndex ) {
-                instance.slideTo(maxIndex)
-            }
-            if ( index === maxIndex ) {
-                instance.slideTo(minIndex)
-            }
-        } else {
-            if ( instance.state.index === minIndex ) {
-                navigation.prevEl.classList.add(options.navigation.disabledClass)
-            }
-            if ( instance.state.index === maxIndex ) {
-                navigation.nextEl.classList.add(options.navigation.disabledClass)
-            }
+        if ( index === minIndex ) {
+            navigation.prevEl.classList.add(options.navigation.disabledClass)
+        }
+        if ( index === maxIndex ) {
+            navigation.nextEl.classList.add(options.navigation.disabledClass)
         }
     }
 
@@ -88,7 +79,6 @@ export default function SwiperPluginNavigation(
                 && index > minIndex ) {
                 navigation.nextEl.classList.remove(options.navigation.disabledClass)
             }
-
             if ( navigation.prevEl.classList.contains(options.navigation.disabledClass)
                 && index < maxIndex ) {
                 navigation.prevEl.classList.remove(options.navigation.disabledClass)
@@ -122,11 +112,16 @@ export default function SwiperPluginNavigation(
     }
 
     instance.on('after-slide', (currentIndex: number) => {
-        checkSwiperDisabledClass(currentIndex)
+        if ( !instance.options.loop ) {
+            checkSwiperDisabledClass(currentIndex)
+        }
+
     })
 
     instance.on('before-slide', (currentIndex: number, state: any, newIndex: number) => {
-        checkNavBtnDisabledClass(newIndex)
+        if ( !instance.options.loop ) {
+            checkNavBtnDisabledClass(newIndex)
+        }
     })
 
     instance.on('before-init', () => {

@@ -374,7 +374,6 @@ function SwiperPluginNavigation(instance, options) {
     }
 
     var index = instance.state.index;
-    var $list = instance.env.element.$list;
 
     if (type === 'next') {
       instance.slideTo(index + 1);
@@ -385,33 +384,31 @@ function SwiperPluginNavigation(instance, options) {
     }
   };
 
-  var checkSwiperDisabledClass = function checkSwiperDisabledClass(index, last) {
-    if (instance.options.loop) {
-      if (index === 0) {
-        instance.slideTo(last);
-      }
+  var checkSwiperDisabledClass = function checkSwiperDisabledClass(index) {
+    var _instance$env$limitat = instance.env.limitation,
+        minIndex = _instance$env$limitat.minIndex,
+        maxIndex = _instance$env$limitat.maxIndex;
 
-      if (index === last) {
-        instance.slideTo(0);
-      }
-    } else {
-      if (instance.state.index === 0) {
-        navigation.prevEl.classList.add(options.navigation.disabledClass);
-      }
+    if (index === minIndex) {
+      navigation.prevEl.classList.add(options.navigation.disabledClass);
+    }
 
-      if (instance.state.index === last) {
-        navigation.nextEl.classList.add(options.navigation.disabledClass);
-      }
+    if (index === maxIndex) {
+      navigation.nextEl.classList.add(options.navigation.disabledClass);
     }
   };
 
-  var checkNavBtnDisabledClass = function checkNavBtnDisabledClass(index, last) {
+  var checkNavBtnDisabledClass = function checkNavBtnDisabledClass(index) {
+    var _instance$env$limitat2 = instance.env.limitation,
+        minIndex = _instance$env$limitat2.minIndex,
+        maxIndex = _instance$env$limitat2.maxIndex;
+
     if (navigation && navigation.nextEl) {
-      if (navigation.nextEl.classList.contains(options.navigation.disabledClass) && index > 0) {
+      if (navigation.nextEl.classList.contains(options.navigation.disabledClass) && index > minIndex) {
         navigation.nextEl.classList.remove(options.navigation.disabledClass);
       }
 
-      if (navigation.prevEl.classList.contains(options.navigation.disabledClass) && index < last) {
+      if (navigation.prevEl.classList.contains(options.navigation.disabledClass) && index < maxIndex) {
         navigation.prevEl.classList.remove(options.navigation.disabledClass);
       }
     }
@@ -428,21 +425,26 @@ function SwiperPluginNavigation(instance, options) {
   var checkButtonDefaultStatus = function checkButtonDefaultStatus() {
     var index = instance.state.index;
     var $list = instance.env.element.$list;
+    var minIndex = instance.env.limitation.minIndex;
 
-    if (index === 0) {
+    if (index === minIndex) {
       navigation.prevEl.classList.add(options.navigation.disabledClass);
     }
 
-    if ($list.length === 1) {
+    if ($list.length === minIndex) {
       navigation.nextEl.classList.add(options.navigation.disabledClass);
     }
   };
 
   instance.on('after-slide', function (currentIndex) {
-    checkSwiperDisabledClass(currentIndex, instance.env.element.$list.length - 1);
+    if (!instance.options.loop) {
+      checkSwiperDisabledClass(currentIndex);
+    }
   });
   instance.on('before-slide', function (currentIndex, state, newIndex) {
-    checkNavBtnDisabledClass(newIndex, instance.env.element.$list.length - 1);
+    if (!instance.options.loop) {
+      checkNavBtnDisabledClass(newIndex);
+    }
   });
   instance.on('before-init', function () {
     if (options.navigation) {
