@@ -32,51 +32,24 @@
 
         var index = instance.state.index;
         var $list = instance.env.element.$list;
-        var currentIdx = index;
 
         if (type === 'next') {
-          if (index < $list.length - 1) {
-            instance.slideTo(index + 1);
-          }
-
-          if (currentIdx > $list.length) {
-            currentIdx = index;
-          }
-
-          currentIdx++;
+          instance.slideTo(index + 1);
         }
 
         if (type === 'prev') {
-          if (index > 0) {
-            instance.slideTo(index - 1);
-          }
-
-          if (currentIdx < -1) {
-            currentIdx = index;
-          }
-
-          currentIdx--;
+          instance.slideTo(index - 1);
         }
-
-        console.log(instance.options.loop, currentIdx, type);
-        checkSwiperDisabledClass(currentIdx, $list.length - 1, type);
       };
 
-      var checkSwiperDisabledClass = function checkSwiperDisabledClass(index, last, type) {
-        var target = type === 'prev' ? -1 : last + 1;
-        var slideToNum = type === 'prev' ? last : 0;
-
-        if (navigation.nextEl.classList.contains(options.navigation.disabledClass) && type === 'prev') {
-          navigation.nextEl.classList.remove(options.navigation.disabledClass);
-        }
-
-        if (navigation.prevEl.classList.contains(options.navigation.disabledClass) && type === 'next') {
-          navigation.prevEl.classList.remove(options.navigation.disabledClass);
-        }
-
+      var checkSwiperDisabledClass = function checkSwiperDisabledClass(index, last) {
         if (instance.options.loop) {
-          if (index === target) {
-            instance.slideTo(slideToNum);
+          if (index === 0) {
+            instance.slideTo(last);
+          }
+
+          if (index === last) {
+            instance.slideTo(0);
           }
         } else {
           if (instance.state.index === 0) {
@@ -85,6 +58,18 @@
 
           if (instance.state.index === last) {
             navigation.nextEl.classList.add(options.navigation.disabledClass);
+          }
+        }
+      };
+
+      var checkNavBtnDisabledClass = function checkNavBtnDisabledClass(index, last) {
+        if (navigation && navigation.nextEl) {
+          if (navigation.nextEl.classList.contains(options.navigation.disabledClass) && index > 0) {
+            navigation.nextEl.classList.remove(options.navigation.disabledClass);
+          }
+
+          if (navigation.prevEl.classList.contains(options.navigation.disabledClass) && index < last) {
+            navigation.prevEl.classList.remove(options.navigation.disabledClass);
           }
         }
       };
@@ -101,15 +86,21 @@
         var index = instance.state.index;
         var $list = instance.env.element.$list;
 
-        if (index === 0 && !instance.options.loop) {
+        if (index === 0) {
           navigation.prevEl.classList.add(options.navigation.disabledClass);
         }
 
-        if ($list.length === 1 && !instance.options.loop) {
+        if ($list.length === 1) {
           navigation.nextEl.classList.add(options.navigation.disabledClass);
         }
       };
 
+      instance.on('after-slide', function (currentIndex) {
+        checkSwiperDisabledClass(currentIndex, instance.env.element.$list.length - 1);
+      });
+      instance.on('before-slide', function (currentIndex, state, newIndex) {
+        checkNavBtnDisabledClass(newIndex, instance.env.element.$list.length - 1);
+      });
       instance.on('before-init', function () {
         if (options.navigation) {
           options.navigation = Object.assign({
@@ -121,7 +112,11 @@
         if (!options.navigation) return;
         navigation.nextEl = typeof options.navigation.nextEl === 'string' ? document.body.querySelector(options.navigation.nextEl) : options.navigation.nextEl;
         navigation.prevEl = typeof options.navigation.prevEl === 'string' ? document.body.querySelector(options.navigation.prevEl) : options.navigation.prevEl;
-        checkButtonDefaultStatus();
+
+        if (!instance.options.loop) {
+          checkButtonDefaultStatus();
+        }
+
         attachListener(navigation.nextEl, 'click', nextClickHandler);
         attachListener(navigation.prevEl, 'click', prevClickHandler);
       });

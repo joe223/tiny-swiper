@@ -2,8 +2,8 @@ import {
     attachListener,
     detachListener
 } from '../core/render/dom'
-import {SwiperInstance} from '../core/index'
-import {Options} from '../core/options'
+import { SwiperInstance } from '../core/index'
+import { Options } from '../core/options'
 
 export type SwiperPluginNavigationOptions = Options & {
     navigation: {
@@ -29,16 +29,16 @@ export default function SwiperPluginNavigation(
     } as unknown as SwiperPluginNavigationInstance
 
     const nextClickHandler = (e: PointerEvent) => {
-        clickHandler(e.target as HTMLElement, 'next');
-    };
+        clickHandler(e.target as HTMLElement, 'next')
+    }
 
     const prevClickHandler = (e: PointerEvent) => {
-        clickHandler(e.target as HTMLElement, 'prev');
+        clickHandler(e.target as HTMLElement, 'prev')
 
-    };
+    }
 
     const clickHandler = (e: HTMLElement, type: 'next' | 'prev') => {
-        if (checkIsDisable(e) && !instance.options.loop) {
+        if ( checkIsDisable(e) && !instance.options.loop ) {
             return
         }
         const {
@@ -47,60 +47,51 @@ export default function SwiperPluginNavigation(
         const {
             $list
         } = instance.env.element
-        let currentIdx = index;
 
-        if (type === 'next') {
-            if (index < $list.length - 1) {
-                instance.slideTo(index + 1);
-            }
-            if (currentIdx > $list.length) {
-                currentIdx = index;
-            }
-            currentIdx++;
+        if ( type === 'next' ) {
+            instance.slideTo(index + 1)
         }
 
-        if (type === 'prev') {
-            if (index > 0) {
-                instance.slideTo(index - 1);
-            }
-            if (currentIdx < -1) {
-                currentIdx = index;
-            }
-            currentIdx--;
+        if ( type === 'prev' ) {
+            instance.slideTo(index - 1)
         }
-        // console.log(instance.options.loop, currentIdx, type)
-        checkSwiperDisabledClass(currentIdx, $list.length - 1, type);
     }
 
     const checkSwiperDisabledClass = (
-        index: number, last: number, type: string) => {
-        const target = type === 'prev' ? -1 : last + 1;
-        const slideToNum = type === 'prev' ? last : 0;
-        if (navigation.nextEl.classList.contains(options.navigation.disabledClass)
-            && type === 'prev') {
-            navigation.nextEl.classList.remove(options.navigation.disabledClass);
-        }
-
-        if (navigation.prevEl.classList.contains(options.navigation.disabledClass)
-            && type === 'next') {
-            navigation.prevEl.classList.remove(options.navigation.disabledClass);
-        }
-        if (instance.options.loop) {
-            if (index === target) {
-                instance.slideTo(slideToNum);
+        index: number, last: number) => {
+        if ( instance.options.loop ) {
+            if ( index === 0 ) {
+                instance.slideTo(last)
+            }
+            if ( index === last ) {
+                instance.slideTo(0)
             }
         } else {
-            if (instance.state.index === 0) {
-                navigation.prevEl.classList.add(options.navigation.disabledClass);
+            if ( instance.state.index === 0 ) {
+                navigation.prevEl.classList.add(options.navigation.disabledClass)
             }
-            if (instance.state.index === last) {
-                navigation.nextEl.classList.add(options.navigation.disabledClass);
+            if ( instance.state.index === last ) {
+                navigation.nextEl.classList.add(options.navigation.disabledClass)
+            }
+        }
+    }
+
+    const checkNavBtnDisabledClass = (index: number, last: number) => {
+        if ( navigation && navigation.nextEl ) {
+            if ( navigation.nextEl.classList.contains(options.navigation.disabledClass)
+                && index > 0 ) {
+                navigation.nextEl.classList.remove(options.navigation.disabledClass)
+            }
+
+            if ( navigation.prevEl.classList.contains(options.navigation.disabledClass)
+                && index < last ) {
+                navigation.prevEl.classList.remove(options.navigation.disabledClass)
             }
         }
     }
 
     const checkIsDisable = (e: HTMLElement) => {
-        if (e.classList.contains(options.navigation.disabledClass)) {
+        if ( e.classList.contains(options.navigation.disabledClass) ) {
             return true
         }
         return false
@@ -113,16 +104,24 @@ export default function SwiperPluginNavigation(
         const {
             $list
         } = instance.env.element
-        if (index === 0 ) {
-            navigation.prevEl.classList.add(options.navigation.disabledClass);
+        if ( index === 0 ) {
+            navigation.prevEl.classList.add(options.navigation.disabledClass)
         }
-        if ($list.length === 1) {
-            navigation.nextEl.classList.add(options.navigation.disabledClass);
+        if ( $list.length === 1 ) {
+            navigation.nextEl.classList.add(options.navigation.disabledClass)
         }
     }
 
+    instance.on('after-slide', (currentIndex: number) => {
+        checkSwiperDisabledClass(currentIndex, instance.env.element.$list.length - 1)
+    })
+
+    instance.on('before-slide', (currentIndex: number, state: any, newIndex: number) => {
+        checkNavBtnDisabledClass(newIndex, instance.env.element.$list.length - 1)
+    })
+
     instance.on('before-init', () => {
-        if (options.navigation) {
+        if ( options.navigation ) {
             options.navigation = Object.assign({
                 disabledClass: 'swiper-button-disabled'
             }, options.navigation)
@@ -130,7 +129,7 @@ export default function SwiperPluginNavigation(
     })
 
     instance.on('after-init', () => {
-        if (!options.navigation) return
+        if ( !options.navigation ) return
 
         navigation.nextEl = (typeof options.navigation.nextEl === 'string')
             ? document.body.querySelector(options.navigation.nextEl) as HTMLElement
@@ -138,18 +137,18 @@ export default function SwiperPluginNavigation(
         navigation.prevEl = (typeof options.navigation.prevEl === 'string')
             ? document.body.querySelector(options.navigation.prevEl) as HTMLElement
             : options.navigation.prevEl
-        if (!instance.options.loop) {
-            checkButtonDefaultStatus();
+        if ( !instance.options.loop ) {
+            checkButtonDefaultStatus()
         }
         attachListener(navigation.nextEl, 'click', <EventListener>nextClickHandler)
         attachListener(navigation.prevEl, 'click', <EventListener>prevClickHandler)
     })
 
     instance.on('after-destroy', () => {
-        if (!options.navigation) return
+        if ( !options.navigation ) return
 
-        delete navigation.nextEl;
-        delete navigation.prevEl;
+        delete navigation.nextEl
+        delete navigation.prevEl
 
         detachListener(navigation.nextEl, 'click', <EventListener>nextClickHandler)
         detachListener(navigation.prevEl, 'click', <EventListener>prevClickHandler)

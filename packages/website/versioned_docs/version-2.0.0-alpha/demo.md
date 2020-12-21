@@ -382,7 +382,7 @@ Keys `up` and `down` work only when `direction: vertical`, so do `right` and `le
     option={{
         mousewheel: {
             invert: false,
-            interval: 100
+            interval: 400
         },
     plugins: [
         SwiperPluginMousewheel

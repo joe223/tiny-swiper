@@ -19,10 +19,15 @@ export interface Operations {
     getOffsetSteps (offset: number): number
 }
 
+/**
+ * Detect whether slides is rush out boundary.
+ * @param velocity - Velocity larger than zero means that slides move to the right direction
+ * @param transform
+ * @param limitation
+ */
 export function isExceedingLimits (
     velocity: number,
     transform: number,
-    options: Options,
     limitation: Limitation
 ): boolean {
     return velocity > 0 && transform > (limitation.max)
@@ -30,16 +35,47 @@ export function isExceedingLimits (
 }
 
 /**
+ * Return the shortest way to target Index.
+ *      Negative number indicate the left direction, Index's value is decreasing.
+ *      Positive number means index should increase.
+ * @param currentIndex
+ * @param targetIndex
+ * @param limitation
+ * @param defaultWay
+ */
+export function getShortestWay (
+    currentIndex: number,
+    targetIndex: number,
+    limitation: Limitation,
+    defaultWay: number
+): number {
+    const {
+        maxIndex,
+        minIndex
+    } = limitation
+
+    // Source expression show below:
+    // const shortcut = defaultWay > 0
+    //     ? minIndex - currentIndex + (targetIndex - maxIndex) - 1
+    //     : maxIndex - currentIndex + (targetIndex - minIndex) + 1
+
+    const shortcut = (defaultWay > 0 ? 1 : -1) * (minIndex - maxIndex - 1)
+        + targetIndex - currentIndex
+
+    return Math.abs(defaultWay) > Math.abs(shortcut)
+        ? shortcut
+        : defaultWay
+}
+
+/**
  * Get transform exceed value
  * Return zero if is not reached border.
  *
  * @param transform
- * @param options
  * @param limitation
  */
 export function getExcess (
     transform: number,
-    options: Options,
     limitation: Limitation
 ): number {
     const exceedLeft = transform - limitation.max
@@ -52,6 +88,18 @@ export function getExcess (
             : 0
 }
 
+/**
+ * The Set of state operations.
+ * Every external Render/Sensor/DomHandler are called by this Internal state machine.
+ * That gives us the possibility to run Tiny-Swiper in different platform.
+ *
+ * @param env
+ * @param state
+ * @param options
+ * @param renderer
+ * @param eventHub
+ * @constructor
+ */
 export function Operations (
     env: Env,
     state: State,
@@ -59,6 +107,12 @@ export function Operations (
     renderer: Renderer,
     eventHub: EventHub
 ): Operations {
+
+    /**
+     * Calculate the steps amount (boxSize) of offset.
+     *  eg: offset = 100, boxSize: 50, steps may equal to 2.
+     * @param offset
+     */
     function getOffsetSteps (offset: number): number {
         const {
             measure
@@ -66,6 +120,12 @@ export function Operations (
         return Math.ceil(Math.abs(offset) / measure.boxSize - options.longSwipesRatio)
     }
 
+    /**
+     * Call renderer's render function with default params.
+     * @param duration
+     * @param cb
+     * @param force
+     */
     function render (
         duration?: number,
         cb?: Function,
@@ -79,6 +139,10 @@ export function Operations (
         )
     }
 
+    /**
+     * Update Swiper transform attr.
+     * @param trans
+     */
     function transform (trans: number): void {
         const {
             min,
@@ -114,6 +178,11 @@ export function Operations (
         })
     }
 
+    /**
+     * Update Swiper transform state with certain Index.
+     * @param targetIndex
+     * @param duration
+     */
     function slideTo (
         targetIndex: number,
         duration?: number
@@ -130,19 +199,32 @@ export function Operations (
                 : targetIndex < limitation.minIndex
                     ? limitation.minIndex
                     : targetIndex
-        const offset = -computedIndex * measure.boxSize + limitation.base
+        const newTransform = -computedIndex * measure.boxSize + limitation.base
 
-        // Slide over a cycle.
-        if (state.index === computedIndex
-            && getOffsetSteps(offset - state.transforms) !== 0
+        // Slide to wrapper's boundary while touch end.
+        //  Math.abs(excess) ≥ 0
+        // Old condition: state.index === computedIndex
+        if (getOffsetSteps(newTransform - state.transforms) !== 0
             && options.loop
         ) {
-            const excess = getExcess(state.transforms, options, limitation)
+            const excess = getExcess(state.transforms, limitation)
+            const defaultWay = computedIndex - state.index
+            const shortcut = getShortestWay(
+                state.index,
+                computedIndex,
+                limitation,
+                defaultWay
+            )
 
-            transform(excess > 0
-                ? limitation.min - measure.boxSize + excess
-                : limitation.max + measure.boxSize + excess)
-
+            if (shortcut !== defaultWay && !excess) {
+                transform(shortcut < 0
+                    ? limitation.min - measure.boxSize
+                    : limitation.max + measure.boxSize)
+            } else if (state.index === computedIndex) {
+                transform(excess > 0
+                    ? limitation.min - measure.boxSize + excess
+                    : limitation.max + measure.boxSize + excess)
+            }
             // Set initial offset for rebounding animation.
             render(0, undefined, true)
         }
@@ -152,7 +234,7 @@ export function Operations (
             state,
             computedIndex)
         state.index = computedIndex
-        transform(offset)
+        transform(newTransform)
         render(duration, () => {
             eventHub.emit(LIFE_CYCLES.AFTER_SLIDE,
                 computedIndex,
@@ -160,6 +242,10 @@ export function Operations (
         })
     }
 
+    /**
+     * Scroll pixel by pixel while user dragging.
+     * @param px
+     */
     function scrollPixel (px: number): void {
         const {
             transforms
@@ -187,12 +273,11 @@ export function Operations (
         if (options.loop) {
             const vector = state.tracker.vector()
             const velocity = options.isHorizontal ? vector.velocityX : vector.velocityY
-            const excess = getExcess(transforms, options, limitation)
+            const excess = getExcess(transforms, limitation)
 
             if (excess && isExceedingLimits(
                 velocity,
                 transforms,
-                options,
                 limitation
             )) {
                 newTransform = excess > 0

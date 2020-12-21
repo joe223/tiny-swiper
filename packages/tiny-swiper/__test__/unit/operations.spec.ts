@@ -1,4 +1,9 @@
-import { Operations } from '../../src/core/state/operations'
+import {
+    Operations,
+    isExceedingLimits,
+    getExcess,
+    getShortestWay
+} from '../../src/core/state/operations'
 import { Position } from '../../src/core/state/trace'
 import {
     createOperationsInstance
@@ -152,6 +157,165 @@ describe('Operations', () => {
             operations.slideTo(5)
             expect(state.transforms).toEqual(-measure.boxSize * 3)
             expect(state.transforms).toEqual(limitation.min)
+        })
+    })
+})
+
+describe('Helpers', () => {
+    describe('isExceedingLimits', () => {
+        test('within the boundary', () => {
+            // Velocity larger than zero: move to the right direction
+            const velocity = 1
+            const {
+                env
+            } = createOperationsInstance({
+                loop: false
+            })
+            const {
+                limitation
+            } = env
+
+            expect(isExceedingLimits(
+                velocity,
+                (limitation.max + limitation.min) / 2,
+                limitation
+            )).toEqual(false)
+        })
+
+        test('rush out boundary', () => {
+            const velocity = 1
+            const {
+                env
+            } = createOperationsInstance({
+                loop: false
+            })
+            const {
+                limitation
+            } = env
+
+            expect(isExceedingLimits(
+                velocity,
+                limitation.max,
+                limitation
+            )).toEqual(false)
+
+            expect(isExceedingLimits(
+                velocity,
+                limitation.max + 1,
+                limitation
+            )).toEqual(true)
+        })
+    })
+
+    describe('getShortestWay', () => {
+        test('return default value', () => {
+            const currentIndex = 0
+            const targetIndex = 3
+            const defaultWay = targetIndex - currentIndex
+            const {
+                env
+            } = createOperationsInstance({
+                loop: true
+            }, 3)
+            const {
+                limitation
+            } = env
+
+            // Should move one step to right
+            expect(getShortestWay(
+                currentIndex,
+                targetIndex,
+                limitation,
+                defaultWay
+            )).toEqual(0)
+        })
+
+        test('Should move one step to right', () => {
+            const currentIndex = 0
+            const targetIndex = 4
+            const defaultWay = targetIndex - currentIndex
+            const {
+                env
+            } = createOperationsInstance({
+                loop: true
+            }, 3)
+            const {
+                limitation
+            } = env
+
+            expect(getShortestWay(
+                currentIndex,
+                targetIndex,
+                limitation,
+                defaultWay
+            )).toEqual(1)
+        })
+
+        test('Should move two steps to left', () => {
+            const currentIndex = 1
+            const targetIndex = 4
+            const defaultWay = targetIndex - currentIndex
+            const {
+                env
+            } = createOperationsInstance({
+                loop: true
+            }, 5)
+            const {
+                limitation
+            } = env
+
+            expect(getShortestWay(
+                currentIndex,
+                targetIndex,
+                limitation,
+                defaultWay
+            )).toEqual(-2)
+        })
+    })
+
+    describe('getExcess', () => {
+        test('not reached border', () => {
+            const {
+                env
+            } = createOperationsInstance()
+            const {
+                limitation
+            } = env
+
+            expect(getExcess(
+                limitation.max,
+                limitation
+            )).toEqual(0)
+        })
+
+        test('out of left border', () => {
+            const excess = 1
+            const {
+                env
+            } = createOperationsInstance()
+            const {
+                limitation
+            } = env
+
+            expect(getExcess(
+                limitation.max + excess,
+                limitation
+            )).toEqual(excess)
+        })
+
+        test('out of right border', () => {
+            const excess = 1
+            const {
+                env
+            } = createOperationsInstance()
+            const {
+                limitation
+            } = env
+
+            expect(getExcess(
+                limitation.min - excess,
+                limitation
+            )).toEqual(-excess)
         })
     })
 })

@@ -665,32 +665,88 @@
     };
   }
 
-  function isExceedingLimits(velocity, transform, options, limitation) {
+  /**
+   * Detect whether slides is rush out boundary.
+   * @param velocity - Velocity larger than zero means that slides move to the right direction
+   * @param transform
+   * @param limitation
+   */
+
+  function isExceedingLimits(velocity, transform, limitation) {
     return velocity > 0 && transform > limitation.max || velocity < 0 && transform < limitation.min;
+  }
+  /**
+   * Return the shortest way to target Index.
+   *      Negative number indicate the left direction, Index's value is decreasing.
+   *      Positive number means index should increase.
+   * @param currentIndex
+   * @param targetIndex
+   * @param limitation
+   * @param defaultWay
+   */
+
+  function getShortestWay(currentIndex, targetIndex, limitation, defaultWay) {
+    var maxIndex = limitation.maxIndex,
+        minIndex = limitation.minIndex; // Source expression show below:
+    // const shortcut = defaultWay > 0
+    //     ? minIndex - currentIndex + (targetIndex - maxIndex) - 1
+    //     : maxIndex - currentIndex + (targetIndex - minIndex) + 1
+
+    var shortcut = (defaultWay > 0 ? 1 : -1) * (minIndex - maxIndex - 1) + targetIndex - currentIndex;
+    return Math.abs(defaultWay) > Math.abs(shortcut) ? shortcut : defaultWay;
   }
   /**
    * Get transform exceed value
    * Return zero if is not reached border.
    *
    * @param transform
-   * @param options
    * @param limitation
    */
 
-  function getExcess(transform, options, limitation) {
+  function getExcess(transform, limitation) {
     var exceedLeft = transform - limitation.max;
     var exceedRight = transform - limitation.min;
     return exceedLeft > 0 ? exceedLeft : exceedRight < 0 ? exceedRight : 0;
   }
+  /**
+   * The Set of state operations.
+   * Every external Render/Sensor/DomHandler are called by this Internal state machine.
+   * That gives us the possibility to run Tiny-Swiper in different platform.
+   *
+   * @param env
+   * @param state
+   * @param options
+   * @param renderer
+   * @param eventHub
+   * @constructor
+   */
+
   function Operations(env, state, options, renderer, eventHub) {
+    /**
+     * Calculate the steps amount (boxSize) of offset.
+     *  eg: offset = 100, boxSize: 50, steps may equal to 2.
+     * @param offset
+     */
     function getOffsetSteps(offset) {
       var measure = env.measure;
       return Math.ceil(Math.abs(offset) / measure.boxSize - options.longSwipesRatio);
     }
+    /**
+     * Call renderer's render function with default params.
+     * @param duration
+     * @param cb
+     * @param force
+     */
+
 
     function render(duration, cb, force) {
       renderer.render(state, duration, cb, force);
     }
+    /**
+     * Update Swiper transform attr.
+     * @param trans
+     */
+
 
     function transform(trans) {
       var _env$limitation = env.limitation,
@@ -711,28 +767,49 @@
 
       eventHub.emit(LIFE_CYCLES.SCROLL, _extends({}, state));
     }
+    /**
+     * Update Swiper transform state with certain Index.
+     * @param targetIndex
+     * @param duration
+     */
+
 
     function slideTo(targetIndex, duration) {
       var measure = env.measure,
           limitation = env.limitation;
       var len = limitation.maxIndex - limitation.minIndex + 1;
       var computedIndex = options.loop ? (targetIndex % len + len) % len : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex;
-      var offset = -computedIndex * measure.boxSize + limitation.base; // Slide over a cycle.
+      var newTransform = -computedIndex * measure.boxSize + limitation.base; // Slide to wrapper's boundary while touch end.
+      //  Math.abs(excess) ≥ 0
+      // Old condition: state.index === computedIndex
 
-      if (state.index === computedIndex && getOffsetSteps(offset - state.transforms) !== 0 && options.loop) {
-        var excess = getExcess(state.transforms, options, limitation);
-        transform(excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess); // Set initial offset for rebounding animation.
+      if (getOffsetSteps(newTransform - state.transforms) !== 0 && options.loop) {
+        var excess = getExcess(state.transforms, limitation);
+        var defaultWay = computedIndex - state.index;
+        var shortcut = getShortestWay(state.index, computedIndex, limitation, defaultWay);
+
+        if (shortcut !== defaultWay && !excess) {
+          transform(shortcut < 0 ? limitation.min - measure.boxSize : limitation.max + measure.boxSize);
+        } else if (state.index === computedIndex) {
+          transform(excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess);
+        } // Set initial offset for rebounding animation.
+
 
         render(0, undefined, true);
       }
 
       eventHub.emit(LIFE_CYCLES.BEFORE_SLIDE, state.index, state, computedIndex);
       state.index = computedIndex;
-      transform(offset);
+      transform(newTransform);
       render(duration, function () {
         eventHub.emit(LIFE_CYCLES.AFTER_SLIDE, computedIndex, state);
       });
     }
+    /**
+     * Scroll pixel by pixel while user dragging.
+     * @param px
+     */
+
 
     function scrollPixel(px) {
       var transforms = state.transforms;
@@ -755,9 +832,9 @@
       if (options.loop) {
         var vector = state.tracker.vector();
         var velocity = options.isHorizontal ? vector.velocityX : vector.velocityY;
-        var excess = getExcess(transforms, options, limitation);
+        var excess = getExcess(transforms, limitation);
 
-        if (excess && isExceedingLimits(velocity, transforms, options, limitation)) {
+        if (excess && isExceedingLimits(velocity, transforms, limitation)) {
           newTransform = excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess;
         }
       }
