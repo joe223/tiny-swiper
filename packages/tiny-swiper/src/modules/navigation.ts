@@ -35,7 +35,6 @@ export default function SwiperPluginNavigation(
 
     const prevClickHandler = (e: PointerEvent) => {
         clickHandler(e.target as HTMLElement, 'prev')
-
     }
 
     const clickHandler = (e: HTMLElement, type: 'next' | 'prev') => {
@@ -55,20 +54,6 @@ export default function SwiperPluginNavigation(
         }
     }
 
-    const checkSwiperDisabledClass = (
-        index: number) => {
-        const {
-            minIndex,
-            maxIndex
-        } = instance.env.limitation
-        if ( index === minIndex ) {
-            navigation.prevEl.classList.add(options.navigation.disabledClass)
-        }
-        if ( index === maxIndex ) {
-            navigation.nextEl.classList.add(options.navigation.disabledClass)
-        }
-    }
-
     const checkNavBtnDisabledClass = (index: number) => {
         const {
             minIndex,
@@ -83,14 +68,19 @@ export default function SwiperPluginNavigation(
                 && index < maxIndex ) {
                 navigation.prevEl.classList.remove(options.navigation.disabledClass)
             }
+
+            if ( index === minIndex ) {
+                navigation.prevEl.classList.add(options.navigation.disabledClass)
+            }
+            if ( index === maxIndex ) {
+                navigation.nextEl.classList.add(options.navigation.disabledClass)
+            }
         }
     }
 
     const checkIsDisable = (e: HTMLElement) => {
-        if ( e.classList.contains(options.navigation.disabledClass) ) {
-            return true
-        }
-        return false
+        return e.classList.contains(options.navigation.disabledClass)
+
     }
 
     const checkButtonDefaultStatus = () => {
@@ -103,7 +93,7 @@ export default function SwiperPluginNavigation(
         const {
             minIndex
         } = instance.env.limitation
-        if ( index === minIndex) {
+        if ( index === minIndex ) {
             navigation.prevEl.classList.add(options.navigation.disabledClass)
         }
         if ( $list.length === minIndex ) {
@@ -111,14 +101,7 @@ export default function SwiperPluginNavigation(
         }
     }
 
-    instance.on('after-slide', (currentIndex: number) => {
-        if ( !instance.options.loop ) {
-            checkSwiperDisabledClass(currentIndex)
-        }
-
-    })
-
-    instance.on('before-slide', (currentIndex: number, state: any, newIndex: number) => {
+    instance.on('before-slide', (currentIndex: number, state: never, newIndex: number) => {
         if ( !instance.options.loop ) {
             checkNavBtnDisabledClass(newIndex)
         }
@@ -144,8 +127,8 @@ export default function SwiperPluginNavigation(
         if ( !instance.options.loop ) {
             checkButtonDefaultStatus()
         }
-        attachListener(navigation.nextEl, 'click', <EventListener>nextClickHandler)
-        attachListener(navigation.prevEl, 'click', <EventListener>prevClickHandler)
+        attachListener(navigation.nextEl, 'click', <EventListener> nextClickHandler)
+        attachListener(navigation.prevEl, 'click', <EventListener> prevClickHandler)
     })
 
     instance.on('after-destroy', () => {
@@ -154,7 +137,7 @@ export default function SwiperPluginNavigation(
         delete navigation.nextEl
         delete navigation.prevEl
 
-        detachListener(navigation.nextEl, 'click', <EventListener>nextClickHandler)
-        detachListener(navigation.prevEl, 'click', <EventListener>prevClickHandler)
+        detachListener(navigation.nextEl, 'click', <EventListener> nextClickHandler)
+        detachListener(navigation.prevEl, 'click', <EventListener> prevClickHandler)
     })
 }

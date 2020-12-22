@@ -384,24 +384,10 @@ function SwiperPluginNavigation(instance, options) {
     }
   };
 
-  var checkSwiperDisabledClass = function checkSwiperDisabledClass(index) {
+  var checkNavBtnDisabledClass = function checkNavBtnDisabledClass(index) {
     var _instance$env$limitat = instance.env.limitation,
         minIndex = _instance$env$limitat.minIndex,
         maxIndex = _instance$env$limitat.maxIndex;
-
-    if (index === minIndex) {
-      navigation.prevEl.classList.add(options.navigation.disabledClass);
-    }
-
-    if (index === maxIndex) {
-      navigation.nextEl.classList.add(options.navigation.disabledClass);
-    }
-  };
-
-  var checkNavBtnDisabledClass = function checkNavBtnDisabledClass(index) {
-    var _instance$env$limitat2 = instance.env.limitation,
-        minIndex = _instance$env$limitat2.minIndex,
-        maxIndex = _instance$env$limitat2.maxIndex;
 
     if (navigation && navigation.nextEl) {
       if (navigation.nextEl.classList.contains(options.navigation.disabledClass) && index > minIndex) {
@@ -411,15 +397,19 @@ function SwiperPluginNavigation(instance, options) {
       if (navigation.prevEl.classList.contains(options.navigation.disabledClass) && index < maxIndex) {
         navigation.prevEl.classList.remove(options.navigation.disabledClass);
       }
+
+      if (index === minIndex) {
+        navigation.prevEl.classList.add(options.navigation.disabledClass);
+      }
+
+      if (index === maxIndex) {
+        navigation.nextEl.classList.add(options.navigation.disabledClass);
+      }
     }
   };
 
   var checkIsDisable = function checkIsDisable(e) {
-    if (e.classList.contains(options.navigation.disabledClass)) {
-      return true;
-    }
-
-    return false;
+    return e.classList.contains(options.navigation.disabledClass);
   };
 
   var checkButtonDefaultStatus = function checkButtonDefaultStatus() {
@@ -436,11 +426,6 @@ function SwiperPluginNavigation(instance, options) {
     }
   };
 
-  instance.on('after-slide', function (currentIndex) {
-    if (!instance.options.loop) {
-      checkSwiperDisabledClass(currentIndex);
-    }
-  });
   instance.on('before-slide', function (currentIndex, state, newIndex) {
     if (!instance.options.loop) {
       checkNavBtnDisabledClass(newIndex);
