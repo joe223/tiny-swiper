@@ -341,8 +341,6 @@ const swiper = new Swiper(
 )
 ```
 
-**Notice**: SwiperPluginNavigation was completely stripped from core module since `v2.x`.
-
 #### Navigation Parameters
 
 | Parameter | Type | default | Description |
