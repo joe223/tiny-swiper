@@ -163,7 +163,8 @@
         display: block;
         position: absolute;
         top: 50%;
-        width: 20px;
+        width: 30px;
+        height: 40px;
         padding: 0;
         color: #FFF;
         border: none;
@@ -172,9 +173,11 @@
         cursor: pointer;
         transform: translateY(-50%);
 
-        & img {
+        & img,
+        & svg {
             display: block;
             width: 100%;
+            height: 100%;
         }
 
         &.swiper-button-disabled {

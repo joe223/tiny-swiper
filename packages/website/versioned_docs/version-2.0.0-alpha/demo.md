@@ -10,6 +10,8 @@ import {
     SwiperPluginNavigation
 } from 'tiny-swiper/lib/index.esm'
 import Demo from '../../src/components/Demo'
+import IconArrowLeft from '../../static/img/arrow-left.svg'
+import IconArrowRight from '../../static/img/arrow-right.svg'
 
 ## Basic
 
@@ -414,10 +416,10 @@ You need to implement CSS code yourself.
             </div>
         </div>
         <button className="swiper-plugin-navigation-prevEl">
-            <img src="/static/img/arrow-left.svg"/>
+            <IconArrowLeft/>
         </button>
         <button className="swiper-plugin-navigation-nextEl">
-            <img src="/static/img/arrow-right.svg"/>
+            <IconArrowRight/>
         </button>
     </div>
 </Demo>
