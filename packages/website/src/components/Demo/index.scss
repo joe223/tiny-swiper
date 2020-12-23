@@ -156,6 +156,41 @@
         }
     }
 
+    /* pagiantion */
+
+    .swiper-plugin-navigation-prevEl,
+    .swiper-plugin-navigation-nextEl {
+        display: block;
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        padding: 0;
+        color: #FFF;
+        border: none;
+        outline: none;
+        background: transparent;
+        cursor: pointer;
+        transform: translateY(-50%);
+
+        & img {
+            display: block;
+            width: 100%;
+        }
+
+        &.swiper-button-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    .swiper-plugin-navigation-prevEl {
+        left: 20px;
+    }
+
+    .swiper-plugin-navigation-nextEl {
+        right: 20px;
+    }
+
     /* external */
 }
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="10px" height="17px" viewBox="0 0 10 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon左备份</title>
+    <defs>
+        <path d="M16.0156115,4.53033009 C16.3085047,4.8232233 16.3085047,5.29809704 16.0156115,5.59099026 L9.118,12.487 L16.0162716,19.3856115 C16.2825382,19.651878 16.3067442,20.0685417 16.0888898,20.3621532 L16.0162716,20.4462716 C15.7500051,20.7125382 15.3333414,20.7367442 15.0397299,20.5188898 L14.9556115,20.4462716 L7.53099026,13.0216504 C7.39785698,12.8885171 7.32523882,12.7177846 7.3131358,12.5436339 C7.29795199,12.3286141 7.37057015,12.1147112 7.53033009,11.9549513 L14.9549513,4.53033009 C15.2478445,4.23743687 15.7227182,4.23743687 16.0156115,4.53033009 Z" id="path-1"></path>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="通讯录-我关注的-暂无关注" transform="translate(-85.000000, -49.000000)">
+            <g id="编组" transform="translate(78.000000, 45.000000)">
+                <g id="icon左备份" transform="translate(12.000000, 12.000000) scale(-1, 1) translate(-12.000000, -12.000000) ">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="路径" fill="#000000" xlink:href="#path-1"></use>
+                    <g id="编组" mask="url(#mask-2)">
+                        <g transform="translate(-28.000000, -33.700000)">
+                            <rect id="矩形备份-8" fill="#F7F7F7" x="0" y="0" width="80" height="80"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

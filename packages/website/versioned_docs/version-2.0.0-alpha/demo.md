@@ -390,10 +390,11 @@ You need to implement CSS code yourself.
             nextEl: '.swiper-plugin-navigation-nextEl',
             prevEl: '.swiper-plugin-navigation-prevEl',
         },
-    plugins: [
-        SwiperPluginNavigation
-    ]
-    }}>
+        plugins: [
+            SwiperPluginNavigation
+        ]
+    }}
+    demoID="tiny-swiper2-demo-plugin-navigation">
     <div className="swiper-container swiper-navigation">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
@@ -412,8 +413,11 @@ You need to implement CSS code yourself.
                 <img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
             </div>
         </div>
-        <button className="swiper-plugin-navigation-prevEl">--</button>
-        <button className="swiper-plugin-navigation-nextEl">++</button>
+        <button className="swiper-plugin-navigation-prevEl">
+            <img src="/static/img/arrow-left.svg"/>
+        </button>
+        <button className="swiper-plugin-navigation-nextEl">
+            <img src="/static/img/arrow-right.svg"/>
+        </button>
     </div>
 </Demo>
-

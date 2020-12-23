@@ -109,10 +109,10 @@
       });
       instance.on('after-destroy', function () {
         if (!options.navigation) return;
-        delete navigation.nextEl;
-        delete navigation.prevEl;
         detachListener(navigation.nextEl, 'click', nextClickHandler);
         detachListener(navigation.prevEl, 'click', prevClickHandler);
+        delete navigation.nextEl;
+        delete navigation.prevEl;
       });
     }
 

@@ -33,10 +33,7 @@ module.exports = {
         ],
         '@typescript-eslint/no-unused-expressions': ['off'],
         '@typescript-eslint/no-non-null-assertion': ['off'],
-        'indent': [
-            'error',
-            4
-        ],
+        'indent': 'off',
         'linebreak-style': [
             'error',
             'unix'
@@ -54,10 +51,11 @@ module.exports = {
             }
         ],
         '@typescript-eslint/ban-types': ['off'],
-        'semi': [
-            'error',
-            'never'
-        ],
+        // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/semi.md
+        'semi': 'off',
+        '@typescript-eslint/semi': ['error', 'never'],
+        'space-before-function-paren': 'off',
+        '@typescript-eslint/space-before-function-paren': ['error'],
         'comma-dangle': ['error', {
             'arrays': 'never',
             'objects': 'never',
