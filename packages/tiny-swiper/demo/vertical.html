@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Demo</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html,
+        body,
+        .swiper-wrapper {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .a {
+            background: yellowgreen;
+        }
+
+        .b {
+            background: lightblue;
+        }
+
+        .c {
+            height: 100%;
+        }
+
+        .a,
+        .b {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: aliceblue;
+            font-size: 4rem;
+        }
+
+        .swiper-slide {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .swiper-container {
+            height: 80vh;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            /* touch-action: none; */
+        }
+
+        .swiper-wrapper {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            background: #eee;
+        }
+
+        .placeholder {
+            height: 40vh;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="/lib/index.js"></script>
+
+    <!-- Slider main container -->
+    <div class="swiper-container" id="swiper1">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="swiper-slide">
+                <img
+                    src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png" />
+            </div>
+            <div class="swiper-slide">
+                <img
+                    src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png" />
+            </div>
+            <div class="swiper-slide">
+                <img
+                    src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png" />
+            </div>
+            <div class="swiper-slide">
+                <img
+                    src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png" />
+            </div>
+            <div class="swiper-slide">
+                <img
+                    src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png" />
+            </div>
+        </div>
+        <!-- If we need pagination -->
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <div class="placeholder">
+        some text here
+    </div>
+
+    <script>
+        var mySwiper = new Swiper('#swiper1', {
+            direction: 'vertical'
+        })
+    </script>
+</body>

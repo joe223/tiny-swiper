@@ -1,6 +1,6 @@
 {
   "name": "tiny-swiper",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "description": "Ingenious JavaScript Carousel powered by wonderful plugins with native-like experience for the web.",
   "main": "lib/index.min.js",
   "module": "lib/index.esm.js",
