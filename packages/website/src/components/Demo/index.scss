@@ -81,6 +81,33 @@
         }
     }
 
+    /* plugin navigation */
+    .swiper-plugin-navigation {
+        position: relative;
+        button {
+            position: absolute;
+            z-index: 3;
+            top: 50%;
+            padding: 5px 20px;
+            border: 0;
+            border-radius: 4px;
+            background: #ff0074;
+            color: #fff;
+            font-weight: 700;
+            &.swiper-button-disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            &:nth-child(2) {
+                left: 20px;
+            }
+
+            &:nth-child(3) {
+                right: 20px;
+            }
+        }
+    }
+
     /* image lazyload */
     .swiper-lazy {
         display: block;

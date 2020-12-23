@@ -6,7 +6,8 @@ import {
     SwiperPluginPagination,
     SwiperPluginLazyload,
     SwiperPluginKeyboardControl,
-    SwiperPluginMousewheel
+    SwiperPluginMousewheel,
+    SwiperPluginNavigation
 } from 'tiny-swiper/lib/index.esm'
 import Demo from '../../src/components/Demo'
 
@@ -275,32 +276,32 @@ You need to implement CSS code yourself.
         <div className="swiper-wrapper">
             <div className="swiper-slide">
                 <img
-                    className="swiper-lazy"
-                    data-src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
+                className="swiper-lazy"
+                data-src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
                 <div className="swiper-lazy-preloader"></div>
             </div>
             <div className="swiper-slide">
                 <img
-                    className="swiper-lazy"
-                    data-src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png"/>
+                className="swiper-lazy"
+                data-src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png"/>
                 <div className="swiper-lazy-preloader"></div>
             </div>
             <div className="swiper-slide">
                 <img
-                    className="swiper-lazy"
-                    data-src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+                className="swiper-lazy"
+                data-src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
                 <div className="swiper-lazy-preloader"></div>
             </div>
             <div className="swiper-slide">
                 <img
-                    className="swiper-lazy"
-                    data-src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png"/>
+                className="swiper-lazy"
+                data-src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png"/>
                 <div className="swiper-lazy-preloader"></div>
             </div>
-            <div className="swiper-slide">
+                <div className="swiper-slide">
                 <img
-                    className="swiper-lazy"
-                    data-src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+                className="swiper-lazy"
+                data-src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
                 <div className="swiper-lazy-preloader"></div>
             </div>
         </div>
@@ -378,3 +379,41 @@ Keys `up` and `down` work only when `direction: vertical`, so do `right` and `le
         </div>
     </div>
 </Demo>
+
+### Navigation
+
+You need to implement CSS code yourself.
+
+<Demo
+    option={{
+        navigation: {
+            nextEl: '.swiper-plugin-navigation-nextEl',
+            prevEl: '.swiper-plugin-navigation-prevEl',
+        },
+    plugins: [
+        SwiperPluginNavigation
+    ]
+    }}>
+    <div className="swiper-container swiper-navigation">
+        <div className="swiper-wrapper">
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+            </div>
+        </div>
+        <button className="swiper-plugin-navigation-prevEl">--</button>
+        <button className="swiper-plugin-navigation-nextEl">++</button>
+    </div>
+</Demo>
+

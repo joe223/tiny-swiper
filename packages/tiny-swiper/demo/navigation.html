@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Demo</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html,
+        body,
+        .swiper-wrapper {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .a {
+            background: yellowgreen;
+        }
+
+        .b {
+            background: lightblue;
+        }
+
+        .c {
+            height: 100%;
+        }
+
+        .a,
+        .b {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: aliceblue;
+            font-size: 4rem;
+        }
+
+        .swiper-slide {
+            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-container {
+            overflow: hidden;
+            height: 100%;
+            margin-bottom: 100%;
+            /* touch-action: none; */
+        }
+
+        .swiper-wrapper {
+            flex-direction: column
+        }
+
+        .btn {
+            position: absolute;
+            top: 50%;
+        }
+
+        .nextEl {
+            right: 20px;
+        }
+
+        .prevEl {
+            left: 20px;
+        }
+
+        .swiper-button-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<script src="../lib/index.js"></script>
+<script src="../lib/modules/navigation.js"></script>
+
+<!-- Slider main container -->
+<div class="swiper-container" id="swiper1">
+    <!-- Additional required wrapper -->
+    <div class="swiper-wrapper">
+        <!-- Slides -->
+        <div class="a swiper-slide">1</div>
+        <div class="b swiper-slide">2</div>
+        <div class="a swiper-slide">3</div>
+        <div class="b swiper-slide">4</div>
+    </div>
+    <!-- If we need pagination -->
+    <div class="swiper-pagination"></div>
+    <button class="nextEl btn ">++</button>
+    <button class="prevEl btn">--</button>
+</div>
+
+<script>
+    Swiper.use([SwiperPluginNavigation])
+
+    var mySwiper = new Swiper('#swiper1', {
+        navigation: {
+            nextEl: '.nextEl',
+            prevEl: '.prevEl'
+        }
+    });
+</script>
+</body>
+

@@ -11001,11 +11001,6 @@ tiny-invariant@^1.0.2:
   resolved "https://registry.npm.taobao.org/tiny-invariant/download/tiny-invariant-1.1.0.tgz#634c5f8efdc27714b7f386c35e6760991d230875"
   integrity sha1-Y0xfjv3CdxS384bDXmdgmR0jCHU=
 
-tiny-swiper@^2.0.0-alpha.0:
-  version "2.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/tiny-swiper/-/tiny-swiper-2.0.0-alpha.0.tgz#1083ff968d43edbcc73b9815bb3f5d05a0d30a65"
-  integrity sha512-bLN3KPxIga00RrTj5uj/3xP/YbdfKQsjnGnZToSo1kn6RLfSQBzuQJa8HhWKZk9uuSOD1q6B1dah0ecSOxtBOQ==
-
 tiny-warning@^1.0.0, tiny-warning@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npm.taobao.org/tiny-warning/download/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
