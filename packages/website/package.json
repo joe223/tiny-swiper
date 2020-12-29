@@ -19,7 +19,8 @@
     "clsx": "^1.1.1",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "tiny-swiper": "^2.0.0-alpha.6"
+    "tiny-swiper": "^2.0.0-alpha.6",
+    "typescript": "^4.1.3"
   },
   "browserslist": {
     "production": [

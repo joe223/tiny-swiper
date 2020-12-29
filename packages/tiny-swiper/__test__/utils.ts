@@ -20,13 +20,21 @@ Object.defineProperties(window.HTMLElement.prototype, {
     }
 })
 
-export function mockElement (width = 100, height = 100) {
-    const body = document.getElementsByTagName('body')[0]
+type mockElementParams = {
+    width?: number
+    height?: number
+    classList?: string[]
+}
+export function mockElement ({
+    width = 100,
+    height = 100,
+    classList = []
+}: mockElementParams) {
     const el = document.createElement('div')
 
-    body.appendChild(el)
     el.style.width = `${width}px`
     el.style.height = `${height}px`
+    el.classList.add(...classList)
 
     return el
 }
@@ -38,14 +46,27 @@ export function createElementsInstance (
         height: 300
     }
 ) {
+    const $body = document.getElementsByTagName('body')[0]
     const $list = new Array(listLength)
         .fill(null)
-        .map(() => mockElement())
+        .map(() => mockElement({
+            ...boundary,
+            classList: [optionFormatter().slideClass]
+        }))
+    const $el = mockElement({
+        ...boundary
+    })
+    const $wrapper = mockElement({
+        classList: [optionFormatter().wrapperClass]
+    })
 
+    $wrapper.append(...$list)
+    $el.appendChild($wrapper)
+    $body.appendChild($el)
 
     return {
-        $el: mockElement(),
-        $wrapper: mockElement(boundary.width, boundary.height),
+        $el,
+        $wrapper,
         $list
     }
 }

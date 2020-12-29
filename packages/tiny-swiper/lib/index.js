@@ -96,7 +96,6 @@
     initialSlide: 0,
     loop: false,
     freeMode: false,
-    mousewheel: false,
     passiveListeners: true,
     resistance: true,
     resistanceRatio: 0.85,

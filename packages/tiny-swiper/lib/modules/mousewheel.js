@@ -11,8 +11,14 @@
       el.removeEventListener(evtName, handler);
     }
 
-    function SwiperPluginMousewheel(instance, options) {
-      var mousewheel = {
+    var SwiperPluginMousewheel = (function SwiperPluginMousewheel(instance, options) {
+      var isEnable = Boolean(options.mousewheel);
+      var mousewheelOptions = Object.assign({
+        invert: false,
+        sensitivity: 1,
+        interval: 400
+      }, options.mousewheel);
+      var mousewheelInstance = {
         $el: null
       };
       var wheelStatus = {
@@ -25,13 +31,13 @@
         var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
         var index = instance.state.index;
 
-        if (Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 && !wheelStatus.wheeling && Math.abs(delta) >= options.mousewheel.sensitivity) {
-          var step = options.mousewheel.invert ? -1 : 1;
+        if (Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 && !wheelStatus.wheeling && Math.abs(delta) >= mousewheelOptions.sensitivity) {
+          var step = mousewheelOptions.invert ? 1 : -1;
           instance.slideTo(delta > 0 ? index - step : index + step);
           wheelStatus.wheeling = true;
           wheelStatus.wheelingTimer = setTimeout(function () {
             wheelStatus.wheeling = false;
-          }, options.mousewheel.interval);
+          }, mousewheelOptions.interval);
         }
 
         wheelStatus.wheelDelta = delta;
@@ -39,28 +45,19 @@
         e.stopPropagation();
       };
 
-      instance.on('before-init', function () {
-        if (options.mousewheel) {
-          options.mousewheel = Object.assign({
-            invert: false,
-            sensitivity: 1,
-            interval: 400
-          }, options.mousewheel);
-        }
-      });
       instance.on('after-init', function () {
-        if (!options.mousewheel) return;
+        if (!isEnable) return;
         var element = instance.env.element;
         var $el = element.$el;
-        mousewheel.$el = $el;
+        mousewheelInstance.$el = $el;
         attachListener($el, 'wheel', handler);
       });
       instance.on('after-destroy', function () {
-        if (!options.mousewheel) return;
-        detachListener(mousewheel.$el, 'wheel', handler);
-        delete mousewheel.$el;
+        if (!isEnable) return;
+        detachListener(mousewheelInstance.$el, 'wheel', handler);
+        delete mousewheelInstance.$el;
       });
-    }
+    });
 
     return SwiperPluginMousewheel;
 

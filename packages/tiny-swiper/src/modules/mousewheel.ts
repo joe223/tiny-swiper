@@ -2,28 +2,36 @@ import {
     attachListener,
     detachListener
 } from '../core/render/dom'
-import { SwiperInstance } from '../core/index'
+import { SwiperInstance, SwiperPlugin } from '../core/index'
 import { Options } from '../core/options'
 
-export type SwiperPluginMousewheelOptions = Options & {
-    mousewheel: {
-        invert: false
-        sensitivity: 1
-        interval: 400
-    }
+export type SwiperPluginMousewheelOptions = {
+    invert: false
+    sensitivity: 1
+    interval: 400
 }
+
+export type SwiperPluginMousewheelPartialOptions = Partial<SwiperPluginMousewheelOptions>
 
 export type SwiperPluginMousewheelInstance = {
-    $el: HTMLElement
+    $el?: HTMLElement
 }
 
-export default function SwiperPluginMousewheel (
+export default <SwiperPlugin>function SwiperPluginMousewheel (
     instance: SwiperInstance & {
-        mousewheel: SwiperPluginMousewheelInstance
+        mousewheel?: SwiperPluginMousewheelInstance
     },
-    options: SwiperPluginMousewheelOptions
+    options: Options & {
+        mousewheel?: SwiperPluginMousewheelPartialOptions
+    }
 ) {
-    const mousewheel = {
+    const isEnable = Boolean(options.mousewheel)
+    const mousewheelOptions = <SwiperPluginMousewheelOptions>Object.assign({
+        invert: false,
+        sensitivity: 1,
+        interval: 400
+    }, options.mousewheel)
+    const mousewheelInstance = {
         $el: null
     } as unknown as SwiperPluginMousewheelInstance
     const wheelStatus = {
@@ -41,9 +49,9 @@ export default function SwiperPluginMousewheel (
 
         if ((Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0)
             && !wheelStatus.wheeling
-            && Math.abs(delta) >= options.mousewheel.sensitivity
+            && Math.abs(delta) >= mousewheelOptions.sensitivity
         ) {
-            const step = options.mousewheel.invert ? -1 : 1
+            const step = mousewheelOptions.invert ? 1 : -1
 
             instance.slideTo(delta > 0
                 ? index - step
@@ -52,25 +60,15 @@ export default function SwiperPluginMousewheel (
             wheelStatus.wheeling = true
             wheelStatus.wheelingTimer = setTimeout(() => {
                 wheelStatus.wheeling = false
-            }, options.mousewheel.interval) as unknown as number
+            }, mousewheelOptions.interval) as unknown as number
         }
         wheelStatus.wheelDelta = delta
         e.preventDefault()
         e.stopPropagation()
     }
 
-    instance.on('before-init', () => {
-        if (options.mousewheel) {
-            options.mousewheel = Object.assign({
-                invert: false,
-                sensitivity: 1,
-                interval: 400
-            }, options.mousewheel)
-        }
-    })
-
     instance.on('after-init', () => {
-        if (!options.mousewheel) return
+        if (!isEnable) return
 
         const {
             element
@@ -79,15 +77,16 @@ export default function SwiperPluginMousewheel (
             $el
         } = element
 
-        mousewheel.$el = $el
+        mousewheelInstance.$el = $el
 
         attachListener($el, 'wheel', <EventListener>handler)
     })
 
     instance.on('after-destroy', () => {
-        if (!options.mousewheel) return
+        if (!isEnable) return
 
-        detachListener(mousewheel.$el, 'wheel', <EventListener>handler)
-        delete mousewheel.$el
+        detachListener(<HTMLElement>mousewheelInstance.$el, 'wheel', <EventListener>handler)
+
+        delete mousewheelInstance.$el
     })
 }

@@ -2,51 +2,49 @@ import {
     addClass,
     removeClass
 } from '../core/render/dom'
-import { SwiperInstance } from '../core/index'
+import { SwiperInstance, SwiperPlugin } from '../core/index'
 import { Options } from '../core/options'
 
-export type SwiperPluginPaginationOptions = Options & {
-    pagination: {
-        el: string
-        clickable: false
-        bulletClass: 'swiper-pagination-bullet'
-        bulletActiveClass: 'swiper-pagination-bullet-active'
-    }
+export type SwiperPluginPaginationOptions = {
+    el: string
+    clickable: false
+    bulletClass: string | 'swiper-pagination-bullet'
+    bulletActiveClass: string | 'swiper-pagination-bullet-active'
 }
+
+export type SwiperPluginPaginationPartialOptions = Partial<SwiperPluginPaginationOptions>
 
 export type SwiperPluginPaginationInstance = {
     $pageList: HTMLElement[]
     $pagination: HTMLElement | null
 }
 
-export default function SwiperPluginPagination (
+export default <SwiperPlugin>function SwiperPluginPagination (
     instance: SwiperInstance & {
-        pagination: SwiperPluginPaginationInstance
+        pagination?: SwiperPluginPaginationInstance
     },
-    options: SwiperPluginPaginationOptions
+    options: Options & {
+        pagination?: SwiperPluginPaginationPartialOptions
+    }
 ) {
-    const pagination = {
+    const isEnable = Boolean(options.pagination)
+    const paginationOptions = <SwiperPluginPaginationOptions>Object.assign({
+        clickable: false,
+        bulletClass: 'swiper-pagination-bullet',
+        bulletActiveClass: 'swiper-pagination-bullet-active'
+    }, options.pagination)
+    const paginationInstance = {
         $pageList: [],
         $pagination: null
     } as unknown as SwiperPluginPaginationInstance
 
-    instance.on('before-init', () => {
-        if (options.pagination) {
-            options.pagination = Object.assign({
-                clickable: false,
-                bulletClass: 'swiper-pagination-bullet',
-                bulletActiveClass: 'swiper-pagination-bullet-active'
-            }, options.pagination)
-        }
-    })
+    if (!isEnable) return
 
     instance.on('after-init', () => {
-        if (!options.pagination) return
-
         const {
             bulletClass,
             bulletActiveClass
-        } = options.pagination
+        } = <SwiperPluginPaginationOptions>paginationOptions
         const {
             element
         } = instance.env
@@ -54,17 +52,17 @@ export default function SwiperPluginPagination (
             $list
         } = element
 
-        const $pagination = (typeof options.pagination.el === 'string'
-            ? document.body.querySelector(options.pagination.el)
-            : options.pagination.el) as HTMLElement
+        const $pagination = (typeof paginationOptions.el === 'string'
+            ? document.body.querySelector(paginationOptions.el)
+            : paginationOptions.el) as HTMLElement
         const $pageList: Array<HTMLElement> = []
         const $group = document.createDocumentFragment()
         const dotCount = $list.length - Math.ceil(options.slidesPerView) + 1
 
         options.excludeElements.push($pagination as HTMLElement)
 
-        pagination.$pagination = $pagination
-        pagination.$pageList = $pageList
+        paginationInstance.$pagination = $pagination
+        paginationInstance.$pageList = $pageList
 
         for (let index = 0; index < dotCount; index++) {
             const $page = document.createElement('div')
@@ -79,7 +77,7 @@ export default function SwiperPluginPagination (
 
         $pagination.appendChild($group)
 
-        if (options.pagination.clickable) {
+        if (paginationOptions.clickable) {
             $pagination.addEventListener('click', (e: Event) => {
                 instance.slideTo($pageList.indexOf(e.target as HTMLElement))
                 e.stopPropagation()
@@ -88,19 +86,19 @@ export default function SwiperPluginPagination (
     })
 
     instance.on('after-destroy', () => {
-        if (!options.pagination) return
+        if (!isEnable) return
 
-        pagination.$pagination!.innerHTML = ''
-        pagination.$pageList = []
-        pagination.$pagination = null
+        paginationInstance.$pagination!.innerHTML = ''
+        paginationInstance.$pageList = []
+        paginationInstance.$pagination = null
     })
 
     instance.on('after-slide', (
         currentIndex: number
     ) => {
-        const { bulletActiveClass } = options.pagination
+        const { bulletActiveClass } = paginationOptions
 
-        pagination.$pageList && pagination.$pageList.forEach(($page, index) => {
+        paginationInstance.$pageList && paginationInstance.$pageList.forEach(($page, index) => {
             if (index === currentIndex) {
                 addClass($page, bulletActiveClass)
             } else {

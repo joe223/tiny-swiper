@@ -2,9 +2,14 @@ import { SwiperPlugin } from './index'
 import { translate } from './render/layout'
 import { State } from './state/index'
 import { Env } from './env/index'
-import { SwiperPluginLazyloadOptions } from '../modules/lazyload'
-import { SwiperPluginPaginationOptions } from '../modules/pagination'
-import { SwiperPluginKeyboardControlOptions } from '../modules/keyboardControl'
+import { SwiperPluginLazyloadOptions, SwiperPluginLazyloadPartialOptions } from '../modules/lazyload'
+import { SwiperPluginPaginationOptions, SwiperPluginPaginationPartialOptions } from '../modules/pagination'
+import {
+    SwiperPluginKeyboardControlOptions,
+    SwiperPluginKeyboardControlPartialOptions
+} from '../modules/keyboardControl'
+import { SwiperPluginNavigationPartialOptions } from '../modules/navigation'
+import { SwiperPluginMousewheelPartialOptions } from '../modules/mousewheel'
 
 export type Direction = 'horizontal' | 'vertical'
 export type Injections = {
@@ -24,7 +29,6 @@ export type Options = {
     initialSlide: number
     loop: boolean
     freeMode: boolean
-    mousewheel: boolean
     passiveListeners: boolean
     resistance: boolean
     resistanceRatio: number
@@ -47,14 +51,16 @@ export type Options = {
     injections: Injections
 
     // Plugins
-    lazyload?: SwiperPluginLazyloadOptions
-    keyboard?: SwiperPluginKeyboardControlOptions
-    pagination?: SwiperPluginPaginationOptions
+    lazyload?: SwiperPluginLazyloadPartialOptions
+    mousewheel?: SwiperPluginMousewheelPartialOptions
+    keyboard?: SwiperPluginKeyboardControlPartialOptions
+    navigation?: SwiperPluginNavigationPartialOptions
+    pagination?: SwiperPluginPaginationPartialOptions
 }
 
 export type UserOptions = Partial<Options>
 
-const defaultOptions: UserOptions = {
+export const defaultOptions: UserOptions = {
     // `isHorizontal` is computed value
     direction: 'horizontal',
     touchRatio: 1,
@@ -63,7 +69,6 @@ const defaultOptions: UserOptions = {
     initialSlide: 0,
     loop: false,
     freeMode: false,
-    mousewheel: false,
     passiveListeners: true,
     resistance: true,
     resistanceRatio: 0.85,

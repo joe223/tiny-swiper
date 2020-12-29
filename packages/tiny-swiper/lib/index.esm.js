@@ -1,21 +1,3 @@
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
 function addClass(el, list) {
   if (list === void 0) {
     list = [];
@@ -79,9 +61,17 @@ function getTranslate(el, isHorizontal) {
  * @param {Options}
  */
 
-function SwiperPluginLazyload(instance, options) {
-  if (!options.lazyload) return;
-  var lazyloadOptions = options.lazyload;
+var SwiperPluginLazyload = (function SwiperPluginLazyload(instance, options) {
+  var isEnable = Boolean(options.lazyload);
+  var lazyloadOptions = Object.assign({
+    loadPrevNext: false,
+    loadPrevNextAmount: 1,
+    loadOnTransitionStart: false,
+    elementClass: 'swiper-lazy',
+    loadingClass: 'swiper-lazy-loading',
+    loadedClass: 'swiper-lazy-loaded',
+    preloaderClass: 'swiper-lazy-preloader'
+  }, options.lazyload);
   var lazyload = {
     load: function load(index) {
       var $slide = instance.env.element.$list[index];
@@ -133,16 +123,9 @@ function SwiperPluginLazyload(instance, options) {
       }
     }
   };
+  if (!isEnable) return;
   instance.on('before-init', function () {
-    options.lazyload = _extends({
-      loadPrevNext: false,
-      loadPrevNextAmount: 1,
-      loadOnTransitionStart: false,
-      elementClass: 'swiper-lazy',
-      loadingClass: 'swiper-lazy-loading',
-      loadedClass: 'swiper-lazy-loaded',
-      preloaderClass: 'swiper-lazy-preloader'
-    }, options.lazyload);
+    instance.lazyload = lazyload;
   });
 
   if (lazyloadOptions.loadOnTransitionStart) {
@@ -156,39 +139,36 @@ function SwiperPluginLazyload(instance, options) {
   }
 
   instance.on('after-destroy', function () {
-    if (!instance.lazyload) return;
-    delete instance.lazyload;
+    if (instance.lazyload) {
+      delete instance.lazyload;
+    }
   });
-}
+});
 
-function SwiperPluginPagination(instance, options) {
-  var pagination = {
+var SwiperPluginPagination = (function SwiperPluginPagination(instance, options) {
+  var isEnable = Boolean(options.pagination);
+  var paginationOptions = Object.assign({
+    clickable: false,
+    bulletClass: 'swiper-pagination-bullet',
+    bulletActiveClass: 'swiper-pagination-bullet-active'
+  }, options.pagination);
+  var paginationInstance = {
     $pageList: [],
     $pagination: null
   };
-  instance.on('before-init', function () {
-    if (options.pagination) {
-      options.pagination = Object.assign({
-        clickable: false,
-        bulletClass: 'swiper-pagination-bullet',
-        bulletActiveClass: 'swiper-pagination-bullet-active'
-      }, options.pagination);
-    }
-  });
+  if (!isEnable) return;
   instance.on('after-init', function () {
-    if (!options.pagination) return;
-    var _options$pagination = options.pagination,
-        bulletClass = _options$pagination.bulletClass,
-        bulletActiveClass = _options$pagination.bulletActiveClass;
+    var bulletClass = paginationOptions.bulletClass,
+        bulletActiveClass = paginationOptions.bulletActiveClass;
     var element = instance.env.element;
     var $list = element.$list;
-    var $pagination = typeof options.pagination.el === 'string' ? document.body.querySelector(options.pagination.el) : options.pagination.el;
+    var $pagination = typeof paginationOptions.el === 'string' ? document.body.querySelector(paginationOptions.el) : paginationOptions.el;
     var $pageList = [];
     var $group = document.createDocumentFragment();
     var dotCount = $list.length - Math.ceil(options.slidesPerView) + 1;
     options.excludeElements.push($pagination);
-    pagination.$pagination = $pagination;
-    pagination.$pageList = $pageList;
+    paginationInstance.$pagination = $pagination;
+    paginationInstance.$pageList = $pageList;
 
     for (var index = 0; index < dotCount; index++) {
       var $page = document.createElement('div');
@@ -199,7 +179,7 @@ function SwiperPluginPagination(instance, options) {
 
     $pagination.appendChild($group);
 
-    if (options.pagination.clickable) {
+    if (paginationOptions.clickable) {
       $pagination.addEventListener('click', function (e) {
         instance.slideTo($pageList.indexOf(e.target));
         e.stopPropagation();
@@ -207,14 +187,14 @@ function SwiperPluginPagination(instance, options) {
     }
   });
   instance.on('after-destroy', function () {
-    if (!options.pagination) return;
-    pagination.$pagination.innerHTML = '';
-    pagination.$pageList = [];
-    pagination.$pagination = null;
+    if (!isEnable) return;
+    paginationInstance.$pagination.innerHTML = '';
+    paginationInstance.$pageList = [];
+    paginationInstance.$pagination = null;
   });
   instance.on('after-slide', function (currentIndex) {
-    var bulletActiveClass = options.pagination.bulletActiveClass;
-    pagination.$pageList && pagination.$pageList.forEach(function ($page, index) {
+    var bulletActiveClass = paginationOptions.bulletActiveClass;
+    paginationInstance.$pageList && paginationInstance.$pageList.forEach(function ($page, index) {
       if (index === currentIndex) {
         addClass($page, bulletActiveClass);
       } else {
@@ -222,14 +202,14 @@ function SwiperPluginPagination(instance, options) {
       }
     });
   });
-}
+});
 
 var DIRECTION = {
   up: 'ArrowUp',
   right: 'ArrowRight',
   down: 'ArrowDown',
   left: 'ArrowLeft'
-};
+}; // TODO: optimize
 
 function isVisible(el) {
   if (!el) return false;
@@ -253,9 +233,12 @@ function isElementInView(el) {
  */
 
 
-function SwiperPluginKeyboardControl(instance, options) {
-  if (!options.keyboard) return;
-  var keyboardOptions = options.keyboard;
+var SwiperPluginKeyboardControl = (function SwiperPluginKeyboardControl(instance, options) {
+  var isEnable = Boolean(options.keyboard);
+  var keyboardOptions = Object.assign({
+    enabled: true,
+    onlyInViewport: true
+  }, options.keyboard);
   var keyboard = {
     enable: function enable() {
       keyboardOptions.enabled = true;
@@ -282,23 +265,27 @@ function SwiperPluginKeyboardControl(instance, options) {
       }
     }
   };
+  if (!isEnable) return;
   instance.on('before-init', function () {
-    options.keyboard = _extends({
-      enabled: true,
-      onlyInViewport: true
-    }, options.keyboard);
     instance.keyboard = keyboard;
     attachListener(window, 'keydown', keyboard.onKeyDown);
   });
   instance.on('after-destroy', function () {
-    if (!keyboard) return;
-    detachListener(window, 'keydown', keyboard.onKeyDown);
-    delete instance.keyboard;
+    if (instance.keyboard) {
+      detachListener(window, 'keydown', keyboard.onKeyDown);
+      delete instance.keyboard;
+    }
   });
-}
+});
 
-function SwiperPluginMousewheel(instance, options) {
-  var mousewheel = {
+var SwiperPluginMousewheel = (function SwiperPluginMousewheel(instance, options) {
+  var isEnable = Boolean(options.mousewheel);
+  var mousewheelOptions = Object.assign({
+    invert: false,
+    sensitivity: 1,
+    interval: 400
+  }, options.mousewheel);
+  var mousewheelInstance = {
     $el: null
   };
   var wheelStatus = {
@@ -311,13 +298,13 @@ function SwiperPluginMousewheel(instance, options) {
     var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     var index = instance.state.index;
 
-    if (Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 && !wheelStatus.wheeling && Math.abs(delta) >= options.mousewheel.sensitivity) {
-      var step = options.mousewheel.invert ? -1 : 1;
+    if (Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 && !wheelStatus.wheeling && Math.abs(delta) >= mousewheelOptions.sensitivity) {
+      var step = mousewheelOptions.invert ? 1 : -1;
       instance.slideTo(delta > 0 ? index - step : index + step);
       wheelStatus.wheeling = true;
       wheelStatus.wheelingTimer = setTimeout(function () {
         wheelStatus.wheeling = false;
-      }, options.mousewheel.interval);
+      }, mousewheelOptions.interval);
     }
 
     wheelStatus.wheelDelta = delta;
@@ -325,34 +312,29 @@ function SwiperPluginMousewheel(instance, options) {
     e.stopPropagation();
   };
 
-  instance.on('before-init', function () {
-    if (options.mousewheel) {
-      options.mousewheel = Object.assign({
-        invert: false,
-        sensitivity: 1,
-        interval: 400
-      }, options.mousewheel);
-    }
-  });
   instance.on('after-init', function () {
-    if (!options.mousewheel) return;
+    if (!isEnable) return;
     var element = instance.env.element;
     var $el = element.$el;
-    mousewheel.$el = $el;
+    mousewheelInstance.$el = $el;
     attachListener($el, 'wheel', handler);
   });
   instance.on('after-destroy', function () {
-    if (!options.mousewheel) return;
-    detachListener(mousewheel.$el, 'wheel', handler);
-    delete mousewheel.$el;
+    if (!isEnable) return;
+    detachListener(mousewheelInstance.$el, 'wheel', handler);
+    delete mousewheelInstance.$el;
   });
-}
+});
 
-function SwiperPluginNavigation(instance, options) {
-  var navigation = {
+var SwiperPluginNavigation = (function SwiperPluginNavigation(instance, options) {
+  var isEnable = Boolean(options.navigation);
+  var navigationInstance = {
     nextEl: null,
     prevEl: null
   };
+  var navigationOptions = Object.assign({
+    disabledClass: 'swiper-button-disabled'
+  }, options.navigation);
 
   var nextClickHandler = function nextClickHandler(e) {
     clickHandler(e.target, 'next');
@@ -383,27 +365,27 @@ function SwiperPluginNavigation(instance, options) {
         minIndex = _instance$env$limitat.minIndex,
         maxIndex = _instance$env$limitat.maxIndex;
 
-    if (navigation && navigation.nextEl) {
-      if (navigation.nextEl.classList.contains(options.navigation.disabledClass) && index > minIndex) {
-        navigation.nextEl.classList.remove(options.navigation.disabledClass);
+    if (navigationInstance && navigationInstance.prevEl && navigationInstance.nextEl) {
+      if (navigationInstance.nextEl.classList.contains(navigationOptions.disabledClass) && index > minIndex) {
+        navigationInstance.nextEl.classList.remove(navigationOptions.disabledClass);
       }
 
-      if (navigation.prevEl.classList.contains(options.navigation.disabledClass) && index < maxIndex) {
-        navigation.prevEl.classList.remove(options.navigation.disabledClass);
+      if (navigationInstance.prevEl.classList.contains(navigationOptions.disabledClass) && index < maxIndex) {
+        navigationInstance.prevEl.classList.remove(navigationOptions.disabledClass);
       }
 
       if (index === minIndex) {
-        navigation.prevEl.classList.add(options.navigation.disabledClass);
+        navigationInstance.prevEl.classList.add(navigationOptions.disabledClass);
       }
 
       if (index === maxIndex) {
-        navigation.nextEl.classList.add(options.navigation.disabledClass);
+        navigationInstance.nextEl.classList.add(navigationOptions.disabledClass);
       }
     }
   };
 
   var checkIsDisable = function checkIsDisable(e) {
-    return e.classList.contains(options.navigation.disabledClass);
+    return e.classList.contains(navigationOptions.disabledClass);
   };
 
   var checkButtonDefaultStatus = function checkButtonDefaultStatus() {
@@ -411,12 +393,12 @@ function SwiperPluginNavigation(instance, options) {
     var $list = instance.env.element.$list;
     var minIndex = instance.env.limitation.minIndex;
 
-    if (index === minIndex) {
-      navigation.prevEl.classList.add(options.navigation.disabledClass);
+    if (index === minIndex && navigationInstance.prevEl) {
+      navigationInstance.prevEl.classList.add(navigationOptions.disabledClass);
     }
 
-    if ($list.length === minIndex) {
-      navigation.nextEl.classList.add(options.navigation.disabledClass);
+    if ($list.length === minIndex && navigationInstance.nextEl) {
+      navigationInstance.nextEl.classList.add(navigationOptions.disabledClass);
     }
   };
 
@@ -425,32 +407,44 @@ function SwiperPluginNavigation(instance, options) {
       checkNavBtnDisabledClass(newIndex);
     }
   });
-  instance.on('before-init', function () {
-    if (options.navigation) {
-      options.navigation = Object.assign({
-        disabledClass: 'swiper-button-disabled'
-      }, options.navigation);
-    }
-  });
   instance.on('after-init', function () {
-    if (!options.navigation) return;
-    navigation.nextEl = typeof options.navigation.nextEl === 'string' ? document.body.querySelector(options.navigation.nextEl) : options.navigation.nextEl;
-    navigation.prevEl = typeof options.navigation.prevEl === 'string' ? document.body.querySelector(options.navigation.prevEl) : options.navigation.prevEl;
+    if (!isEnable) return;
+    navigationInstance.nextEl = typeof navigationOptions.nextEl === 'string' ? document.body.querySelector(navigationOptions.nextEl) : navigationOptions.nextEl;
+    navigationInstance.prevEl = typeof navigationOptions.prevEl === 'string' ? document.body.querySelector(navigationOptions.prevEl) : navigationOptions.prevEl;
 
     if (!instance.options.loop) {
       checkButtonDefaultStatus();
     }
 
-    attachListener(navigation.nextEl, 'click', nextClickHandler);
-    attachListener(navigation.prevEl, 'click', prevClickHandler);
+    attachListener(navigationInstance.nextEl, 'click', nextClickHandler);
+    attachListener(navigationInstance.prevEl, 'click', prevClickHandler);
   });
   instance.on('after-destroy', function () {
-    if (!options.navigation) return;
-    detachListener(navigation.nextEl, 'click', nextClickHandler);
-    detachListener(navigation.prevEl, 'click', prevClickHandler);
-    delete navigation.nextEl;
-    delete navigation.prevEl;
+    if (navigationInstance && navigationInstance.prevEl && navigationInstance.nextEl) {
+      detachListener(navigationInstance.nextEl, 'click', nextClickHandler);
+      detachListener(navigationInstance.prevEl, 'click', prevClickHandler);
+      delete navigationInstance.nextEl;
+      delete navigationInstance.prevEl;
+    }
   });
+});
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
 }
 
 function translate(state, env, options, duration) {
@@ -471,7 +465,6 @@ var defaultOptions = {
   initialSlide: 0,
   loop: false,
   freeMode: false,
-  mousewheel: false,
   passiveListeners: true,
   resistance: true,
   resistanceRatio: 0.85,
@@ -1328,3 +1321,4 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginNavigation, SwiperPluginPagination };
+//# sourceMappingURL=index.esm.js.map

@@ -2,7 +2,7 @@ import {
     addClass,
     removeClass
 } from '../core/render/dom'
-import { SwiperInstance } from '../core/index'
+import { SwiperInstance, SwiperPlugin } from '../core/index'
 import { Options } from '../core/options'
 import { State } from '../core/state/index'
 
@@ -16,8 +16,18 @@ export type SwiperPluginLazyloadOptions = {
     preloaderClass: 'swiper-lazy-preloader'
 }
 
+export type SwiperPluginLazyloadPartialOptions = Partial<SwiperPluginLazyloadOptions> | boolean
+
 export type SwiperPluginLazyloadHTMLElement = HTMLImageElement & {
     isLoaded: boolean
+}
+
+export type SwiperPluginLazyloadInstance = {
+    load (index: number): void
+    loadRange (
+        index: number,
+        range: number
+    ): void
 }
 
 /**
@@ -26,22 +36,25 @@ export type SwiperPluginLazyloadHTMLElement = HTMLImageElement & {
  * @param {SwiperInstance} instance
  * @param {Options}
  */
-export default function SwiperPluginLazyload (
+export default <SwiperPlugin>function SwiperPluginLazyload (
     instance: SwiperInstance & {
-        lazyload: {
-            load (index: number): void
-            loadRange (
-                index: number,
-                range: number
-            ): void
-        }
+        lazyload?: SwiperPluginLazyloadInstance
     },
-    options: Options
+    options: Options & {
+        lazyload?: SwiperPluginLazyloadPartialOptions
+    }
 ) {
-    if (!options.lazyload) return
-
-    const lazyloadOptions = <SwiperPluginLazyloadOptions>options.lazyload
-    const lazyload = {
+    const isEnable = Boolean(options.lazyload)
+    const lazyloadOptions = <SwiperPluginLazyloadOptions>Object.assign({
+        loadPrevNext: false,
+        loadPrevNextAmount: 1,
+        loadOnTransitionStart: false,
+        elementClass: 'swiper-lazy',
+        loadingClass: 'swiper-lazy-loading',
+        loadedClass: 'swiper-lazy-loaded',
+        preloaderClass: 'swiper-lazy-preloader'
+    }, options.lazyload)
+    const lazyload: SwiperPluginLazyloadInstance = {
         load (index: number): void {
             const $slide = instance.env.element.$list[index]
 
@@ -93,17 +106,10 @@ export default function SwiperPluginLazyload (
         }
     }
 
+    if (!isEnable) return
+
     instance.on('before-init', () => {
-        options.lazyload = {
-            loadPrevNext: false,
-            loadPrevNextAmount: 1,
-            loadOnTransitionStart: false,
-            elementClass: 'swiper-lazy',
-            loadingClass: 'swiper-lazy-loading',
-            loadedClass: 'swiper-lazy-loaded',
-            preloaderClass: 'swiper-lazy-preloader',
-            ...options.lazyload
-        }
+        instance.lazyload = lazyload
     })
 
     if (lazyloadOptions.loadOnTransitionStart) {
@@ -123,8 +129,8 @@ export default function SwiperPluginLazyload (
     }
 
     instance.on('after-destroy', () => {
-        if (!instance.lazyload) return
-
-        delete instance.lazyload
+        if (instance.lazyload) {
+            delete instance.lazyload
+        }
     })
 }

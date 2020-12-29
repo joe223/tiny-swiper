@@ -2,12 +2,20 @@ import {
     attachListener,
     detachListener
 } from '../core/render/dom'
-import { SwiperInstance } from '../core/index'
+import { SwiperInstance, SwiperPlugin } from '../core/index'
 import { Options } from '../core/options'
 
 export type SwiperPluginKeyboardControlOptions = {
     enabled: boolean
     onlyInViewport: boolean
+}
+
+export type SwiperPluginKeyboardControlPartialOptions = Partial<SwiperPluginKeyboardControlOptions> | boolean
+
+export type SwiperPluginKeyboardInstance = {
+    onKeyDown (e: Event): void
+    enable (): void
+    disable (): void
 }
 
 const DIRECTION = {
@@ -17,6 +25,7 @@ const DIRECTION = {
     left: 'ArrowLeft'
 }
 
+// TODO: optimize
 function isVisible (el: HTMLElement): boolean {
     if (!el) return false
 
@@ -45,20 +54,18 @@ function isElementInView (el: HTMLElement): boolean {
  * @param {SwiperInstance} instance
  * @param {Options}
  */
-export default function SwiperPluginKeyboardControl (
+export default <SwiperPlugin>function SwiperPluginKeyboardControl (
     instance: SwiperInstance & {
-        keyboard: {
-            onKeyDown (e: Event): void
-            enable (): void
-            disable (): void
-        }
+        keyboard?: SwiperPluginKeyboardInstance
     },
     options: Options
 ): void {
-    if (!options.keyboard) return
-
-    const keyboardOptions = <SwiperPluginKeyboardControlOptions>options.keyboard
-    const keyboard = {
+    const isEnable = Boolean(options.keyboard)
+    const keyboardOptions = <SwiperPluginKeyboardControlOptions>Object.assign({
+        enabled: true,
+        onlyInViewport: true
+    }, options.keyboard)
+    const keyboard: SwiperPluginKeyboardInstance = {
         enable (): void {
             keyboardOptions.enabled = true
         },
@@ -87,23 +94,19 @@ export default function SwiperPluginKeyboardControl (
         }
     }
 
-    instance.on('before-init', () => {
-        options.keyboard = {
-            enabled: true,
-            onlyInViewport: true,
-            ...options.keyboard
-        }
+    if (!isEnable) return
 
+    instance.on('before-init', () => {
         instance.keyboard = keyboard
 
         attachListener(window, 'keydown', keyboard.onKeyDown as EventListener)
     })
 
     instance.on('after-destroy', () => {
-        if (!keyboard) return
+        if (instance!.keyboard) {
+            detachListener(window, 'keydown', keyboard.onKeyDown as EventListener)
 
-        detachListener(window, 'keydown', keyboard.onKeyDown as EventListener)
-
-        delete instance.keyboard
+            delete instance.keyboard
+        }
     })
 }

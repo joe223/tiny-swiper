@@ -25,34 +25,30 @@
       });
     }
 
-    function SwiperPluginPagination(instance, options) {
-      var pagination = {
+    var SwiperPluginPagination = (function SwiperPluginPagination(instance, options) {
+      var isEnable = Boolean(options.pagination);
+      var paginationOptions = Object.assign({
+        clickable: false,
+        bulletClass: 'swiper-pagination-bullet',
+        bulletActiveClass: 'swiper-pagination-bullet-active'
+      }, options.pagination);
+      var paginationInstance = {
         $pageList: [],
         $pagination: null
       };
-      instance.on('before-init', function () {
-        if (options.pagination) {
-          options.pagination = Object.assign({
-            clickable: false,
-            bulletClass: 'swiper-pagination-bullet',
-            bulletActiveClass: 'swiper-pagination-bullet-active'
-          }, options.pagination);
-        }
-      });
+      if (!isEnable) return;
       instance.on('after-init', function () {
-        if (!options.pagination) return;
-        var _options$pagination = options.pagination,
-            bulletClass = _options$pagination.bulletClass,
-            bulletActiveClass = _options$pagination.bulletActiveClass;
+        var bulletClass = paginationOptions.bulletClass,
+            bulletActiveClass = paginationOptions.bulletActiveClass;
         var element = instance.env.element;
         var $list = element.$list;
-        var $pagination = typeof options.pagination.el === 'string' ? document.body.querySelector(options.pagination.el) : options.pagination.el;
+        var $pagination = typeof paginationOptions.el === 'string' ? document.body.querySelector(paginationOptions.el) : paginationOptions.el;
         var $pageList = [];
         var $group = document.createDocumentFragment();
         var dotCount = $list.length - Math.ceil(options.slidesPerView) + 1;
         options.excludeElements.push($pagination);
-        pagination.$pagination = $pagination;
-        pagination.$pageList = $pageList;
+        paginationInstance.$pagination = $pagination;
+        paginationInstance.$pageList = $pageList;
 
         for (var index = 0; index < dotCount; index++) {
           var $page = document.createElement('div');
@@ -63,7 +59,7 @@
 
         $pagination.appendChild($group);
 
-        if (options.pagination.clickable) {
+        if (paginationOptions.clickable) {
           $pagination.addEventListener('click', function (e) {
             instance.slideTo($pageList.indexOf(e.target));
             e.stopPropagation();
@@ -71,14 +67,14 @@
         }
       });
       instance.on('after-destroy', function () {
-        if (!options.pagination) return;
-        pagination.$pagination.innerHTML = '';
-        pagination.$pageList = [];
-        pagination.$pagination = null;
+        if (!isEnable) return;
+        paginationInstance.$pagination.innerHTML = '';
+        paginationInstance.$pageList = [];
+        paginationInstance.$pagination = null;
       });
       instance.on('after-slide', function (currentIndex) {
-        var bulletActiveClass = options.pagination.bulletActiveClass;
-        pagination.$pageList && pagination.$pageList.forEach(function ($page, index) {
+        var bulletActiveClass = paginationOptions.bulletActiveClass;
+        paginationInstance.$pageList && paginationInstance.$pageList.forEach(function ($page, index) {
           if (index === currentIndex) {
             addClass($page, bulletActiveClass);
           } else {
@@ -86,7 +82,7 @@
           }
         });
       });
-    }
+    });
 
     return SwiperPluginPagination;
 

@@ -17,7 +17,11 @@ export type SwiperInstance = {
     env: Env
     state: State
     updateSize: () => void
+
+    // mount plugin instance
+    [key: string]: any
 }
+
 export type SwiperPlugin = (instance: SwiperInstance, options: Options) => void
 
 export type Swiper = {
