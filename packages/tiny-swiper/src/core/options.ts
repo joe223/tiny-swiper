@@ -2,12 +2,9 @@ import { SwiperPlugin } from './index'
 import { translate } from './render/layout'
 import { State } from './state/index'
 import { Env } from './env/index'
-import { SwiperPluginLazyloadOptions, SwiperPluginLazyloadPartialOptions } from '../modules/lazyload'
-import { SwiperPluginPaginationOptions, SwiperPluginPaginationPartialOptions } from '../modules/pagination'
-import {
-    SwiperPluginKeyboardControlOptions,
-    SwiperPluginKeyboardControlPartialOptions
-} from '../modules/keyboardControl'
+import { SwiperPluginLazyloadPartialOptions } from '../modules/lazyload'
+import { SwiperPluginPaginationPartialOptions } from '../modules/pagination'
+import { SwiperPluginKeyboardControlPartialOptions } from '../modules/keyboardControl'
 import { SwiperPluginNavigationPartialOptions } from '../modules/navigation'
 import { SwiperPluginMousewheelPartialOptions } from '../modules/mousewheel'
 

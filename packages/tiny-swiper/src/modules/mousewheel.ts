@@ -6,7 +6,7 @@ import { SwiperInstance, SwiperPlugin } from '../core/index'
 import { Options } from '../core/options'
 
 export type SwiperPluginMousewheelOptions = {
-    invert: false
+    invert: boolean
     sensitivity: 1
     interval: 400
 }

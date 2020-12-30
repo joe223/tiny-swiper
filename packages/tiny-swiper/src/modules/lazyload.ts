@@ -7,9 +7,9 @@ import { Options } from '../core/options'
 import { State } from '../core/state/index'
 
 export type SwiperPluginLazyloadOptions = {
-    loadPrevNext: false
+    loadPrevNext: boolean
     loadPrevNextAmount: 1
-    loadOnTransitionStart: false
+    loadOnTransitionStart: boolean
     elementClass: 'swiper-lazy'
     loadingClass: 'swiper-lazy-loading'
     loadedClass: 'swiper-lazy-loaded'
