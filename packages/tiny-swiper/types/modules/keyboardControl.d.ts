@@ -1,19 +1,19 @@
-import { SwiperInstance } from '../core/index';
-import { Options } from '../core/options';
+import { SwiperPlugin } from '../core/index';
 export declare type SwiperPluginKeyboardControlOptions = {
     enabled: boolean;
     onlyInViewport: boolean;
 };
+export declare type SwiperPluginKeyboardControlPartialOptions = Partial<SwiperPluginKeyboardControlOptions> | boolean;
+export declare type SwiperPluginKeyboardInstance = {
+    onKeyDown(e: Event): void;
+    enable(): void;
+    disable(): void;
+};
+declare const _default: SwiperPlugin;
 /**
  * TinySwiper plugin for keyboard control.
  *
  * @param {SwiperInstance} instance
  * @param {Options}
  */
-export default function SwiperPluginKeyboardControl(instance: SwiperInstance & {
-    keyboard: {
-        onKeyDown(e: Event): void;
-        enable(): void;
-        disable(): void;
-    };
-}, options: Options): void;
+export default _default;

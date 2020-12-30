@@ -1,9 +1,11 @@
 import { SwiperPlugin } from './index';
 import { State } from './state/index';
 import { Env } from './env/index';
-import { SwiperPluginLazyloadOptions } from '../modules/lazyload';
-import { SwiperPluginPaginationOptions } from '../modules/pagination';
-import { SwiperPluginKeyboardControlOptions } from '../modules/keyboardControl';
+import { SwiperPluginLazyloadPartialOptions } from '../modules/lazyload';
+import { SwiperPluginPaginationPartialOptions } from '../modules/pagination';
+import { SwiperPluginKeyboardControlPartialOptions } from '../modules/keyboardControl';
+import { SwiperPluginNavigationPartialOptions } from '../modules/navigation';
+import { SwiperPluginMousewheelPartialOptions } from '../modules/mousewheel';
 export declare type Direction = 'horizontal' | 'vertical';
 export declare type Injections = {
     translate: (state: State, env: Env, options: Options, duration: number) => void;
@@ -16,7 +18,6 @@ export declare type Options = {
     initialSlide: number;
     loop: boolean;
     freeMode: boolean;
-    mousewheel: boolean;
     passiveListeners: boolean;
     resistance: boolean;
     resistanceRatio: number;
@@ -37,9 +38,12 @@ export declare type Options = {
     isHorizontal: boolean;
     plugins?: Array<SwiperPlugin>;
     injections: Injections;
-    lazyload?: SwiperPluginLazyloadOptions;
-    keyboard?: SwiperPluginKeyboardControlOptions;
-    pagination?: SwiperPluginPaginationOptions;
+    lazyload?: SwiperPluginLazyloadPartialOptions;
+    mousewheel?: SwiperPluginMousewheelPartialOptions;
+    keyboard?: SwiperPluginKeyboardControlPartialOptions;
+    navigation?: SwiperPluginNavigationPartialOptions;
+    pagination?: SwiperPluginPaginationPartialOptions;
 };
 export declare type UserOptions = Partial<Options>;
+export declare const defaultOptions: UserOptions;
 export declare function optionFormatter(userOptions?: UserOptions): Options;

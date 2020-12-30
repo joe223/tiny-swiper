@@ -11,6 +11,7 @@ export declare type SwiperInstance = {
     env: Env;
     state: State;
     updateSize: () => void;
+    [key: string]: any;
 };
 export declare type SwiperPlugin = (instance: SwiperInstance, options: Options) => void;
 export declare type Swiper = {

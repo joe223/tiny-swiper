@@ -1,26 +1,26 @@
-import { SwiperInstance } from '../core/index';
-import { Options } from '../core/options';
+import { SwiperPlugin } from '../core/index';
 export declare type SwiperPluginLazyloadOptions = {
-    loadPrevNext: false;
+    loadPrevNext: boolean;
     loadPrevNextAmount: 1;
-    loadOnTransitionStart: false;
+    loadOnTransitionStart: boolean;
     elementClass: 'swiper-lazy';
     loadingClass: 'swiper-lazy-loading';
     loadedClass: 'swiper-lazy-loaded';
     preloaderClass: 'swiper-lazy-preloader';
 };
+export declare type SwiperPluginLazyloadPartialOptions = Partial<SwiperPluginLazyloadOptions> | boolean;
 export declare type SwiperPluginLazyloadHTMLElement = HTMLImageElement & {
     isLoaded: boolean;
 };
+export declare type SwiperPluginLazyloadInstance = {
+    load(index: number): void;
+    loadRange(index: number, range: number): void;
+};
+declare const _default: SwiperPlugin;
 /**
  * TinySwiper plugin for image lazy loading.
  *
  * @param {SwiperInstance} instance
  * @param {Options}
  */
-export default function SwiperPluginLazyload(instance: SwiperInstance & {
-    lazyload: {
-        load(index: number): void;
-        loadRange(index: number, range: number): void;
-    };
-}, options: Options): void;
+export default _default;
