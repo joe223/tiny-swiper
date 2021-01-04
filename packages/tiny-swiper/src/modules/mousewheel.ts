@@ -40,7 +40,11 @@ export default <SwiperPlugin>function SwiperPluginMousewheel (
         wheelingTimer: 0
     }
     const handler = (e: WheelEvent) => {
-        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY)
+        const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY)
+
+        if (options.isHorizontal !== isHorizontal) return
+
+        const delta = isHorizontal
             ? e.deltaX
             : e.deltaY
         const {

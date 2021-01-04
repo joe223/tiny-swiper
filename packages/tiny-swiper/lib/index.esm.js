@@ -295,7 +295,9 @@ var SwiperPluginMousewheel = (function SwiperPluginMousewheel(instance, options)
   };
 
   var handler = function handler(e) {
-    var delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    var isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+    if (options.isHorizontal !== isHorizontal) return;
+    var delta = isHorizontal ? e.deltaX : e.deltaY;
     var index = instance.state.index;
 
     if (Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 && !wheelStatus.wheeling && Math.abs(delta) >= mousewheelOptions.sensitivity) {
