@@ -1,12 +1,12 @@
 import { SwiperPlugin } from '../core/index';
 export declare type SwiperPluginLazyloadOptions = {
     loadPrevNext: boolean;
-    loadPrevNextAmount: 1;
+    loadPrevNextAmount: number;
     loadOnTransitionStart: boolean;
-    elementClass: 'swiper-lazy';
-    loadingClass: 'swiper-lazy-loading';
-    loadedClass: 'swiper-lazy-loaded';
-    preloaderClass: 'swiper-lazy-preloader';
+    elementClass: string;
+    loadingClass: string;
+    loadedClass: string;
+    preloaderClass: string;
 };
 export declare type SwiperPluginLazyloadPartialOptions = Partial<SwiperPluginLazyloadOptions> | boolean;
 export declare type SwiperPluginLazyloadHTMLElement = HTMLImageElement & {

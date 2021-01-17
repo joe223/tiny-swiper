@@ -1,8 +1,8 @@
 import { SwiperPlugin } from '../core/index';
 export declare type SwiperPluginMousewheelOptions = {
     invert: boolean;
-    sensitivity: 1;
-    interval: 400;
+    sensitivity: number;
+    interval: number;
 };
 export declare type SwiperPluginMousewheelPartialOptions = Partial<SwiperPluginMousewheelOptions>;
 export declare type SwiperPluginMousewheelInstance = {

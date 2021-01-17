@@ -16,6 +16,7 @@ export declare type SwiperInstance = {
 export declare type SwiperPlugin = (instance: SwiperInstance, options: Options) => void;
 export declare type Swiper = {
     (el: HTMLElement | string, userOptions?: UserOptions): SwiperInstance;
+    new (el: HTMLElement | string, userOptions?: UserOptions): SwiperInstance;
     use: (plugins: Array<SwiperPlugin>) => void;
     plugins: Array<SwiperPlugin>;
 };

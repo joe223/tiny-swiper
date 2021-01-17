@@ -1,7 +1,7 @@
 import { SwiperPlugin } from '../core/index';
 export declare type SwiperPluginPaginationOptions = {
     el: string;
-    clickable: false;
+    clickable: boolean;
     bulletClass: string | 'swiper-pagination-bullet';
     bulletActiveClass: string | 'swiper-pagination-bullet-active';
 };
