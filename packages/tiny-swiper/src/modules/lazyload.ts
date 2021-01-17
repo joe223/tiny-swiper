@@ -8,12 +8,12 @@ import { State } from '../core/state/index'
 
 export type SwiperPluginLazyloadOptions = {
     loadPrevNext: boolean
-    loadPrevNextAmount: 1
+    loadPrevNextAmount: number
     loadOnTransitionStart: boolean
-    elementClass: 'swiper-lazy'
-    loadingClass: 'swiper-lazy-loading'
-    loadedClass: 'swiper-lazy-loaded'
-    preloaderClass: 'swiper-lazy-preloader'
+    elementClass: string
+    loadingClass: string
+    loadedClass: string
+    preloaderClass: string
 }
 
 export type SwiperPluginLazyloadPartialOptions = Partial<SwiperPluginLazyloadOptions> | boolean

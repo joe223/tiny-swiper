@@ -26,6 +26,7 @@ export type SwiperPlugin = (instance: SwiperInstance, options: Options) => void
 
 export type Swiper = {
     (el: HTMLElement | string, userOptions?: UserOptions): SwiperInstance
+    new (el: HTMLElement | string, userOptions?: UserOptions): SwiperInstance
     use: (plugins: Array<SwiperPlugin>) => void
     plugins: Array<SwiperPlugin>
 }

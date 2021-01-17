@@ -7,7 +7,7 @@ describe('lifecycle', () => {
         width: 300,
         height: 300
     })
-    const swiperInstance = Swiper(elementsInstance.$el)
+    const swiperInstance = new Swiper(elementsInstance.$el)
     const events: {
         [key: string]: Function
     } = {}

@@ -7,8 +7,8 @@ import { Options } from '../core/options'
 
 export type SwiperPluginMousewheelOptions = {
     invert: boolean
-    sensitivity: 1
-    interval: 400
+    sensitivity: number
+    interval: number
 }
 
 export type SwiperPluginMousewheelPartialOptions = Partial<SwiperPluginMousewheelOptions>
