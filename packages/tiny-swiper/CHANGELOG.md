@@ -1,3 +1,16 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [2.0.1](https://github.com/joe223/tiny-swiper/compare/tiny-swiper@2.0.0...tiny-swiper@2.0.1) (2021-01-17)
+
+**Note:** Version bump only for package tiny-swiper
+
+
+
+
+
 # v1.3.3 - Released on 2020/12/9
 
 - Fix: #36 SwiperPluginKeyboardControl exported incorrectly
