@@ -815,7 +815,10 @@ function Sensor(env, state, options, operations) {
   function onTouchMove(e) {
     if (options.touchMoveStopPropagation) e.stopPropagation();
     move(getPosition(e));
-    state.isTouching && e.preventDefault();
+
+    if (state.isTouching && e.cancelable) {
+      e.preventDefault();
+    }
   }
 
   function onTouchEnd() {
@@ -830,7 +833,9 @@ function Sensor(env, state, options, operations) {
         passive: options.passiveListeners,
         capture: false
       });
-      attachListener($el, 'touchmove', onTouchMove);
+      attachListener($el, 'touchmove', onTouchMove, {
+        passive: true
+      });
       attachListener($el, 'touchend', onTouchEnd);
       attachListener($el, 'touchcancel', onTouchEnd);
     } else {
@@ -1323,3 +1328,4 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginNavigation, SwiperPluginPagination };
+//# sourceMappingURL=index.esm.js.map

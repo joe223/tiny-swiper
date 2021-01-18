@@ -444,7 +444,10 @@
     function onTouchMove(e) {
       if (options.touchMoveStopPropagation) e.stopPropagation();
       move(getPosition(e));
-      state.isTouching && e.preventDefault();
+
+      if (state.isTouching && e.cancelable) {
+        e.preventDefault();
+      }
     }
 
     function onTouchEnd() {
@@ -459,7 +462,9 @@
           passive: options.passiveListeners,
           capture: false
         });
-        attachListener($el, 'touchmove', onTouchMove);
+        attachListener($el, 'touchmove', onTouchMove, {
+          passive: true
+        });
         attachListener($el, 'touchend', onTouchEnd);
         attachListener($el, 'touchcancel', onTouchEnd);
       } else {
