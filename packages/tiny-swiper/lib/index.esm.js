@@ -815,10 +815,7 @@ function Sensor(env, state, options, operations) {
   function onTouchMove(e) {
     if (options.touchMoveStopPropagation) e.stopPropagation();
     move(getPosition(e));
-
-    if (state.isTouching && e.cancelable) {
-      e.preventDefault();
-    }
+    if (state.isTouching && e.cancelable !== false) e.preventDefault();
   }
 
   function onTouchEnd() {
@@ -833,9 +830,7 @@ function Sensor(env, state, options, operations) {
         passive: options.passiveListeners,
         capture: false
       });
-      attachListener($el, 'touchmove', onTouchMove, {
-        passive: true
-      });
+      attachListener($el, 'touchmove', onTouchMove);
       attachListener($el, 'touchend', onTouchEnd);
       attachListener($el, 'touchcancel', onTouchEnd);
     } else {
