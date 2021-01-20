@@ -444,7 +444,7 @@
     function onTouchMove(e) {
       if (options.touchMoveStopPropagation) e.stopPropagation();
       move(getPosition(e));
-      state.isTouching && e.preventDefault();
+      if (state.isTouching && e.cancelable !== false) e.preventDefault();
     }
 
     function onTouchEnd() {
