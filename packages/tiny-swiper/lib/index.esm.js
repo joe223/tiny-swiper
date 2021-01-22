@@ -815,7 +815,7 @@ function Sensor(env, state, options, operations) {
   function onTouchMove(e) {
     if (options.touchMoveStopPropagation) e.stopPropagation();
     move(getPosition(e));
-    state.isTouching && e.preventDefault();
+    if (state.isTouching && e.cancelable !== false) e.preventDefault();
   }
 
   function onTouchEnd() {
@@ -1323,3 +1323,4 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginNavigation, SwiperPluginPagination };
+//# sourceMappingURL=index.esm.js.map
