@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.3](https://github.com/joe223/tiny-swiper/compare/tiny-swiper@2.0.2...tiny-swiper@2.0.3) (2021-02-02)
+
+**Note:** Version bump only for package tiny-swiper
+
+
+
+
+
 ## [2.0.2](https://github.com/joe223/tiny-swiper/compare/tiny-swiper@2.0.1...tiny-swiper@2.0.2) (2021-01-24)
 
 **Note:** Version bump only for package tiny-swiper
