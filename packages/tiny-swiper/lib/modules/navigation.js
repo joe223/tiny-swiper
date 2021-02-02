@@ -51,11 +51,11 @@
             maxIndex = _instance$env$limitat.maxIndex;
 
         if (navigationInstance && navigationInstance.prevEl && navigationInstance.nextEl) {
-          if (navigationInstance.nextEl.classList.contains(navigationOptions.disabledClass) && index > minIndex) {
+          if (navigationInstance.nextEl.classList.contains(navigationOptions.disabledClass) && index >= minIndex) {
             navigationInstance.nextEl.classList.remove(navigationOptions.disabledClass);
           }
 
-          if (navigationInstance.prevEl.classList.contains(navigationOptions.disabledClass) && index < maxIndex) {
+          if (navigationInstance.prevEl.classList.contains(navigationOptions.disabledClass) && index <= maxIndex) {
             navigationInstance.prevEl.classList.remove(navigationOptions.disabledClass);
           }
 

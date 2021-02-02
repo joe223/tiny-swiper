@@ -70,11 +70,11 @@ export default <SwiperPlugin>function SwiperPluginNavigation (
             && navigationInstance!.nextEl
         ) {
             if (navigationInstance.nextEl.classList.contains(navigationOptions.disabledClass)
-                && index > minIndex) {
+                && index >= minIndex) {
                 navigationInstance.nextEl.classList.remove(navigationOptions.disabledClass)
             }
             if (navigationInstance.prevEl.classList.contains(navigationOptions.disabledClass)
-                && index < maxIndex) {
+                && index <= maxIndex) {
                 navigationInstance.prevEl.classList.remove(navigationOptions.disabledClass)
             }
 
