@@ -6,6 +6,7 @@ import { SwiperPluginPaginationPartialOptions } from '../modules/pagination';
 import { SwiperPluginKeyboardControlPartialOptions } from '../modules/keyboardControl';
 import { SwiperPluginNavigationPartialOptions } from '../modules/navigation';
 import { SwiperPluginMousewheelPartialOptions } from '../modules/mousewheel';
+import { SwiperPluginAutoPlayPartialOptions } from '../modules/autoPlay';
 export declare type Direction = 'horizontal' | 'vertical';
 export declare type Injections = {
     translate: (state: State, env: Env, options: Options, duration: number) => void;
@@ -43,6 +44,7 @@ export declare type Options = {
     keyboard?: SwiperPluginKeyboardControlPartialOptions;
     navigation?: SwiperPluginNavigationPartialOptions;
     pagination?: SwiperPluginPaginationPartialOptions;
+    autoplay?: SwiperPluginAutoPlayPartialOptions;
 };
 export declare type UserOptions = Partial<Options>;
 export declare const defaultOptions: UserOptions;
