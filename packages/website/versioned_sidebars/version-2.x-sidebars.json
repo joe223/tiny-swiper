@@ -1,5 +1,5 @@
 {
-  "version-2.0.0/someSidebar": [
+  "version-2.x/someSidebar": [
     {
       "collapsed": true,
       "type": "category",
@@ -7,17 +7,17 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-2.0.0/get-started"
+          "id": "version-2.x/get-started"
         },
         {
           "type": "doc",
-          "id": "version-2.0.0/api"
+          "id": "version-2.x/api"
         }
       ]
     },
     {
       "type": "doc",
-      "id": "version-2.0.0/demo"
+      "id": "version-2.x/demo"
     },
     {
       "collapsed": true,
@@ -32,7 +32,7 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-2.0.0/changelog"
+          "id": "version-2.x/changelog"
         }
       ]
     }

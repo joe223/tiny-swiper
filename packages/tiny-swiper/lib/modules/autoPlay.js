@@ -30,6 +30,7 @@
 
     var SwiperPluginAutoPlay = (function SwiperPluginAutoPlay(instance, options) {
       var isEnable = Boolean(options.autoplay);
+      if (!isEnable) return;
       var autoPlayOptions = Object.assign({
         delay: 3000,
         disableOnInteraction: true,

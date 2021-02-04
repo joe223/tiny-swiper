@@ -136,6 +136,9 @@ Do not forget, just keep Plugin parameter at the **first level** of configuratio
 - [Pagination](#pagination)
 - [Lazyload](#lazyload)
 - [Keyboard Control](#keyboard-control)
+- [Mousewheel](#mousewheel)
+- [Navigation](#navigation)
+- [AutoPlay](#autoplay)
 
 ### Pagination
 
@@ -352,3 +355,44 @@ const swiper = new Swiper(
 | nextEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "next" button after click on it |
 | prevEl | string / HTMLElement | null | String with CSS selector or HTML element of the element that will work like "prev" button after click on it |
 | disabledClass | string | 'swiper-button-disabled' | CSS class name added to navigation button when it becomes disabled |
+
+
+
+### AutoPlay
+
+
+- Global name on `window`: `SwiperPluginAutoPlay`.
+- Configuration name: `autoplay`.
+
+#### Usage
+
+```javascript
+import SwiperPluginAutoPlay from 'tiny-swiper/lib/modules/autoPlay.min.js'
+
+const swiper = new Swiper(
+    swiperContainerElement,
+    {
+        // SwiperPluginAutoPlay configuration.
+        autoplay: {
+            delay: 1000
+        },
+
+        // Add SwiperPluginAutoPlay plugin.
+        plugins: [ SwiperPluginAutoPlay ]
+    }
+)
+```
+
+#### AutoPlay Parameters
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| autoplay | object/boolean | undefined | Object with AutoPlay parameters. |
+
+| Parameter | Type | default | Description |
+|---|---|---|---|
+| delay | number | 3000 | Delay between transitions (in ms). |
+| disableOnInteraction | boolean | true | Set to false and autoplay will not be disabled after user interactions (touch), it will be restarted every time after interaction |
+| reverseDirection | boolean | false | Enables autoplay in reverse direction |
+| stopOnLastSlide | boolean | false | Enable this parameter and autoplay will be stopped when it reaches last slide (has no effect in loop mode) |
+| waitForTransition | boolean | true | TinySwiper will start auto slide countdown after `after-slide` event, otherwise `before-slide`. |

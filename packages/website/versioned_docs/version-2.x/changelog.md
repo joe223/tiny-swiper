@@ -1,6 +1,6 @@
 ---
-id: changelog 
-title: Changelog 
+id: changelog
+title: Changelog
 ---
 
 ### v2.0.0
@@ -8,3 +8,6 @@ title: Changelog
 - Add: `loop` parameter
 - Add: `freeMode` parameter
 - Update: Remove Mousewheel from core module as an external plugin `SwiperPluginMousewheel`.
+
+### v2.1.0
+- Add: `SwiperPluginAutoPlay` plugin

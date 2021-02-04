@@ -31,6 +31,9 @@ export default <SwiperPlugin>function SwiperPluginAutoPlay (
     options: Options
 ): void {
     const isEnable = Boolean(options.autoplay)
+
+    if (!isEnable) return
+
     const autoPlayOptions = <SwiperPluginAutoPlayOptions>Object.assign({
         delay: 3000,
         disableOnInteraction: true,
