@@ -7,6 +7,7 @@ import { SwiperPluginPaginationPartialOptions } from '../modules/pagination'
 import { SwiperPluginKeyboardControlPartialOptions } from '../modules/keyboardControl'
 import { SwiperPluginNavigationPartialOptions } from '../modules/navigation'
 import { SwiperPluginMousewheelPartialOptions } from '../modules/mousewheel'
+import { SwiperPluginAutoPlayPartialOptions } from '../modules/autoPlay'
 
 export type Direction = 'horizontal' | 'vertical'
 export type Injections = {
@@ -53,6 +54,7 @@ export type Options = {
     keyboard?: SwiperPluginKeyboardControlPartialOptions
     navigation?: SwiperPluginNavigationPartialOptions
     pagination?: SwiperPluginPaginationPartialOptions
+    autoplay?: SwiperPluginAutoPlayPartialOptions
 }
 
 export type UserOptions = Partial<Options>

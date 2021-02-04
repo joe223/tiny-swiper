@@ -67,6 +67,13 @@ const entries = [
         options: {
             name: 'SwiperPluginMousewheel'
         }
+    },
+    {
+        input: 'modules/autoPlay.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginAutoPlay'
+        }
     }
 ]
 const extensions = [

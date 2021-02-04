@@ -1,1 +1,1337 @@
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).Swiper=t()}(this,function(){"use strict";function y(){return(y=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n,i=arguments[t];for(n in i)Object.prototype.hasOwnProperty.call(i,n)&&(e[n]=i[n])}return e}).apply(this,arguments)}function p(t,e){void 0===e&&(e=[]),Array.isArray(e)||(e=[e]),e.forEach(function(e){return!t.classList.contains(e)&&t.classList.add(e)})}function m(t,e){void 0===e&&(e=[]),Array.isArray(e)||(e=[e]),e.forEach(function(e){return t.classList.contains(e)&&t.classList.remove(e)})}function v(e,t,n,i){e.addEventListener(t,n,i)}function h(e,t,n){e.removeEventListener(t,n)}function c(e,t,n){return void 0===n&&(n=""),e.setAttribute(t,n),e}function a(t,n,e){return Object.keys(n).forEach(function(e){t.style[e]=n[e]}),e&&getComputedStyle(t),t}var f={direction:"horizontal",touchRatio:1,touchAngle:45,longSwipesRatio:.5,initialSlide:0,loop:!1,freeMode:!1,passiveListeners:!0,resistance:!0,resistanceRatio:.85,speed:300,longSwipesMs:300,spaceBetween:0,slidesPerView:1,centeredSlides:!1,slidePrevClass:"swiper-slide-prev",slideNextClass:"swiper-slide-next",slideActiveClass:"swiper-slide-active",slideClass:"swiper-slide",wrapperClass:"swiper-wrapper",touchStartPreventDefault:!0,touchStartForcePreventDefault:!1,touchMoveStopPropagation:!1,excludeElements:[],injections:{translate:function(e,t,n,i){a(t.element.$wrapper,{transition:e.isStart?"none":"transform ease "+i+"ms",transform:n.isHorizontal?"translate3d("+e.transforms+"px, 0, 0)":"translate3d(0, "+e.transforms+"px, 0)"})}}};var g="before-init",x="after-init",b="before-slide",r="scroll",w="after-slide",S="before-destroy",E="after-destroy";function C(){var o={};return{on:function(e,t){o[e]?o[e].push(t):o[e]=[t]},off:function(e,t){!o[e]||-1<(t=o[e].indexOf(t))&&o[e].splice(t,1)},emit:function(e){for(var t=arguments.length,n=new Array(1<t?t-1:0),i=1;i<t;i++)n[i-1]=arguments[i];o[e]&&o[e].forEach(function(e){return e.apply(void 0,n)})},clear:function(){o={}}}}var o=180/Math.PI;function z(){var i=[];return{getDuration:function(){var e=i[0],t=i[i.length-1];return e?t.time-e.time:0},getOffset:function(){var e=i[0],t=i[i.length-1];return e?{x:t.x-e.x,y:t.y-e.y}:{x:0,y:0}},getLogs:function(){return i},vector:function(){return t=(e=i).length-1,n=e[t],e=e[t-1]||n,t={x:n.x-e.x,y:n.y-e.y},n=n.time-e.time,e=t.x/n||0,n=t.y/n||0,y({},t,{angle:Math.atan2(Math.abs(t.y),Math.abs(t.x))*o,velocityX:e,velocityY:n});var e,t,n},clear:function(){i=[]},push:function(e){i.push(y({time:Date.now()},e))}}}function l(){return(performance||Date).now()}function t(){var i,e,t=requestAnimationFrame||webkitRequestAnimationFrame||setTimeout,n=cancelAnimationFrame||webkitCancelAnimationFrame||clearTimeout;return{run:function(n){i=void 0===i?l():i,e=t(function(){var e=l(),t=e-i;i=e,n(t)})},stop:function(){i=void 0,n(e)}}}function e(){var e=t();return{run:function t(n){e.run(function(e){t(n),n(e)})},stop:function(){e.stop()}}}function T(e,t){e=e.tracker,t=t.initStatus;e.clear(),t()}function $(r,l,s,c){var i=c.initLayout,o=c.initStatus,u=c.render,d=c.scrollPixel,f=c.slideTo,p=c.getOffsetSteps,m=e();return{preheat:function(e,t){var n=s.tracker;m.stop(),n.clear(),n.push(e),i(t),o(t),s.isStart=!0,u()},move:function(e){var t,n=s.tracker,i=r.touchRatio,o=r.touchAngle,a=r.isHorizontal;s.isStart&&!s.isScrolling&&(n.push(e),t=n.vector(),((e=n.getOffset()).x||e.y)&&(a&&t.angle<o||!a&&90-t.angle<o||s.isTouching?(i=t[a?"x":"y"]*i,s.isTouching=!0,d(i),u()):(s.isScrolling=!0,n.clear())))},stop:function(){var t,e,n,i=s.index,o=s.tracker,a=l.measure;s.isStart&&(s.isStart=!1,r.freeMode?(t=o.vector()[r.isHorizontal?"velocityX":"velocityY"],m.run(function(e){e*=t;t*=.98,Math.abs(e)<.01?(m.stop(),T(s,c)):(d(e),u(0))})):(e=o.getDuration(),n=o.getOffset()[r.isHorizontal?"x":"y"],o=Math.ceil(Math.abs(n)/a.boxSize),a=p(n),e>r.longSwipesMs?f(i+a*(0<n?-1:1)):f(0<n?i-o:i+o),T(s,c)))}}}function A(a,t,r,e){var l=a.touchable,s=["INPUT","SELECT","OPTION","TEXTAREA","BUTTON","VIDEO"],e=$(r,a,t,e),c=e.preheat,n=e.move,i=e.stop;function u(e){e=l?e.changedTouches[0]:e;return{x:e.pageX,y:e.pageY}}function o(e){for(var t=0;t<r.excludeElements.length;t++)if(r.excludeElements[t].contains(e.target))return;var n,i=a.element.$wrapper,o=r.touchStartPreventDefault&&-1===s.indexOf(e.target.nodeName)||r.touchStartForcePreventDefault;!l&&o&&e.preventDefault(),c(u(e),(n=i,o=r.isHorizontal,i=getComputedStyle(n).transform.replace(/[a-z]|\(|\)|\s/g,"").split(",").map(parseFloat),n=[],16===i.length?n=i.slice(12,14):6===i.length&&(n=i.slice(4,6)),n[o?0:1]||0))}function d(e){r.touchMoveStopPropagation&&e.stopPropagation(),n(u(e)),t.isTouching&&!1!==e.cancelable&&e.preventDefault()}function f(){i()}return{attach:function(){var e=a.element.$el;l?(v(e,"touchstart",o,{passive:r.passiveListeners,capture:!1}),v(e,"touchmove",d),v(e,"touchend",f),v(e,"touchcancel",f)):(v(e,"mousedown",o),v(document,"mousemove",d),v(document,"mouseup",f))},detach:function(){var e=a.element.$el;h(e,"touchstart",o),h(e,"touchmove",d),h(e,"touchend",f),h(e,"touchcancel",f),h(e,"mousedown",o),h(document,"mousemove",d),h(document,"mouseup",f)}}}function s(e,t,n){var i=e.$list,o=t.viewSize,a=t.slideSize,r=t.boxSize,e=(l=n).loop?Math.ceil(l.slidesPerView):0,t=e*r,l=-t+(n.centeredSlides?(o-a)/2:0);return{max:l,min:n.spaceBetween+(n.loop?a:o)+l-r*i.length,base:l,expand:e,buffer:t,minIndex:0,maxIndex:i.length-(n.centeredSlides||n.loop?1:Math.ceil(n.slidesPerView))}}function P(e,o){var a={};function t(e){var t,t=(t=o,i=(n=e).$el,n=t.isHorizontal?i.offsetWidth:i.offsetHeight,{boxSize:(i=(n-Math.ceil(t.slidesPerView-1)*t.spaceBetween)/t.slidesPerView)+t.spaceBetween,viewSize:n,slideSize:i}),n=s(e,t,o),i=Boolean("ontouchstart"in window||0<navigator.maxTouchPoints||0<navigator.msMaxTouchPoints||window.DocumentTouch&&document instanceof DocumentTouch);Object.assign(a,{touchable:i,element:e,measure:t,limitation:n})}return(a.update=t)(e),a}var u="data-shallow-slider",d="data-slider";function L(l,s){function r(){l.element.$wrapper.querySelectorAll("["+u+"]").forEach(function(e){return l.element.$wrapper.removeChild(e)})}function e(){var e,n,i,t,o,a;l.element.$list.forEach(function(e,t){return c(e,d,t)}),r(),s.loop&&(e=l.element,t=l.limitation,n=e.$list,i=e.$wrapper,t=t.expand,o=n.slice(-t).map(function(e){return e.cloneNode(!0)}),a=n.slice(0,t).map(function(e){return e.cloneNode(!0)}),o.forEach(function(e,t){i.appendChild(c(a[t],u)),i.insertBefore(c(o[t],u),n[0])}))}function t(){var e=l.element,t=l.measure,n=e.$wrapper,i={display:"flex",willChange:"transform",flexDirection:s.isHorizontal?"row":"column"},o=((e={})[s.isHorizontal?"width":"height"]=t.slideSize+"px",e[s.isHorizontal?"margin-right":"margin-bottom"]=s.spaceBetween+"px",e);a(n,i),n.querySelectorAll("["+d+"]").forEach(function(e){return a(e,o)})}return{init:function(){e(),t()},render:function(e,t,n,i){var o,a=l.element.$wrapper,r=void 0===t?s.speed:t;s.injections.translate(e,l,s,r),e.isStart||(t=e,e=l.element.$wrapper,o=t.index,e.querySelectorAll("["+d+"]").forEach(function(e){var t=~~e.getAttribute(d);m(e,[s.slidePrevClass,s.slideNextClass,s.slideActiveClass]),t===o&&p(e,s.slideActiveClass),t==o-1&&p(e,s.slidePrevClass),t===o+1&&p(e,s.slideNextClass)})),i&&getComputedStyle(a).transform,n&&setTimeout(n,r)},destroy:function(){var e=l.element,t=e.$list,n=e.$wrapper,i=s.isHorizontal?"margin-right":"margin-bottom";["display","will-change","flex-direction"].forEach(function(e){n.style.removeProperty(e)}),t.forEach(function(e){return e.style.removeProperty(i)}),r()},updateSize:t}}function M(e,t){var n=e-t.max,t=e-t.min;return 0<n?n:t<0?t:0}function O(f,p,m,i,v){function h(e){var t=f.measure;return Math.ceil(Math.abs(e)/t.boxSize-m.longSwipesRatio)}function g(e,t,n){i.render(p,e,t,n)}function x(e){var t,n=f.limitation,i=n.min,o=n.max,n=o-i+(m.loop?f.measure.boxSize:0),i=n+1;p.transforms=e,m.loop?(t=(o-e)%i/n,p.progress=t<0?1+t:1<t?t-1:t):(t=(o-e)/n,p.progress=t<0?0:1<t?1:t),v.emit(r,y({},p))}function e(e,t){var n,i,o,a,r,l=f.measure,s=f.limitation,c=s.maxIndex-s.minIndex+1,u=m.loop?(e%c+c)%c:e>s.maxIndex?s.maxIndex:e<s.minIndex?s.minIndex:e,d=-u*l.boxSize+s.base;0!==h(d-p.transforms)&&m.loop&&(n=M(p.transforms,s),i=u-p.index,o=p.index,a=u,r=i,e=(c=s).maxIndex,o=(0<r?1:-1)*(c.minIndex-e-1)+a-o,(r=Math.abs(r)>Math.abs(o)?o:r)===i||n?p.index===u&&x(0<n?s.min-l.boxSize+n:s.max+l.boxSize+n):x(r<0?s.min-l.boxSize:s.max+l.boxSize),g(0,void 0,!0)),v.emit(b,p.index,p,u),p.index=u,x(d),g(t,function(){v.emit(w,u,p)})}return{update:function(){e(p.index,0),i.updateSize()},render:g,transform:x,slideTo:e,scrollPixel:function(e){var t,n=p.transforms,i=f.measure,o=f.limitation,a=(t=Number(e.toExponential().split("e")[1]))<=0?Math.pow(10,-(t-1)):1,r=n;m.resistance&&!m.loop&&(0<e&&n>=o.max?e-=Math.pow(e*a,m.resistanceRatio)/a:e<0&&n<=o.min&&(e+=Math.pow(-e*a,m.resistanceRatio)/a)),r+=e,m.loop&&(t=p.tracker.vector(),a=m.isHorizontal?t.velocityX:t.velocityY,(e=M(n,o))&&(t=n,n=o,0<(a=a)&&t>n.max||a<0&&t<n.min)&&(r=0<e?o.min-i.boxSize+e:o.max+i.boxSize+e)),x(r)},initStatus:function(e){void 0===e&&(e=0),p.startTransform=e,p.isStart=!1,p.isScrolling=!1,p.isTouching=!1},initLayout:function(e){x(e)},getOffsetSteps:h}}function k(e,t){var n="string"==typeof e?document.body.querySelector(e):e,e=n.querySelector("."+t.wrapperClass),t=[].slice.call(n.getElementsByClassName(t.slideClass));return{$el:n,$wrapper:e,$list:t}}function D(e,t){var n=(r=y({},f,r=t),y({},r,{isHorizontal:"horizontal"===r.direction})),i=C(),o=P(k(e,n),n),a={tracker:z(),index:0,startTransform:0,isStart:!1,isScrolling:!1,isTouching:!1,transforms:0,progress:0},t=i.on,r=i.off,l=i.emit,s={on:t,off:r,env:o,state:a,options:n};(n.plugins||D.plugins||[]).forEach(function(e){return e(s,n)}),l(g,s);var c=L(o,n),u=O(o,a,n,c,i),d=A(o,a,n,u);return a=u.slideTo,Object.assign(s,{update:function(){c.destroy(),o.update(k(e,n)),c.init(),u.update()},destroy:function(){l(S,s),d.detach(),c.destroy(),l(E,s),i.clear()},slideTo:a,updateSize:function(){o.update(k(e,n)),u.update()}}),c.init(),d.attach(),a(n.initialSlide,0),l(x,s),s}var I="ArrowUp",N="ArrowRight",B="ArrowDown",H="ArrowLeft";function R(e){var t=function e(t){if(!t)return!1;var n=getComputedStyle(t);return"hidden"!==n.visibility&&"none"!==n.display&&(!t.parentElement||1!==t.parentElement.nodeType||e(t.parentElement))}(e),e=e.getBoundingClientRect();return 0<=e.top&&e.bottom<=window.innerHeight&&0<=e.left&&e.right<=window.innerWidth&&t}return(D.use=function(e){D.plugins=e})([function(o,e){var t=Boolean(e.lazyload),a=Object.assign({loadPrevNext:!1,loadPrevNextAmount:1,loadOnTransitionStart:!1,elementClass:"swiper-lazy",loadingClass:"swiper-lazy-loading",loadedClass:"swiper-lazy-loaded",preloaderClass:"swiper-lazy-preloader"},e.lazyload),i={load:function(e){var t,n,e=o.env.element.$list[e];function i(e){e.removeAttribute("data-src"),p(e,[a.loadedClass]),m(e,[a.loadingClass]),e.onload=null,e.onerror=null,e.isLoaded=!0,t.every(function(e){return e.isLoaded})&&n.forEach(function(e){e.parentElement.removeChild(e)})}e&&(t=[].slice.call(e.getElementsByClassName(a.elementClass)),n=[].slice.call(e.getElementsByClassName(a.preloaderClass)),t.forEach(function(e){var t;e.hasAttribute("data-src")&&(t=e.getAttribute("data-src"),p(e,[a.loadingClass]),m(e,[a.loadedClass]),e.src=t,e.onload=function(){return i(e)},e.onerror=function(){return i(e)})}))},loadRange:function(e,t){if(i.load(e),a.loadPrevNext&&1<=t)for(var n=1;n<=t;n++)i.load(e+n),i.load(e-n)}};t&&(o.on("before-init",function(){o.lazyload=i}),a.loadOnTransitionStart?o.on("before-slide",function(e,t,n){i.loadRange(n,a.loadPrevNextAmount)}):o.on("after-slide",function(e){i.loadRange(e,a.loadPrevNextAmount)}),o.on("after-destroy",function(){o.lazyload&&delete o.lazyload}))},function(c,u){var e=Boolean(u.pagination),d=Object.assign({clickable:!1,bulletClass:"swiper-pagination-bullet",bulletActiveClass:"swiper-pagination-bullet-active"},u.pagination),f={$pageList:[],$pagination:null};e&&(c.on("after-init",function(){var e=d.bulletClass,t=d.bulletActiveClass,n=c.env.element.$list,i="string"==typeof d.el?document.body.querySelector(d.el):d.el,o=[],a=document.createDocumentFragment(),r=n.length-Math.ceil(u.slidesPerView)+1;u.excludeElements.push(i),f.$pagination=i,f.$pageList=o;for(var l=0;l<r;l++){var s=document.createElement("div");p(s,l===c.state.index?[e,t]:e),o.push(s),a.appendChild(s)}i.appendChild(a),d.clickable&&i.addEventListener("click",function(e){c.slideTo(o.indexOf(e.target)),e.stopPropagation()})}),c.on("after-destroy",function(){e&&(f.$pagination.innerHTML="",f.$pageList=[],f.$pagination=null)}),c.on("after-slide",function(n){var i=d.bulletActiveClass;f.$pageList&&f.$pageList.forEach(function(e,t){(t===n?p:m)(e,i)})}))},function(t,n){var e=Boolean(n.keyboard),i=Object.assign({enabled:!0,onlyInViewport:!0},n.keyboard),o={enable:function(){i.enabled=!0},disable:function(){i.enabled=!1},onKeyDown:function(e){e=e.key;i.onlyInViewport&&!R(t.env.element.$el)||!i.enabled||(n.isHorizontal?e===H?t.slideTo(t.state.index-1):e===N&&t.slideTo(t.state.index+1):e===B?t.slideTo(t.state.index-1):e===I&&t.slideTo(t.state.index+1))}};e&&(t.on("before-init",function(){t.keyboard=o,v(window,"keydown",o.onKeyDown)}),t.on("after-destroy",function(){t.keyboard&&(h(window,"keydown",o.onKeyDown),delete t.keyboard)}))},function(o,a){function t(e){var t,n,i=Math.abs(e.deltaX)>Math.abs(e.deltaY);a.isHorizontal===i&&(t=i?e.deltaX:e.deltaY,n=o.state.index,0<Math.abs(t)-Math.abs(l.wheelDelta)&&!l.wheeling&&Math.abs(t)>=r.sensitivity&&(i=r.invert?1:-1,o.slideTo(0<t?n-i:n+i),l.wheeling=!0,l.wheelingTimer=setTimeout(function(){l.wheeling=!1},r.interval)),l.wheelDelta=t,e.preventDefault(),e.stopPropagation())}var n=Boolean(a.mousewheel),r=Object.assign({invert:!1,sensitivity:1,interval:400},a.mousewheel),i={$el:null},l={wheeling:!1,wheelDelta:0,wheelingTimer:0};o.on("after-init",function(){var e;n&&(e=o.env.element.$el,v(i.$el=e,"wheel",t))}),o.on("after-destroy",function(){n&&(h(i.$el,"wheel",t),delete i.$el)})},function(a,e){function i(e){t(e.target,"next")}function o(e){t(e.target,"prev")}var r=Boolean(e.navigation),l={nextEl:null,prevEl:null},s=Object.assign({disabledClass:"swiper-button-disabled"},e.navigation),t=function(e,t){n(e)&&!a.options.loop||(e=a.state.index,"next"===t&&a.slideTo(e+1),"prev"===t&&a.slideTo(e-1))},n=function(e){return e.classList.contains(s.disabledClass)};a.on("before-slide",function(e,t,n){var i,o;a.options.loop||(i=n,o=a.env.limitation,n=o.minIndex,o=o.maxIndex,l&&l.prevEl&&l.nextEl&&(l.nextEl.classList.contains(s.disabledClass)&&n<=i&&l.nextEl.classList.remove(s.disabledClass),l.prevEl.classList.contains(s.disabledClass)&&i<=o&&l.prevEl.classList.remove(s.disabledClass),i===n&&l.prevEl.classList.add(s.disabledClass),i===o&&l.nextEl.classList.add(s.disabledClass)))}),a.on("after-init",function(){var e,t,n;r&&(l.nextEl="string"==typeof s.nextEl?document.body.querySelector(s.nextEl):s.nextEl,l.prevEl="string"==typeof s.prevEl?document.body.querySelector(s.prevEl):s.prevEl,a.options.loop||(e=a.state.index,t=a.env.element.$list,n=a.env.limitation.minIndex,e===n&&l.prevEl&&l.prevEl.classList.add(s.disabledClass),t.length===n&&l.nextEl&&l.nextEl.classList.add(s.disabledClass)),v(l.nextEl,"click",i),v(l.prevEl,"click",o))}),a.on("after-destroy",function(){l&&l.prevEl&&l.nextEl&&(h(l.nextEl,"click",i),h(l.prevEl,"click",o),delete l.nextEl,delete l.prevEl)})}]),D});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Swiper = factory());
+}(this, (function () { 'use strict';
+
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
+  function addClass(el, list) {
+    if (list === void 0) {
+      list = [];
+    }
+
+    if (!Array.isArray(list)) list = [list];
+    list.forEach(function (clz) {
+      return !el.classList.contains(clz) && el.classList.add(clz);
+    });
+  }
+  function removeClass(el, list) {
+    if (list === void 0) {
+      list = [];
+    }
+
+    if (!Array.isArray(list)) list = [list];
+    list.forEach(function (clz) {
+      return el.classList.contains(clz) && el.classList.remove(clz);
+    });
+  }
+  function attachListener(el, evtName, handler, opts) {
+    el.addEventListener(evtName, handler, opts);
+  }
+  function detachListener(el, evtName, handler) {
+    el.removeEventListener(evtName, handler);
+  }
+  function setAttr(el, attr, value) {
+    if (value === void 0) {
+      value = '';
+    }
+
+    el.setAttribute(attr, value);
+    return el;
+  }
+  function setStyle(el, style, forceRender) {
+    Object.keys(style).forEach(function (prop) {
+      // TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+      el.style[prop] = style[prop];
+    }); // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+
+    forceRender && getComputedStyle(el);
+    return el;
+  }
+  function getTranslate(el, isHorizontal) {
+    var matrix = getComputedStyle(el).transform.replace(/[a-z]|\(|\)|\s/g, '').split(',').map(parseFloat);
+    var arr = [];
+
+    if (matrix.length === 16) {
+      arr = matrix.slice(12, 14);
+    } else if (matrix.length === 6) {
+      arr = matrix.slice(4, 6);
+    }
+
+    return arr[isHorizontal ? 0 : 1] || 0;
+  }
+
+  function translate(state, env, options, duration) {
+    var $wrapper = env.element.$wrapper;
+    var wrapperStyle = {
+      transition: state.isStart ? 'none' : "transform ease " + duration + "ms",
+      transform: options.isHorizontal ? "translate3d(" + state.transforms + "px, 0, 0)" : "translate3d(0, " + state.transforms + "px, 0)"
+    };
+    setStyle($wrapper, wrapperStyle);
+  }
+
+  var defaultOptions = {
+    // `isHorizontal` is computed value
+    direction: 'horizontal',
+    touchRatio: 1,
+    touchAngle: 45,
+    longSwipesRatio: 0.5,
+    initialSlide: 0,
+    loop: false,
+    freeMode: false,
+    passiveListeners: true,
+    resistance: true,
+    resistanceRatio: 0.85,
+    speed: 300,
+    longSwipesMs: 300,
+    spaceBetween: 0,
+    slidesPerView: 1,
+    centeredSlides: false,
+    slidePrevClass: 'swiper-slide-prev',
+    slideNextClass: 'swiper-slide-next',
+    slideActiveClass: 'swiper-slide-active',
+    slideClass: 'swiper-slide',
+    wrapperClass: 'swiper-wrapper',
+    touchStartPreventDefault: true,
+    touchStartForcePreventDefault: false,
+    touchMoveStopPropagation: false,
+    excludeElements: [],
+    injections: {
+      translate: translate
+    }
+  };
+  function optionFormatter(userOptions) {
+    var options = _extends({}, defaultOptions, userOptions);
+
+    return _extends({}, options, {
+      isHorizontal: options.direction === 'horizontal'
+    });
+  }
+
+  var LIFE_CYCLES = {
+    BEFORE_INIT: 'before-init',
+    AFTER_INIT: 'after-init',
+    BEFORE_SLIDE: 'before-slide',
+    SCROLL: 'scroll',
+    AFTER_SLIDE: 'after-slide',
+    BEFORE_DESTROY: 'before-destroy',
+    AFTER_DESTROY: 'after-destroy'
+  };
+  function EventHub() {
+    var hub = {};
+
+    function on(evtName, cb) {
+      if (!hub[evtName]) {
+        hub[evtName] = [cb];
+      } else {
+        hub[evtName].push(cb);
+      }
+    }
+
+    function off(evtName, cb) {
+      if (hub[evtName]) {
+        var index = hub[evtName].indexOf(cb); // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+
+        index > -1 && hub[evtName].splice(index, 1);
+      }
+    }
+
+    function emit(evtName) {
+      for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        data[_key - 1] = arguments[_key];
+      }
+
+      if (hub[evtName]) {
+        hub[evtName].forEach(function (cb) {
+          return cb.apply(void 0, data);
+        });
+      }
+    }
+
+    function clear() {
+      hub = {};
+    }
+
+    return {
+      on: on,
+      off: off,
+      emit: emit,
+      clear: clear
+    };
+  }
+
+  var delta = 180 / Math.PI;
+  function Vector(logs, index) {
+    var trace = logs[index];
+    var formerTrace = logs[index - 1] || trace; // In case click action, there will be only one log data
+
+    var diff = {
+      x: trace.x - formerTrace.x,
+      y: trace.y - formerTrace.y
+    };
+    var duration = trace.time - formerTrace.time;
+    var velocityX = diff.x / duration || 0;
+    var velocityY = diff.y / duration || 0;
+    var angle = Math.atan2(Math.abs(diff.y), Math.abs(diff.x)) * delta;
+    return _extends({}, diff, {
+      angle: angle,
+      velocityX: velocityX,
+      velocityY: velocityY
+    });
+  }
+  function Tracker() {
+    var logs = [];
+
+    function push(position) {
+      logs.push(_extends({
+        time: Date.now()
+      }, position));
+    }
+
+    function vector() {
+      return Vector(logs, logs.length - 1);
+    }
+
+    function clear() {
+      logs = [];
+    }
+
+    function getLogs() {
+      return logs;
+    }
+
+    function getDuration() {
+      var first = logs[0];
+      var last = logs[logs.length - 1];
+      return first ? last.time - first.time : 0;
+    }
+
+    function getOffset() {
+      var first = logs[0];
+      var last = logs[logs.length - 1];
+      return first ? {
+        x: last.x - first.x,
+        y: last.y - first.y
+      } : {
+        x: 0,
+        y: 0
+      };
+    }
+
+    return {
+      getDuration: getDuration,
+      getOffset: getOffset,
+      getLogs: getLogs,
+      vector: vector,
+      clear: clear,
+      push: push
+    };
+  }
+
+  function State() {
+    var state = {
+      tracker: Tracker(),
+      index: 0,
+      startTransform: 0,
+      isStart: false,
+      isScrolling: false,
+      isTouching: false,
+      transforms: 0,
+      progress: 0
+    };
+    return state;
+  }
+
+  function now() {
+    return performance ? performance.now() : Date.now();
+  }
+
+  function Tick() {
+    var nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout;
+    var cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout;
+    var startTime;
+    var id;
+
+    function run(cb) {
+      // eslint-disable-next-line no-void
+      startTime = startTime === void 0 ? now() : startTime; // Why do not use callback argument:
+      // https://stackoverflow.com/questions/50895206/exact-time-of-display-requestanimationframe-usage-and-timeline
+
+      id = nextFrame(function () {
+        var timeStamp = now();
+        var interval = timeStamp - startTime;
+        startTime = timeStamp;
+        cb(interval);
+      });
+    }
+
+    function stop() {
+      startTime = undefined;
+      cancelNextFrame(id);
+    }
+
+    return {
+      run: run,
+      stop: stop
+    };
+  }
+
+  function Animation() {
+    var tick = Tick();
+
+    function run(task) {
+      tick.run(function (interval) {
+        run(task);
+        task(interval);
+      });
+    }
+
+    function stop() {
+      tick.stop();
+    }
+
+    return {
+      run: run,
+      stop: stop
+    };
+  }
+
+  function resetState(state, operations) {
+    var tracker = state.tracker;
+    var initStatus = operations.initStatus;
+    tracker.clear();
+    initStatus();
+  }
+
+  function Actions(options, env, state, operations) {
+    var initLayout = operations.initLayout,
+        initStatus = operations.initStatus,
+        render = operations.render,
+        scrollPixel = operations.scrollPixel,
+        slideTo = operations.slideTo,
+        getOffsetSteps = operations.getOffsetSteps;
+    var animation = Animation();
+
+    function preheat(originPosition, originTransform) {
+      var tracker = state.tracker;
+      animation.stop();
+      tracker.clear();
+      tracker.push(originPosition);
+      initLayout(originTransform);
+      initStatus(originTransform);
+      state.isStart = true;
+      render();
+    }
+
+    function move(position) {
+      var tracker = state.tracker;
+      var touchRatio = options.touchRatio,
+          touchAngle = options.touchAngle,
+          isHorizontal = options.isHorizontal;
+      if (!state.isStart || state.isScrolling) return;
+      tracker.push(position);
+      var vector = tracker.vector();
+      var displacement = tracker.getOffset(); // Ignore this move action if there is no displacement of screen touch point.
+      // In case of minimal mouse move event. (Moving mouse extreme slowly will get the zero offset.)
+
+      if (!displacement.x && !displacement.y) return;
+
+      if (isHorizontal && vector.angle < touchAngle || !isHorizontal && 90 - vector.angle < touchAngle || state.isTouching) {
+        var offset = vector[isHorizontal ? 'x' : 'y'] * touchRatio;
+        state.isTouching = true;
+        scrollPixel(offset);
+        render();
+      } else {
+        state.isScrolling = true;
+        tracker.clear();
+      }
+    }
+
+    function stop() {
+      var index = state.index,
+          tracker = state.tracker;
+      var measure = env.measure;
+      if (!state.isStart) return;
+      state.isStart = false;
+
+      if (!options.freeMode) {
+        var duration = tracker.getDuration();
+        var trans = tracker.getOffset()[options.isHorizontal ? 'x' : 'y'];
+        var jump = Math.ceil(Math.abs(trans) / measure.boxSize);
+        var longSwipeIndex = getOffsetSteps(trans);
+
+        if (duration > options.longSwipesMs) {
+          // long swipe action
+          slideTo(index + longSwipeIndex * (trans > 0 ? -1 : 1));
+        } else {
+          // short swipe action
+          slideTo(trans > 0 ? index - jump : index + jump);
+        }
+
+        resetState(state, operations);
+      } else {
+        var vector = tracker.vector();
+        var velocity = vector[options.isHorizontal ? 'velocityX' : 'velocityY'];
+        animation.run(function (duration) {
+          var offset = velocity * duration;
+          velocity *= 0.98;
+
+          if (Math.abs(offset) < 0.01) {
+            animation.stop();
+            resetState(state, operations);
+          } else {
+            scrollPixel(offset);
+            render(0);
+          }
+        });
+      }
+    }
+
+    return {
+      preheat: preheat,
+      move: move,
+      stop: stop
+    };
+  }
+
+  function Sensor(env, state, options, operations) {
+    var touchable = env.touchable;
+    var formEls = ['INPUT', 'SELECT', 'OPTION', 'TEXTAREA', 'BUTTON', 'VIDEO'];
+    var actions = Actions(options, env, state, operations);
+    var preheat = actions.preheat,
+        move = actions.move,
+        stop = actions.stop;
+
+    function getPosition(e) {
+      var touch = touchable ? e.changedTouches[0] : e;
+      return {
+        x: touch.pageX,
+        y: touch.pageY
+      };
+    }
+
+    function onTouchStart(e) {
+      for (var i = 0; i < options.excludeElements.length; i++) {
+        if (options.excludeElements[i].contains(e.target)) return;
+      }
+
+      var $wrapper = env.element.$wrapper;
+      var shouldPreventDefault = options.touchStartPreventDefault && formEls.indexOf(e.target.nodeName) === -1 || options.touchStartForcePreventDefault; // `preventDefault` can not be called with `passiveListeners`
+      //      See: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+      //      And: https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
+
+      if (!touchable && shouldPreventDefault) e.preventDefault();
+      preheat(getPosition(e), getTranslate($wrapper, options.isHorizontal));
+    }
+
+    function onTouchMove(e) {
+      if (options.touchMoveStopPropagation) e.stopPropagation();
+      move(getPosition(e));
+      if (state.isTouching && e.cancelable !== false) e.preventDefault();
+    }
+
+    function onTouchEnd() {
+      stop();
+    }
+
+    function attach() {
+      var $el = env.element.$el;
+
+      if (touchable) {
+        attachListener($el, 'touchstart', onTouchStart, {
+          passive: options.passiveListeners,
+          capture: false
+        });
+        attachListener($el, 'touchmove', onTouchMove);
+        attachListener($el, 'touchend', onTouchEnd);
+        attachListener($el, 'touchcancel', onTouchEnd);
+      } else {
+        attachListener($el, 'mousedown', onTouchStart);
+        attachListener(document, 'mousemove', onTouchMove);
+        attachListener(document, 'mouseup', onTouchEnd);
+      }
+    }
+
+    function detach() {
+      var $el = env.element.$el;
+      detachListener($el, 'touchstart', onTouchStart);
+      detachListener($el, 'touchmove', onTouchMove);
+      detachListener($el, 'touchend', onTouchEnd);
+      detachListener($el, 'touchcancel', onTouchEnd);
+      detachListener($el, 'mousedown', onTouchStart);
+      detachListener(document, 'mousemove', onTouchMove);
+      detachListener(document, 'mouseup', onTouchEnd);
+    }
+
+    return {
+      attach: attach,
+      detach: detach
+    };
+  }
+
+  function Measure(options, element) {
+    var $el = element.$el;
+    var viewSize = options.isHorizontal ? $el.offsetWidth : $el.offsetHeight;
+    var slideSize = (viewSize - Math.ceil(options.slidesPerView - 1) * options.spaceBetween) / options.slidesPerView;
+    var boxSize = slideSize + options.spaceBetween;
+    return {
+      boxSize: boxSize,
+      viewSize: viewSize,
+      slideSize: slideSize
+    };
+  }
+
+  function getExpand(options) {
+    if (options.loop) {
+      // return options.slidesPerView >= element.$list.length
+      //     ? options.slidesPerView - element.$list.length + 1
+      //     : 1
+      return Math.ceil(options.slidesPerView);
+    }
+
+    return 0;
+  }
+  function Limitation(element, measure, options) {
+    var $list = element.$list;
+    var viewSize = measure.viewSize,
+        slideSize = measure.slideSize,
+        boxSize = measure.boxSize;
+    var expand = getExpand(options);
+    var buffer = expand * boxSize;
+    var base = -buffer + (options.centeredSlides ? (viewSize - slideSize) / 2 : 0); // [min, max] usually equal to [-x, 0]
+
+    var max = base;
+    var min = options.spaceBetween + (options.loop ? slideSize : viewSize) + base - boxSize * $list.length;
+    var minIndex = 0;
+    var maxIndex = $list.length - (options.centeredSlides || options.loop ? 1 : Math.ceil(options.slidesPerView));
+    var limitation = {
+      max: max,
+      min: min,
+      base: base,
+      expand: expand,
+      buffer: buffer,
+      minIndex: minIndex,
+      maxIndex: maxIndex
+    };
+    return limitation;
+  }
+
+  function Env(elem, options) {
+    var env = {};
+
+    function update(element) {
+      var measure = Measure(options, element);
+      var limitation = Limitation(element, measure, options);
+      var touchable = Boolean('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0 || window.DocumentTouch && document instanceof DocumentTouch);
+      Object.assign(env, {
+        touchable: touchable,
+        element: element,
+        measure: measure,
+        limitation: limitation
+      });
+    }
+
+    env.update = update;
+    update(elem);
+    return env;
+  }
+
+  var shallowTag = 'data-shallow-slider';
+  var sliderTag = 'data-slider';
+  function Renderer(env, options) {
+    function updateItem(state) {
+      var $wrapper = env.element.$wrapper;
+      var index = state.index;
+      $wrapper.querySelectorAll("[" + sliderTag + "]").forEach(function ($slide) {
+        // eslint-disable-next-line no-bitwise
+        var tagNumber = ~~$slide.getAttribute(sliderTag);
+        removeClass($slide, [options.slidePrevClass, options.slideNextClass, options.slideActiveClass]);
+
+        if (tagNumber === index) {
+          addClass($slide, options.slideActiveClass);
+        }
+
+        if (tagNumber === index - 1) {
+          addClass($slide, options.slidePrevClass);
+        }
+
+        if (tagNumber === index + 1) {
+          addClass($slide, options.slideNextClass);
+        }
+      });
+    }
+
+    function render(state, duration, cb, force) {
+      var $wrapper = env.element.$wrapper;
+      var timing = duration === undefined ? options.speed : duration;
+      options.injections.translate(state, env, options, timing); // Update slide style only if scroll action is end.
+
+      if (!state.isStart) updateItem(state);
+      force && getComputedStyle($wrapper).transform;
+      cb && setTimeout(cb, timing);
+    }
+
+    function appendExpandList() {
+      if (!options.loop) return;
+      var element = env.element,
+          limitation = env.limitation;
+      var $list = element.$list,
+          $wrapper = element.$wrapper;
+      var expand = limitation.expand;
+      var $leftExpandList = $list.slice(-expand).map(function ($slide) {
+        return $slide.cloneNode(true);
+      });
+      var $rightExpandList = $list.slice(0, expand).map(function ($slide) {
+        return $slide.cloneNode(true);
+      });
+      $leftExpandList.forEach(function ($shadowSlide, index) {
+        $wrapper.appendChild(setAttr($rightExpandList[index], shallowTag));
+        $wrapper.insertBefore(setAttr($leftExpandList[index], shallowTag), $list[0]);
+      });
+    }
+
+    function destroyExpandList() {
+      env.element.$wrapper.querySelectorAll("[" + shallowTag + "]").forEach(function (item) {
+        return env.element.$wrapper.removeChild(item);
+      });
+    }
+
+    function updateDom() {
+      env.element.$list.forEach(function (el, index) {
+        return setAttr(el, sliderTag, index);
+      });
+      destroyExpandList();
+      appendExpandList();
+    }
+
+    function updateSize() {
+      var _itemStyle;
+
+      var element = env.element,
+          measure = env.measure;
+      var $wrapper = element.$wrapper;
+      var wrapperStyle = {
+        display: 'flex',
+        willChange: 'transform',
+        flexDirection: options.isHorizontal ? 'row' : 'column'
+      };
+      var itemStyle = (_itemStyle = {}, _itemStyle[options.isHorizontal ? 'width' : 'height'] = measure.slideSize + "px", _itemStyle[options.isHorizontal ? 'margin-right' : 'margin-bottom'] = options.spaceBetween + "px", _itemStyle);
+      setStyle($wrapper, wrapperStyle);
+      $wrapper.querySelectorAll("[" + sliderTag + "]").forEach(function ($slide) {
+        return setStyle($slide, itemStyle);
+      });
+    }
+
+    function init() {
+      updateDom();
+      updateSize();
+    }
+
+    function destroy() {
+      var _env$element = env.element,
+          $list = _env$element.$list,
+          $wrapper = _env$element.$wrapper;
+      var arr = ['display', 'will-change', 'flex-direction'];
+      var itemProp = options.isHorizontal ? 'margin-right' : 'margin-bottom';
+      arr.forEach(function (propertyName) {
+        $wrapper.style.removeProperty(propertyName);
+      });
+      $list.forEach(function ($slide) {
+        return $slide.style.removeProperty(itemProp);
+      });
+      destroyExpandList();
+    }
+
+    return {
+      init: init,
+      render: render,
+      destroy: destroy,
+      updateSize: updateSize
+    };
+  }
+
+  /**
+   * Detect whether slides is rush out boundary.
+   * @param velocity - Velocity larger than zero means that slides move to the right direction
+   * @param transform
+   * @param limitation
+   */
+
+  function isExceedingLimits(velocity, transform, limitation) {
+    return velocity > 0 && transform > limitation.max || velocity < 0 && transform < limitation.min;
+  }
+  /**
+   * Return the shortest way to target Index.
+   *      Negative number indicate the left direction, Index's value is decreasing.
+   *      Positive number means index should increase.
+   * @param currentIndex
+   * @param targetIndex
+   * @param limitation
+   * @param defaultWay
+   */
+
+  function getShortestWay(currentIndex, targetIndex, limitation, defaultWay) {
+    var maxIndex = limitation.maxIndex,
+        minIndex = limitation.minIndex; // Source expression show below:
+    // const shortcut = defaultWay > 0
+    //     ? minIndex - currentIndex + (targetIndex - maxIndex) - 1
+    //     : maxIndex - currentIndex + (targetIndex - minIndex) + 1
+
+    var shortcut = (defaultWay > 0 ? 1 : -1) * (minIndex - maxIndex - 1) + targetIndex - currentIndex;
+    return Math.abs(defaultWay) > Math.abs(shortcut) ? shortcut : defaultWay;
+  }
+  /**
+   * Get transform exceed value
+   * Return zero if is not reached border.
+   *
+   * @param transform
+   * @param limitation
+   */
+
+  function getExcess(transform, limitation) {
+    var exceedLeft = transform - limitation.max;
+    var exceedRight = transform - limitation.min;
+    return exceedLeft > 0 ? exceedLeft : exceedRight < 0 ? exceedRight : 0;
+  }
+  /**
+   * The Set of state operations.
+   * Every external Render/Sensor/DomHandler are called by this Internal state machine.
+   * That gives us the possibility to run Tiny-Swiper in different platform.
+   *
+   * @param env
+   * @param state
+   * @param options
+   * @param renderer
+   * @param eventHub
+   * @constructor
+   */
+
+  function Operations(env, state, options, renderer, eventHub) {
+    /**
+     * Calculate the steps amount (boxSize) of offset.
+     *  eg: offset = 100, boxSize: 50, steps may equal to 2.
+     * @param offset
+     */
+    function getOffsetSteps(offset) {
+      var measure = env.measure;
+      return Math.ceil(Math.abs(offset) / measure.boxSize - options.longSwipesRatio);
+    }
+    /**
+     * Call renderer's render function with default params.
+     * @param duration
+     * @param cb
+     * @param force
+     */
+
+
+    function render(duration, cb, force) {
+      renderer.render(state, duration, cb, force);
+    }
+    /**
+     * Update Swiper transform attr.
+     * @param trans
+     */
+
+
+    function transform(trans) {
+      var _env$limitation = env.limitation,
+          min = _env$limitation.min,
+          max = _env$limitation.max;
+      var transRange = max - min + (options.loop ? env.measure.boxSize : 0);
+      var len = transRange + 1;
+      var progress;
+      state.transforms = trans;
+
+      if (options.loop) {
+        progress = (max - trans) % len / transRange;
+        state.progress = progress < 0 ? 1 + progress : progress > 1 ? progress - 1 : progress;
+      } else {
+        progress = (max - trans) / transRange;
+        state.progress = progress < 0 ? 0 : progress > 1 ? 1 : progress;
+      }
+
+      eventHub.emit(LIFE_CYCLES.SCROLL, _extends({}, state));
+    }
+    /**
+     * Update Swiper transform state with certain Index.
+     * @param targetIndex
+     * @param duration
+     */
+
+
+    function slideTo(targetIndex, duration) {
+      var measure = env.measure,
+          limitation = env.limitation;
+      var len = limitation.maxIndex - limitation.minIndex + 1;
+      var computedIndex = options.loop ? (targetIndex % len + len) % len : targetIndex > limitation.maxIndex ? limitation.maxIndex : targetIndex < limitation.minIndex ? limitation.minIndex : targetIndex;
+      var newTransform = -computedIndex * measure.boxSize + limitation.base; // Slide to wrapper's boundary while touch end.
+      //  Math.abs(excess) ≥ 0
+      // Old condition: state.index === computedIndex
+
+      if (getOffsetSteps(newTransform - state.transforms) !== 0 && options.loop) {
+        var excess = getExcess(state.transforms, limitation);
+        var defaultWay = computedIndex - state.index;
+        var shortcut = getShortestWay(state.index, computedIndex, limitation, defaultWay);
+
+        if (shortcut !== defaultWay && !excess) {
+          transform(shortcut < 0 ? limitation.min - measure.boxSize : limitation.max + measure.boxSize);
+        } else if (state.index === computedIndex) {
+          transform(excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess);
+        } // Set initial offset for rebounding animation.
+
+
+        render(0, undefined, true);
+      }
+
+      eventHub.emit(LIFE_CYCLES.BEFORE_SLIDE, state.index, state, computedIndex);
+      state.index = computedIndex;
+      transform(newTransform);
+      render(duration, function () {
+        eventHub.emit(LIFE_CYCLES.AFTER_SLIDE, computedIndex, state);
+      });
+    }
+    /**
+     * Scroll pixel by pixel while user dragging.
+     * @param px
+     */
+
+
+    function scrollPixel(px) {
+      var transforms = state.transforms;
+      var measure = env.measure,
+          limitation = env.limitation;
+      var ratio = Number(px.toExponential().split('e')[1]);
+      var expand = ratio <= 0 ? Math.pow(10, -(ratio - 1)) : 1;
+      var newTransform = transforms; // For optimizing, do not calculate `px` if options.loop === true
+
+      if (options.resistance && !options.loop) {
+        if (px > 0 && transforms >= limitation.max) {
+          px -= Math.pow(px * expand, options.resistanceRatio) / expand;
+        } else if (px < 0 && transforms <= limitation.min) {
+          px += Math.pow(-px * expand, options.resistanceRatio) / expand;
+        }
+      }
+
+      newTransform += px;
+
+      if (options.loop) {
+        var vector = state.tracker.vector();
+        var velocity = options.isHorizontal ? vector.velocityX : vector.velocityY;
+        var excess = getExcess(transforms, limitation);
+
+        if (excess && isExceedingLimits(velocity, transforms, limitation)) {
+          newTransform = excess > 0 ? limitation.min - measure.boxSize + excess : limitation.max + measure.boxSize + excess;
+        }
+      }
+
+      transform(newTransform);
+    }
+
+    function initStatus(startTransform) {
+      if (startTransform === void 0) {
+        startTransform = 0;
+      }
+
+      state.startTransform = startTransform;
+      state.isStart = false;
+      state.isScrolling = false;
+      state.isTouching = false;
+    }
+
+    function initLayout(originTransform) {
+      transform(originTransform);
+    }
+
+    function update() {
+      slideTo(state.index, 0);
+      renderer.updateSize();
+    }
+
+    return {
+      update: update,
+      render: render,
+      transform: transform,
+      slideTo: slideTo,
+      scrollPixel: scrollPixel,
+      initStatus: initStatus,
+      initLayout: initLayout,
+      getOffsetSteps: getOffsetSteps
+    };
+  }
+
+  function Element(el, options) {
+    var $el = typeof el === 'string' ? document.body.querySelector(el) : el;
+    var $wrapper = $el.querySelector("." + options.wrapperClass);
+    var $list = [].slice.call($el.getElementsByClassName(options.slideClass));
+    return {
+      $el: $el,
+      $wrapper: $wrapper,
+      $list: $list
+    };
+  }
+
+  var Swiper = function Swiper(el, userOptions) {
+    var options = optionFormatter(userOptions);
+    var eventHub = EventHub();
+    var element = Element(el, options);
+    var env = Env(element, options);
+    var state = State();
+    var on = eventHub.on,
+        off = eventHub.off,
+        emit = eventHub.emit;
+    var instance = {
+      on: on,
+      off: off,
+      env: env,
+      state: state,
+      options: options
+    };
+    (options.plugins || Swiper.plugins || []).forEach(function (plugin) {
+      return plugin(instance, options);
+    });
+    emit(LIFE_CYCLES.BEFORE_INIT, instance); // Initialize internal module
+
+    var renderer = Renderer(env, options);
+    var operations = Operations(env, state, options, renderer, eventHub);
+    var sensor = Sensor(env, state, options, operations);
+
+    function destroy() {
+      emit(LIFE_CYCLES.BEFORE_DESTROY, instance);
+      sensor.detach();
+      renderer.destroy();
+      emit(LIFE_CYCLES.AFTER_DESTROY, instance);
+      eventHub.clear();
+    }
+
+    function updateSize() {
+      env.update(Element(el, options));
+      operations.update();
+    }
+
+    function update() {
+      renderer.destroy();
+      env.update(Element(el, options));
+      renderer.init();
+      operations.update();
+    }
+
+    var slideTo = operations.slideTo;
+    Object.assign(instance, {
+      update: update,
+      destroy: destroy,
+      slideTo: slideTo,
+      updateSize: updateSize
+    });
+    renderer.init();
+    sensor.attach();
+    slideTo(options.initialSlide, 0);
+    emit(LIFE_CYCLES.AFTER_INIT, instance);
+    return instance;
+  };
+
+  Swiper.use = function (plugins) {
+    Swiper.plugins = plugins;
+  };
+
+  /**
+   * TinySwiper plugin for image lazy loading.
+   *
+   * @param {SwiperInstance} instance
+   * @param {Options}
+   */
+
+  var SwiperPluginLazyload = (function SwiperPluginLazyload(instance, options) {
+    var isEnable = Boolean(options.lazyload);
+    var lazyloadOptions = Object.assign({
+      loadPrevNext: false,
+      loadPrevNextAmount: 1,
+      loadOnTransitionStart: false,
+      elementClass: 'swiper-lazy',
+      loadingClass: 'swiper-lazy-loading',
+      loadedClass: 'swiper-lazy-loaded',
+      preloaderClass: 'swiper-lazy-preloader'
+    }, options.lazyload);
+    var lazyload = {
+      load: function load(index) {
+        var $slide = instance.env.element.$list[index];
+        if (!$slide) return;
+        var $imgs = [].slice.call($slide.getElementsByClassName(lazyloadOptions.elementClass));
+        var $preloaders = [].slice.call($slide.getElementsByClassName(lazyloadOptions.preloaderClass));
+
+        function handleLoaded($img) {
+          $img.removeAttribute('data-src');
+          addClass($img, [lazyloadOptions.loadedClass]);
+          removeClass($img, [lazyloadOptions.loadingClass]);
+          $img.onload = null;
+          $img.onerror = null;
+          $img.isLoaded = true;
+
+          if ($imgs.every(function (item) {
+            return item.isLoaded;
+          })) {
+            $preloaders.forEach(function ($preloader) {
+              $preloader.parentElement.removeChild($preloader);
+            });
+          }
+        }
+
+        $imgs.forEach(function ($img) {
+          if (!$img.hasAttribute('data-src')) return;
+          var src = $img.getAttribute('data-src');
+          addClass($img, [lazyloadOptions.loadingClass]);
+          removeClass($img, [lazyloadOptions.loadedClass]);
+          $img.src = src;
+
+          $img.onload = function () {
+            return handleLoaded($img);
+          };
+
+          $img.onerror = function () {
+            return handleLoaded($img);
+          };
+        });
+      },
+      loadRange: function loadRange(index, range) {
+        lazyload.load(index);
+
+        if (lazyloadOptions.loadPrevNext && range >= 1) {
+          for (var i = 1; i <= range; i++) {
+            lazyload.load(index + i);
+            lazyload.load(index - i);
+          }
+        }
+      }
+    };
+    if (!isEnable) return;
+    instance.on('before-init', function () {
+      instance.lazyload = lazyload;
+    });
+
+    if (lazyloadOptions.loadOnTransitionStart) {
+      instance.on('before-slide', function (oldIndex, state, newIndex) {
+        lazyload.loadRange(newIndex, lazyloadOptions.loadPrevNextAmount);
+      });
+    } else {
+      instance.on('after-slide', function (index) {
+        lazyload.loadRange(index, lazyloadOptions.loadPrevNextAmount);
+      });
+    }
+
+    instance.on('after-destroy', function () {
+      if (instance.lazyload) {
+        delete instance.lazyload;
+      }
+    });
+  });
+
+  var SwiperPluginPagination = (function SwiperPluginPagination(instance, options) {
+    var isEnable = Boolean(options.pagination);
+    var paginationOptions = Object.assign({
+      clickable: false,
+      bulletClass: 'swiper-pagination-bullet',
+      bulletActiveClass: 'swiper-pagination-bullet-active'
+    }, options.pagination);
+    var paginationInstance = {
+      $pageList: [],
+      $pagination: null
+    };
+    if (!isEnable) return;
+    instance.on('after-init', function () {
+      var bulletClass = paginationOptions.bulletClass,
+          bulletActiveClass = paginationOptions.bulletActiveClass;
+      var element = instance.env.element;
+      var $list = element.$list;
+      var $pagination = typeof paginationOptions.el === 'string' ? document.body.querySelector(paginationOptions.el) : paginationOptions.el;
+      var $pageList = [];
+      var $group = document.createDocumentFragment();
+      var dotCount = $list.length - Math.ceil(options.slidesPerView) + 1;
+      options.excludeElements.push($pagination);
+      paginationInstance.$pagination = $pagination;
+      paginationInstance.$pageList = $pageList;
+
+      for (var index = 0; index < dotCount; index++) {
+        var $page = document.createElement('div');
+        addClass($page, index === instance.state.index ? [bulletClass, bulletActiveClass] : bulletClass);
+        $pageList.push($page);
+        $group.appendChild($page);
+      }
+
+      $pagination.appendChild($group);
+
+      if (paginationOptions.clickable) {
+        $pagination.addEventListener('click', function (e) {
+          instance.slideTo($pageList.indexOf(e.target));
+          e.stopPropagation();
+        });
+      }
+    });
+    instance.on('after-destroy', function () {
+      if (!isEnable) return;
+      paginationInstance.$pagination.innerHTML = '';
+      paginationInstance.$pageList = [];
+      paginationInstance.$pagination = null;
+    });
+    instance.on('after-slide', function (currentIndex) {
+      var bulletActiveClass = paginationOptions.bulletActiveClass;
+      paginationInstance.$pageList && paginationInstance.$pageList.forEach(function ($page, index) {
+        if (index === currentIndex) {
+          addClass($page, bulletActiveClass);
+        } else {
+          removeClass($page, bulletActiveClass);
+        }
+      });
+    });
+  });
+
+  var DIRECTION = {
+    up: 'ArrowUp',
+    right: 'ArrowRight',
+    down: 'ArrowDown',
+    left: 'ArrowLeft'
+  }; // TODO: optimize
+
+  function isVisible(el) {
+    if (!el) return false;
+    var style = getComputedStyle(el);
+    var visible = style.visibility !== 'hidden' && style.display !== 'none';
+    if (!visible) return false;
+    return el.parentElement && el.parentElement.nodeType === 1 ? isVisible(el.parentElement) : true;
+  }
+
+  function isElementInView(el) {
+    var visibility = isVisible(el);
+    var boundary = el.getBoundingClientRect();
+    var isInView = boundary.top >= 0 && boundary.bottom <= window.innerHeight && boundary.left >= 0 && boundary.right <= window.innerWidth;
+    return isInView && visibility;
+  }
+  /**
+   * TinySwiper plugin for keyboard control.
+   *
+   * @param {SwiperInstance} instance
+   * @param {Options}
+   */
+
+
+  var SwiperPluginKeyboardControl = (function SwiperPluginKeyboardControl(instance, options) {
+    var isEnable = Boolean(options.keyboard);
+    var keyboardOptions = Object.assign({
+      enabled: true,
+      onlyInViewport: true
+    }, options.keyboard);
+    var keyboard = {
+      enable: function enable() {
+        keyboardOptions.enabled = true;
+      },
+      disable: function disable() {
+        keyboardOptions.enabled = false;
+      },
+      onKeyDown: function onKeyDown(e) {
+        var key = e.key;
+        if (keyboardOptions.onlyInViewport && !isElementInView(instance.env.element.$el) || !keyboardOptions.enabled) return;
+
+        if (options.isHorizontal) {
+          if (key === DIRECTION.left) {
+            instance.slideTo(instance.state.index - 1);
+          } else if (key === DIRECTION.right) {
+            instance.slideTo(instance.state.index + 1);
+          }
+        } else {
+          if (key === DIRECTION.down) {
+            instance.slideTo(instance.state.index - 1);
+          } else if (key === DIRECTION.up) {
+            instance.slideTo(instance.state.index + 1);
+          }
+        }
+      }
+    };
+    if (!isEnable) return;
+    instance.on('before-init', function () {
+      instance.keyboard = keyboard;
+      attachListener(window, 'keydown', keyboard.onKeyDown);
+    });
+    instance.on('after-destroy', function () {
+      if (instance.keyboard) {
+        detachListener(window, 'keydown', keyboard.onKeyDown);
+        delete instance.keyboard;
+      }
+    });
+  });
+
+  var SwiperPluginMousewheel = (function SwiperPluginMousewheel(instance, options) {
+    var isEnable = Boolean(options.mousewheel);
+    var mousewheelOptions = Object.assign({
+      invert: false,
+      sensitivity: 1,
+      interval: 400
+    }, options.mousewheel);
+    var mousewheelInstance = {
+      $el: null
+    };
+    var wheelStatus = {
+      wheeling: false,
+      wheelDelta: 0,
+      wheelingTimer: 0
+    };
+
+    var handler = function handler(e) {
+      var isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (options.isHorizontal !== isHorizontal) return;
+      var delta = isHorizontal ? e.deltaX : e.deltaY;
+      var index = instance.state.index;
+
+      if (Math.abs(delta) - Math.abs(wheelStatus.wheelDelta) > 0 && !wheelStatus.wheeling && Math.abs(delta) >= mousewheelOptions.sensitivity) {
+        var step = mousewheelOptions.invert ? 1 : -1;
+        instance.slideTo(delta > 0 ? index - step : index + step);
+        wheelStatus.wheeling = true;
+        wheelStatus.wheelingTimer = setTimeout(function () {
+          wheelStatus.wheeling = false;
+        }, mousewheelOptions.interval);
+      }
+
+      wheelStatus.wheelDelta = delta;
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    instance.on('after-init', function () {
+      if (!isEnable) return;
+      var element = instance.env.element;
+      var $el = element.$el;
+      mousewheelInstance.$el = $el;
+      attachListener($el, 'wheel', handler);
+    });
+    instance.on('after-destroy', function () {
+      if (!isEnable) return;
+      detachListener(mousewheelInstance.$el, 'wheel', handler);
+      delete mousewheelInstance.$el;
+    });
+  });
+
+  var SwiperPluginNavigation = (function SwiperPluginNavigation(instance, options) {
+    var isEnable = Boolean(options.navigation);
+    var navigationInstance = {
+      nextEl: null,
+      prevEl: null
+    };
+    var navigationOptions = Object.assign({
+      disabledClass: 'swiper-button-disabled'
+    }, options.navigation);
+
+    var nextClickHandler = function nextClickHandler(e) {
+      clickHandler(e.target, 'next');
+    };
+
+    var prevClickHandler = function prevClickHandler(e) {
+      clickHandler(e.target, 'prev');
+    };
+
+    var clickHandler = function clickHandler(e, type) {
+      if (checkIsDisable(e) && !instance.options.loop) {
+        return;
+      }
+
+      var index = instance.state.index;
+
+      if (type === 'next') {
+        instance.slideTo(index + 1);
+      }
+
+      if (type === 'prev') {
+        instance.slideTo(index - 1);
+      }
+    };
+
+    var checkNavBtnDisabledClass = function checkNavBtnDisabledClass(index) {
+      var _instance$env$limitat = instance.env.limitation,
+          minIndex = _instance$env$limitat.minIndex,
+          maxIndex = _instance$env$limitat.maxIndex;
+
+      if (navigationInstance && navigationInstance.prevEl && navigationInstance.nextEl) {
+        if (navigationInstance.nextEl.classList.contains(navigationOptions.disabledClass) && index >= minIndex) {
+          navigationInstance.nextEl.classList.remove(navigationOptions.disabledClass);
+        }
+
+        if (navigationInstance.prevEl.classList.contains(navigationOptions.disabledClass) && index <= maxIndex) {
+          navigationInstance.prevEl.classList.remove(navigationOptions.disabledClass);
+        }
+
+        if (index === minIndex) {
+          navigationInstance.prevEl.classList.add(navigationOptions.disabledClass);
+        }
+
+        if (index === maxIndex) {
+          navigationInstance.nextEl.classList.add(navigationOptions.disabledClass);
+        }
+      }
+    };
+
+    var checkIsDisable = function checkIsDisable(e) {
+      return e.classList.contains(navigationOptions.disabledClass);
+    };
+
+    var checkButtonDefaultStatus = function checkButtonDefaultStatus() {
+      var index = instance.state.index;
+      var $list = instance.env.element.$list;
+      var minIndex = instance.env.limitation.minIndex;
+
+      if (index === minIndex && navigationInstance.prevEl) {
+        navigationInstance.prevEl.classList.add(navigationOptions.disabledClass);
+      }
+
+      if ($list.length === minIndex && navigationInstance.nextEl) {
+        navigationInstance.nextEl.classList.add(navigationOptions.disabledClass);
+      }
+    };
+
+    instance.on('before-slide', function (currentIndex, state, newIndex) {
+      if (!instance.options.loop) {
+        checkNavBtnDisabledClass(newIndex);
+      }
+    });
+    instance.on('after-init', function () {
+      if (!isEnable) return;
+      navigationInstance.nextEl = typeof navigationOptions.nextEl === 'string' ? document.body.querySelector(navigationOptions.nextEl) : navigationOptions.nextEl;
+      navigationInstance.prevEl = typeof navigationOptions.prevEl === 'string' ? document.body.querySelector(navigationOptions.prevEl) : navigationOptions.prevEl;
+
+      if (!instance.options.loop) {
+        checkButtonDefaultStatus();
+      }
+
+      attachListener(navigationInstance.nextEl, 'click', nextClickHandler);
+      attachListener(navigationInstance.prevEl, 'click', prevClickHandler);
+    });
+    instance.on('after-destroy', function () {
+      if (navigationInstance && navigationInstance.prevEl && navigationInstance.nextEl) {
+        detachListener(navigationInstance.nextEl, 'click', nextClickHandler);
+        detachListener(navigationInstance.prevEl, 'click', prevClickHandler);
+        delete navigationInstance.nextEl;
+        delete navigationInstance.prevEl;
+      }
+    });
+  });
+
+  // eslint-disable-next-line import/no-named-default
+  var plugins = [SwiperPluginLazyload, SwiperPluginPagination, SwiperPluginKeyboardControl, SwiperPluginMousewheel, SwiperPluginNavigation];
+  Swiper.use(plugins);
+
+  return Swiper;
+
+})));
+//# sourceMappingURL=index.full.js.map

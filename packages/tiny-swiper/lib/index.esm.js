@@ -1323,3 +1323,4 @@ Swiper.use = function (plugins) {
 
 export default Swiper;
 export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginNavigation, SwiperPluginPagination };
+//# sourceMappingURL=index.esm.js.map
