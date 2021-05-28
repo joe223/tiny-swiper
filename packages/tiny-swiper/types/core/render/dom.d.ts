@@ -8,3 +8,4 @@ export declare function setStyle(el: HTMLElement, style: {
     [key: string]: string;
 }, forceRender?: boolean): HTMLElement;
 export declare function getTranslate(el: HTMLElement, isHorizontal: boolean): number;
+export declare function stringToElement(string: string): HTMLElement;
