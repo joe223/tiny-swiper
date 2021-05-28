@@ -30,7 +30,8 @@
       var paginationOptions = Object.assign({
         clickable: false,
         bulletClass: 'swiper-pagination-bullet',
-        bulletActiveClass: 'swiper-pagination-bullet-active'
+        bulletActiveClass: 'swiper-pagination-bullet-active',
+        clickableClass: 'swiper-pagination-clickable'
       }, options.pagination);
       var paginationInstance = {
         $pageList: [],
@@ -39,7 +40,8 @@
       if (!isEnable) return;
       instance.on('after-init', function () {
         var bulletClass = paginationOptions.bulletClass,
-            bulletActiveClass = paginationOptions.bulletActiveClass;
+            bulletActiveClass = paginationOptions.bulletActiveClass,
+            clickableClass = paginationOptions.clickableClass;
         var element = instance.env.element;
         var $list = element.$list;
         var $pagination = typeof paginationOptions.el === 'string' ? document.body.querySelector(paginationOptions.el) : paginationOptions.el;
@@ -60,6 +62,7 @@
         $pagination.appendChild($group);
 
         if (paginationOptions.clickable) {
+          addClass($pagination, clickableClass);
           $pagination.addEventListener('click', function (e) {
             instance.slideTo($pageList.indexOf(e.target));
             e.stopPropagation();

@@ -181,6 +181,7 @@ const swiper = new Swiper(
 | Parameter | Type | default | Description |
 |---|---|---|---|
 | clickable | boolean | false | If true then clicking on pagination button will cause transition to appropriate slide |
+| clickableClass | string | 'swiper-pagination-clickable' | CSS class name set to pagination when it is clickable |
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
 

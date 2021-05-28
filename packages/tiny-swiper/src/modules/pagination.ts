@@ -8,6 +8,7 @@ import { Options } from '../core/options'
 export type SwiperPluginPaginationOptions = {
     el: string
     clickable: boolean
+    clickableClass: 'swiper-pagination-clickable'
     bulletClass: string | 'swiper-pagination-bullet'
     bulletActiveClass: string | 'swiper-pagination-bullet-active'
 }
@@ -31,7 +32,8 @@ export default <SwiperPlugin>function SwiperPluginPagination (
     const paginationOptions = <SwiperPluginPaginationOptions>Object.assign({
         clickable: false,
         bulletClass: 'swiper-pagination-bullet',
-        bulletActiveClass: 'swiper-pagination-bullet-active'
+        bulletActiveClass: 'swiper-pagination-bullet-active',
+        clickableClass: 'swiper-pagination-clickable'
     }, options.pagination)
     const paginationInstance = {
         $pageList: [],
@@ -43,7 +45,8 @@ export default <SwiperPlugin>function SwiperPluginPagination (
     instance.on('after-init', () => {
         const {
             bulletClass,
-            bulletActiveClass
+            bulletActiveClass,
+            clickableClass
         } = <SwiperPluginPaginationOptions>paginationOptions
         const {
             element
@@ -78,6 +81,8 @@ export default <SwiperPlugin>function SwiperPluginPagination (
         $pagination.appendChild($group)
 
         if (paginationOptions.clickable) {
+            addClass($pagination, clickableClass)
+
             $pagination.addEventListener('click', (e: Event) => {
                 instance.slideTo($pageList.indexOf(e.target as HTMLElement))
                 e.stopPropagation()
