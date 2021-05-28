@@ -1,6 +1,7 @@
 import {
     addClass,
-    removeClass
+    removeClass,
+    stringToElement
 } from '../core/render/dom'
 import { SwiperInstance, SwiperPlugin } from '../core/index'
 import { Options } from '../core/options'
@@ -11,6 +12,7 @@ export type SwiperPluginPaginationOptions = {
     clickableClass: 'swiper-pagination-clickable'
     bulletClass: string | 'swiper-pagination-bullet'
     bulletActiveClass: string | 'swiper-pagination-bullet-active'
+    renderBullet: Function
 }
 
 export type SwiperPluginPaginationPartialOptions = Partial<SwiperPluginPaginationOptions>
@@ -46,7 +48,8 @@ export default <SwiperPlugin>function SwiperPluginPagination (
         const {
             bulletClass,
             bulletActiveClass,
-            clickableClass
+            clickableClass,
+            renderBullet
         } = <SwiperPluginPaginationOptions>paginationOptions
         const {
             element
@@ -68,7 +71,7 @@ export default <SwiperPlugin>function SwiperPluginPagination (
         paginationInstance.$pageList = $pageList
 
         for (let index = 0; index < dotCount; index++) {
-            const $page = document.createElement('div')
+            const $page = renderBullet ? stringToElement(renderBullet(index, bulletClass)) : document.createElement('div')
 
             addClass(
                 $page,
@@ -84,7 +87,11 @@ export default <SwiperPlugin>function SwiperPluginPagination (
             addClass($pagination, clickableClass)
 
             $pagination.addEventListener('click', (e: Event) => {
-                instance.slideTo($pageList.indexOf(e.target as HTMLElement))
+                const target = e.target as HTMLElement
+                if (!target) return
+                e.preventDefault()
+                const bulletElement = target.closest(`.${bulletClass}`)
+                instance.slideTo($pageList.indexOf(bulletElement as HTMLElement))
                 e.stopPropagation()
             })
         }

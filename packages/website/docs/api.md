@@ -184,7 +184,7 @@ const swiper = new Swiper(
 | clickableClass | string | 'swiper-pagination-clickable' | CSS class name set to pagination when it is clickable |
 | bulletClass | string | 'swiper-pagination-bullet' | CSS class name of single pagination bullet |
 | bulletActiveClass | string | 'swiper-pagination-bullet-active' | CSS class name of currently active pagination bullet |
-
+| renderBullet | function(index, className) | null | This parameter allows to totally customize pagination bullets, you need to pass a function that accepts index number of pagination bullet and required element class name (className) |
 
 ### Lazyload
 
