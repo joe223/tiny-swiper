@@ -78,3 +78,11 @@ export function getTranslate (
     }
     return (<Array<number>>arr)[isHorizontal ? 0 : 1] || 0
 }
+
+export function stringToElement (
+    string: string
+): HTMLElement {
+    const wrapper = document.createElement('div')
+    wrapper.innerHTML = string
+    return wrapper.firstChild as HTMLElement
+}

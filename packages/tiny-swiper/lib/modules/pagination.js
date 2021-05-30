@@ -24,13 +24,19 @@
         return el.classList.contains(clz) && el.classList.remove(clz);
       });
     }
+    function stringToElement(string) {
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = string;
+      return wrapper.firstChild;
+    }
 
     var SwiperPluginPagination = (function SwiperPluginPagination(instance, options) {
       var isEnable = Boolean(options.pagination);
       var paginationOptions = Object.assign({
         clickable: false,
         bulletClass: 'swiper-pagination-bullet',
-        bulletActiveClass: 'swiper-pagination-bullet-active'
+        bulletActiveClass: 'swiper-pagination-bullet-active',
+        clickableClass: 'swiper-pagination-clickable'
       }, options.pagination);
       var paginationInstance = {
         $pageList: [],
@@ -39,7 +45,9 @@
       if (!isEnable) return;
       instance.on('after-init', function () {
         var bulletClass = paginationOptions.bulletClass,
-            bulletActiveClass = paginationOptions.bulletActiveClass;
+            bulletActiveClass = paginationOptions.bulletActiveClass,
+            clickableClass = paginationOptions.clickableClass,
+            renderBullet = paginationOptions.renderBullet;
         var element = instance.env.element;
         var $list = element.$list;
         var $pagination = typeof paginationOptions.el === 'string' ? document.body.querySelector(paginationOptions.el) : paginationOptions.el;
@@ -51,7 +59,7 @@
         paginationInstance.$pageList = $pageList;
 
         for (var index = 0; index < dotCount; index++) {
-          var $page = document.createElement('div');
+          var $page = renderBullet ? stringToElement(renderBullet(index, bulletClass)) : document.createElement('div');
           addClass($page, index === instance.state.index ? [bulletClass, bulletActiveClass] : bulletClass);
           $pageList.push($page);
           $group.appendChild($page);
@@ -60,8 +68,13 @@
         $pagination.appendChild($group);
 
         if (paginationOptions.clickable) {
+          addClass($pagination, clickableClass);
           $pagination.addEventListener('click', function (e) {
-            instance.slideTo($pageList.indexOf(e.target));
+            var target = e.target;
+            if (!target) return;
+            e.preventDefault();
+            var bulletElement = target.closest("." + bulletClass);
+            instance.slideTo($pageList.indexOf(bulletElement));
             e.stopPropagation();
           });
         }

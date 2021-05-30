@@ -107,9 +107,12 @@
                 el: '.t-ScrollBar',
                 bulletClass: 't-ScrollBar__item',
                 bulletActiveClass: 'is-active',
-                clickable: true
+                clickable: true,
+                clickableClass: 'is-clickable',
+                renderBullet: function (index, className) {
+                    return '<span class="' + className + '">' + (index + 1) + '</span>';
+                }
             }
         });
     </script>
 </body>
-
