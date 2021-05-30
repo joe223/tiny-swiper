@@ -7,7 +7,7 @@ addons:
   chrome: stable
 node_js:
   - stable
-  - '10'
+  - '13'
 before_install:
 #  - sh ./build/setup_puppeteer.sh
 install:
