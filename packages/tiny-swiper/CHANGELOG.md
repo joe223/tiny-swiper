@@ -94,7 +94,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - Add: `intermittent` parameter
 - Add: `pagination.clickable` configuration
-- Add: demo site https://joe223.com/tiny-swiper
+- Add: demo site https://js.org/tiny-swiper
 - Changes: default timing function
 
 # v0.0.2 - Released on 2019/10/15

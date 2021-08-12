@@ -1,7 +1,7 @@
 module.exports = {
     title: 'Tiny-Swiper | Ingenious JavaScript Carousel powered by wonderful plugins',
     tagline: 'The tagline of my site',
-    url: 'https://tiny-swiper.joe223.com',
+    url: 'https://tiny-swiper.js.org',
     baseUrl: '/',
     onBrokenLinks: 'throw',
     favicon: 'img/favicon.ico',

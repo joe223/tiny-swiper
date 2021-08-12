@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://tiny-swiper.joe223.com/blog</id>
+    <id>https://tiny-swiper.js.org/blog</id>
     <title>Tiny-Swiper | Ingenious JavaScript Carousel powered by wonderful plugins Blog</title>
     <updated>2015-10-25T23:29:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://tiny-swiper.joe223.com/blog"/>
+    <link rel="alternate" href="https://tiny-swiper.js.org/blog"/>
     <subtitle>Tiny-Swiper | Ingenious JavaScript Carousel powered by wonderful plugins Blog</subtitle>
-    <icon>https://tiny-swiper.joe223.com/img/favicon.ico</icon>
+    <icon>https://tiny-swiper.js.org/img/favicon.ico</icon>
 </feed>

@@ -23,7 +23,7 @@ Zero dependency, written in TypeScript, used for free and without any attribu
 </p>
 
 <p align="center">
-Looking for more details about <a href="https://tiny-swiper.joe223.com/docs" target="_blank">APIs</a> and <a href="https://tiny-swiper.joe223.com/docs/demo" target="_blank">Demos</a>, visit <a href="https://tiny-swiper.joe223.com" target="_blank">tiny-swiper.joe223.com</a>
+Looking for more details about <a href="https://tiny-swiper.js.org/docs" target="_blank">APIs</a> and <a href="https://tiny-swiper.js.org/docs/demo" target="_blank">Demos</a>, visit <a href="https://tiny-swiper.js.org" target="_blank">tiny-swiper.js.org</a>
 </p>
 
 ## Usage

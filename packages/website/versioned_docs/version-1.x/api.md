@@ -190,7 +190,7 @@ Try loading less images to reduce the number of HTTP requests.
 
 ##### Usage
 
-Using `data-src` attribute to enable lazyload. `.swiper-lazy-preloader` will keep display till image is loaded/error. Viewing the [demonstration](https://joe223.com/tiny-swiper/#plugins).
+Using `data-src` attribute to enable lazyload. `.swiper-lazy-preloader` will keep display till image is loaded/error. Viewing the [demonstration](https://js.org/tiny-swiper/#plugins).
 
 ```html
 <div class="swiper-container">
