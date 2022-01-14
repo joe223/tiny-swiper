@@ -12,7 +12,8 @@ export function Element (
 ): Element {
     const $el = <HTMLElement>(typeof el === 'string' ? document.body.querySelector(el) : el)
     const $wrapper = <HTMLElement>$el!.querySelector(`.${options.wrapperClass}`)
-    const $list = [].slice.call($el!.getElementsByClassName(options.slideClass))
+    let $list = [].slice.call($el!.getElementsByClassName(options.slideClass))
+    $list = $list.filter((slide: HTMLElement) => slide.getAttribute('data-shallow-slider') === null)
 
     return {
         $el,
