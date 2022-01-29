@@ -10028,10 +10028,10 @@ tiny-invariant@^1.0.2:
   resolved "https://registry.npm.taobao.org/tiny-invariant/download/tiny-invariant-1.1.0.tgz#634c5f8efdc27714b7f386c35e6760991d230875"
   integrity sha1-Y0xfjv3CdxS384bDXmdgmR0jCHU=
 
-tiny-swiper@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/tiny-swiper/-/tiny-swiper-2.1.0.tgz#2f73953f9d3ae7d491f9129ce99e71df2935b052"
-  integrity sha512-E57jJq7ZxvUHW0Kx6sUglSny4OX8C0zGMeXGIP83oWQ6kM4lPoZ+33jlwIeenbnv2Owzs15lH59sDF9cc4PSCQ==
+tiny-swiper@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/tiny-swiper/-/tiny-swiper-2.1.2.tgz#2b759300733579611f0955620026a025693bd810"
+  integrity sha512-omzIg0tZdkemoDpXwBQwlGg7UfAhGi49oxsdCQtjFwDdhDc3dvUlvGIoABhNoNuLjkQdKS/fK6l0CVhnx5bk6A==
   dependencies:
     typescript "^4.1.3"
 

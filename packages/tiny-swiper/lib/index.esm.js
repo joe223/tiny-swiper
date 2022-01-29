@@ -444,6 +444,173 @@ var SwiperPluginNavigation = (function SwiperPluginNavigation(instance, options)
   });
 });
 
+function now() {
+  return performance ? performance.now() : Date.now();
+}
+function debounce(fn, threshold, opt) {
+  if (threshold === void 0) {
+    threshold = 200;
+  }
+
+  if (opt === void 0) {
+    opt = {
+      trailing: true
+    };
+  }
+
+  var lastCallTime = 0;
+  var lastResult;
+  var lastTimer;
+  return function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var currTime = now();
+
+    if (currTime - lastCallTime >= threshold) {
+      lastCallTime = currTime;
+      lastTimer = void 0;
+      lastResult = fn.apply(void 0, args);
+    }
+
+    if (opt.trailing) {
+      lastTimer && clearTimeout(lastTimer);
+      lastTimer = setTimeout(function () {
+        return fn.apply(void 0, args);
+      }, threshold);
+    }
+
+    return lastResult;
+  };
+}
+
+var LIFE_CYCLES = {
+  BEFORE_INIT: 'before-init',
+  AFTER_INIT: 'after-init',
+  BEFORE_SLIDE: 'before-slide',
+  SCROLL: 'scroll',
+  AFTER_SLIDE: 'after-slide',
+  BEFORE_DESTROY: 'before-destroy',
+  AFTER_DESTROY: 'after-destroy'
+};
+function EventHub() {
+  var hub = {};
+
+  function on(evtName, cb) {
+    if (!hub[evtName]) {
+      hub[evtName] = [cb];
+    } else {
+      hub[evtName].push(cb);
+    }
+  }
+
+  function off(evtName, cb) {
+    if (hub[evtName]) {
+      var index = hub[evtName].indexOf(cb); // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+
+      index > -1 && hub[evtName].splice(index, 1);
+    }
+  }
+
+  function emit(evtName) {
+    for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      data[_key - 1] = arguments[_key];
+    }
+
+    if (hub[evtName]) {
+      hub[evtName].forEach(function (cb) {
+        return cb.apply(void 0, data);
+      });
+    }
+  }
+
+  function clear() {
+    hub = {};
+  }
+
+  return {
+    on: on,
+    off: off,
+    emit: emit,
+    clear: clear
+  };
+}
+
+var nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout;
+var cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout;
+function Tick() {
+  var startTime;
+  var id;
+
+  function run(cb) {
+    // eslint-disable-next-line no-void
+    startTime = startTime === void 0 ? now() : startTime; // Why do not use callback argument:
+    // https://stackoverflow.com/questions/50895206/exact-time-of-display-requestanimationframe-usage-and-timeline
+
+    id = nextFrame(function () {
+      var timeStamp = now();
+      var interval = timeStamp - startTime;
+      startTime = timeStamp;
+      cb(interval);
+    });
+  }
+
+  function stop() {
+    startTime = undefined;
+    cancelNextFrame(id);
+  }
+
+  return {
+    run: run,
+    stop: stop
+  };
+}
+
+/**
+ * TinySwiper plugin for breakpoints.
+ *
+ * @param {SwiperInstance} instance
+ * @param {Options}
+ */
+
+var SwiperPluginBreakpoints = (function SwiperPluginBreakpoints(instance, options) {
+  var isEnabled = Boolean(options.breakpoints);
+  var breakpoints = {
+    update: function update() {
+      if (!options.breakpoints) return;
+
+      for (var _i = 0, _Object$entries = Object.entries(options.breakpoints); _i < _Object$entries.length; _i++) {
+        var _Object$entries$_i = _Object$entries[_i],
+            breakpoint = _Object$entries$_i[0],
+            values = _Object$entries$_i[1];
+
+        if ('window' === options.breakpointsBase) {
+          if (window.matchMedia("(min-width: " + breakpoint + "px)").matches) {
+            instance.options = Object.assign(instance.options, values);
+          }
+        } else if (+breakpoint <= instance.env.element.$el.offsetWidth) {
+          instance.options = Object.assign(instance.options, values);
+        }
+      }
+
+      nextFrame(instance.updateSize);
+    }
+  };
+  if (!isEnabled) return;
+  var resizeListener = debounce(breakpoints.update, 200); // the default timeout is 200ms
+
+  instance.on(LIFE_CYCLES.AFTER_INIT, function () {
+    instance.breakpoints = breakpoints;
+    window.addEventListener('resize', resizeListener, {
+      passive: true
+    });
+  });
+  instance.on(LIFE_CYCLES.BEFORE_DESTROY, function () {
+    window.removeEventListener('resize', resizeListener);
+  });
+});
+
 function _extends() {
   _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -507,58 +674,6 @@ function optionFormatter(userOptions) {
   return _extends({}, options, {
     isHorizontal: options.direction === 'horizontal'
   });
-}
-
-var LIFE_CYCLES = {
-  BEFORE_INIT: 'before-init',
-  AFTER_INIT: 'after-init',
-  BEFORE_SLIDE: 'before-slide',
-  SCROLL: 'scroll',
-  AFTER_SLIDE: 'after-slide',
-  BEFORE_DESTROY: 'before-destroy',
-  AFTER_DESTROY: 'after-destroy'
-};
-function EventHub() {
-  var hub = {};
-
-  function on(evtName, cb) {
-    if (!hub[evtName]) {
-      hub[evtName] = [cb];
-    } else {
-      hub[evtName].push(cb);
-    }
-  }
-
-  function off(evtName, cb) {
-    if (hub[evtName]) {
-      var index = hub[evtName].indexOf(cb); // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-
-      index > -1 && hub[evtName].splice(index, 1);
-    }
-  }
-
-  function emit(evtName) {
-    for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      data[_key - 1] = arguments[_key];
-    }
-
-    if (hub[evtName]) {
-      hub[evtName].forEach(function (cb) {
-        return cb.apply(void 0, data);
-      });
-    }
-  }
-
-  function clear() {
-    hub = {};
-  }
-
-  return {
-    on: on,
-    off: off,
-    emit: emit,
-    clear: clear
-  };
 }
 
 var delta = 180 / Math.PI;
@@ -641,40 +756,6 @@ function State() {
     progress: 0
   };
   return state;
-}
-
-function now() {
-  return performance ? performance.now() : Date.now();
-}
-
-function Tick() {
-  var nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout;
-  var cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout;
-  var startTime;
-  var id;
-
-  function run(cb) {
-    // eslint-disable-next-line no-void
-    startTime = startTime === void 0 ? now() : startTime; // Why do not use callback argument:
-    // https://stackoverflow.com/questions/50895206/exact-time-of-display-requestanimationframe-usage-and-timeline
-
-    id = nextFrame(function () {
-      var timeStamp = now();
-      var interval = timeStamp - startTime;
-      startTime = timeStamp;
-      cb(interval);
-    });
-  }
-
-  function stop() {
-    startTime = undefined;
-    cancelNextFrame(id);
-  }
-
-  return {
-    run: run,
-    stop: stop
-  };
 }
 
 function Animation() {
@@ -1264,6 +1345,9 @@ function Element(el, options) {
   var $el = typeof el === 'string' ? document.body.querySelector(el) : el;
   var $wrapper = $el.querySelector("." + options.wrapperClass);
   var $list = [].slice.call($el.getElementsByClassName(options.slideClass));
+  $list = $list.filter(function (slide) {
+    return slide.getAttribute('data-shallow-slider') === null;
+  });
   return {
     $el: $el,
     $wrapper: $wrapper,
@@ -1335,4 +1419,4 @@ Swiper.use = function (plugins) {
 };
 
 export default Swiper;
-export { LIFE_CYCLES, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginNavigation, SwiperPluginPagination };
+export { LIFE_CYCLES, SwiperPluginBreakpoints, SwiperPluginKeyboardControl, SwiperPluginLazyload, SwiperPluginMousewheel, SwiperPluginNavigation, SwiperPluginPagination };
