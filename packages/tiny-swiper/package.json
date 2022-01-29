@@ -109,8 +109,6 @@
     }
   },
   "dependencies": {
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "resizing": "^0.2.0",
     "typescript": "^4.1.3"
   }
 }

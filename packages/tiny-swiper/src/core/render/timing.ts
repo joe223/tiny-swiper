@@ -1,5 +1,3 @@
-import {cancelNextFrame, nextFrame} from './nextTick'
-
 type DebounceOptions = {
     trailing: boolean
 }
