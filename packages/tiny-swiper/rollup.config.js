@@ -74,6 +74,13 @@ const entries = [
         options: {
             name: 'SwiperPluginAutoPlay'
         }
+    },
+    {
+        input: 'modules/breakpoints.ts',
+        compress: isBuildProd,
+        options: {
+            name: 'SwiperPluginBreakpoints'
+        }
     }
 ]
 const extensions = [

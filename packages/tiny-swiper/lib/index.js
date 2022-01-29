@@ -263,9 +263,9 @@
     return performance ? performance.now() : Date.now();
   }
 
+  var nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout;
+  var cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout;
   function Tick() {
-    var nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout;
-    var cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout;
     var startTime;
     var id;
 
@@ -880,6 +880,9 @@
     var $el = typeof el === 'string' ? document.body.querySelector(el) : el;
     var $wrapper = $el.querySelector("." + options.wrapperClass);
     var $list = [].slice.call($el.getElementsByClassName(options.slideClass));
+    $list = $list.filter(function (slide) {
+      return slide.getAttribute('data-shallow-slider') === null;
+    });
     return {
       $el: $el,
       $wrapper: $wrapper,

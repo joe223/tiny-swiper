@@ -6,13 +6,15 @@ import SwiperPluginPagination from './modules/pagination'
 import SwiperPluginKeyboardControl from './modules/keyboardControl'
 import SwiperPluginMousewheel from './modules/mousewheel'
 import SwiperPluginNavigation from './modules/navigation'
+import SwiperPluginBreakpoints from './modules/breakpoints'
 
 const plugins = [
     SwiperPluginLazyload,
     SwiperPluginPagination,
     SwiperPluginKeyboardControl,
     SwiperPluginMousewheel,
-    SwiperPluginNavigation
+    SwiperPluginNavigation,
+    SwiperPluginBreakpoints
 ]
 
 Swiper.use(plugins as Array<SwiperPlugin>)

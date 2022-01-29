@@ -1,16 +1,14 @@
-function now () {
-    return performance ? performance.now() : Date.now()
-}
+import { now } from './timing'
 
 export type Tick = {
     run (cb: (interval: DOMHighResTimeStamp) => void): void
     stop (): void
 }
 
-export function Tick (): Tick {
-    const nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout
-    const cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout
+export const nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout
+export const cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout
 
+export function Tick (): Tick {
     let startTime: number | undefined
     let id: number
 

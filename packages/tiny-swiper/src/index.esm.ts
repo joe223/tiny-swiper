@@ -3,6 +3,7 @@ import SwiperPluginPagination from './modules/pagination'
 import SwiperPluginKeyboardControl from './modules/keyboardControl'
 import SwiperPluginMousewheel from './modules/mousewheel'
 import SwiperPluginNavigation from './modules/navigation'
+import SwiperPluginBreakpoints from './modules/breakpoints'
 
 export {
     Swiper,
@@ -20,5 +21,6 @@ export {
     SwiperPluginPagination,
     SwiperPluginKeyboardControl,
     SwiperPluginMousewheel,
-    SwiperPluginNavigation
+    SwiperPluginNavigation,
+    SwiperPluginBreakpoints
 }

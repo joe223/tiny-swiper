@@ -7,7 +7,8 @@ import {
     SwiperPluginLazyload,
     SwiperPluginKeyboardControl,
     SwiperPluginMousewheel,
-    SwiperPluginNavigation
+    SwiperPluginNavigation,
+    SwiperPluginBreakpoints
 } from 'tiny-swiper/lib/index.esm'
 import Demo from '../../src/components/Demo'
 import IconArrowLeft from '../../static/img/arrow-left.svg'
@@ -398,6 +399,58 @@ You need to implement CSS code yourself.
     }}
     demoID="tiny-swiper2-demo-plugin-navigation">
     <div className="swiper-container swiper-navigation">
+        <div className="swiper-wrapper">
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327264-712d5880-3fc0-11eb-8f07-7d58264938c1.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327260-6f639500-3fc0-11eb-85fa-cfaa45ce054c.png"/>
+            </div>
+            <div className="swiper-slide">
+                <img src="https://user-images.githubusercontent.com/10026019/102327267-72f71c00-3fc0-11eb-8550-8845f38935a4.png"/>
+            </div>
+        </div>
+        <button className="swiper-plugin-navigation-prevEl">
+            <IconArrowLeft/>
+        </button>
+        <button className="swiper-plugin-navigation-nextEl">
+            <IconArrowRight/>
+        </button>
+    </div>
+</Demo>
+
+
+### Breakpoints
+
+<Demo
+    option={{
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 20,
+            },
+            500: {
+                slidesPerView: 2,
+                spaceBetween: 30,
+            },
+            900: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+            }
+        },
+        plugins: [
+            SwiperPluginBreakpoints
+        ]
+    }}
+    demoID="tiny-swiper-demo-plugin-breakpoints"
+    setWidth>
+    <div className="swiper-container swiper-breakpoints">
         <div className="swiper-wrapper">
             <div className="swiper-slide">
                 <img src="https://user-images.githubusercontent.com/10026019/102327273-74284900-3fc0-11eb-913a-69661b73ab5d.png"/>

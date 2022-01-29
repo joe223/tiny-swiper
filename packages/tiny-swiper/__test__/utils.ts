@@ -25,6 +25,13 @@ type mockElementParams = {
     height?: number
     classList?: string[]
 }
+
+export function wait (time: number) {
+    return new Promise(resolve => {
+        setTimeout(resolve, time)
+    })
+}
+
 export function mockElement ({
     width = 100,
     height = 100,
