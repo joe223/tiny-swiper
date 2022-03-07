@@ -2,7 +2,6 @@ import { debounce } from '../core/render/timing'
 import { Options, UserOptions } from '../core/options'
 import { SwiperInstance, SwiperPlugin } from '../core/index'
 import { LIFE_CYCLES } from '../core/eventHub'
-import { nextFrame } from '../core/render/nextTick'
 
 export type SwiperPluginBreakpointsInstance = {
     update (): void
@@ -27,6 +26,7 @@ export default <SwiperPlugin>function SwiperPluginBreakpoints (
     }
 ): void {
     const isEnabled = Boolean(options.breakpoints)
+    const nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout
     const breakpoints: SwiperPluginBreakpointsInstance = {
         update (): void {
             
