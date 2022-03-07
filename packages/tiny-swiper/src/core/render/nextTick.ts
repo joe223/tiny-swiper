@@ -5,12 +5,11 @@ export type Tick = {
     stop (): void
 }
 
-export const nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout
-export const cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout
-
 export function Tick (): Tick {
     let startTime: number | undefined
     let id: number
+    const nextFrame = requestAnimationFrame || webkitRequestAnimationFrame || setTimeout
+    const cancelNextFrame = cancelAnimationFrame || webkitCancelAnimationFrame || clearTimeout
 
     function run (cb: (interval: DOMHighResTimeStamp) => void): void {
         // eslint-disable-next-line no-void
