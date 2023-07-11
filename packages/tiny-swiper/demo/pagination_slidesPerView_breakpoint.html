@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Demo</title>
+    <style>
+        :root {
+            --theme-color: rgb(205, 138, 50);
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        html,
+        body,
+        .swiper-wrapper {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .a {
+            background: yellowgreen;
+        }
+        .b {
+            background: lightblue;
+        }
+        .a,
+        .b {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: aliceblue;
+            font-size: 4rem;
+        }
+        .swiper-slide {
+            position: relative;
+            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-container {
+            overflow: hidden;
+            flex-shrink: 0;
+            height: 100%;
+        }
+        .t-ScrollBar {
+            display: block;
+            position: fixed;
+            top: 50%;
+            right: 2.2rem;
+            width: 0.5rem;
+            transform: translateY(-50%);
+        }
+        .t-ScrollBar__item {
+            display: block;
+            margin: 100% 0;
+            width: 100%;
+            padding-top: 100%;
+            height: 0;
+            box-shadow: 0 0 0 0.1rem #22216D inset;
+            box-shadow: 0 0 0 0.1rem var(--theme-color) inset;
+            border-radius: 50% !important;
+            border: none;
+            background: #FFF;
+            transition: background ease 0.2s;
+            cursor: pointer;
+        }
+        .t-ScrollBar__item.is-active {
+            background: #22216D;
+            background: var(--theme-color);
+        }
+    </style>
+</head>
+<body>
+    <script src="../lib/index.js"></script>
+    <script src="../lib/modules/Breakpoints.js"></script>
+    <script src="../lib/modules/pagination.js"></script>
+
+
+    <!-- Slider main container -->
+    <div class="swiper-container" id="swiper1">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="a swiper-slide">1</div>
+            <div class="b swiper-slide">2</div>
+            <div class="a swiper-slide">3</div>
+            <div class="b swiper-slide">4</div>
+        </div>
+        <!-- If we need pagination -->
+        <div class="t-ScrollBar"></div>
+    </div>
+
+    <script>
+        Swiper.use([ SwiperPluginPagination, SwiperPluginBreakpoints ])
+
+        var mySwiper = new Swiper('#swiper1', {
+            speed: 300,
+            direction: 'horizontal',
+            spaceBetween: 100,
+            mousewheel: true,
+            resistance: true,
+            resistanceRatio: 0.85,
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                },
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 30,
+                },
+                1112: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                },
+                1536: {
+                    slidesPerView: 4,
+                    spaceBetween: 0,
+                }
+            },
+            pagination: {
+                el: '.t-ScrollBar',
+                bulletClass: 't-ScrollBar__item',
+                bulletActiveClass: 'is-active',
+                clickable: true,
+                clickableClass: 'is-clickable',
+                renderBullet: function (index, className) {
+                    return '<span class="' + className + '">' + (index + 1) + '</span>';
+                }
+            }
+        });
+    </script>
+</body>
