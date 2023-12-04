@@ -7,6 +7,7 @@ import SwiperPluginKeyboardControl from './modules/keyboardControl'
 import SwiperPluginMousewheel from './modules/mousewheel'
 import SwiperPluginNavigation from './modules/navigation'
 import SwiperPluginBreakpoints from './modules/breakpoints'
+import SwiperPluginAutoPlay from './modules/autoPlay'
 
 const plugins = [
     SwiperPluginLazyload,
@@ -14,7 +15,8 @@ const plugins = [
     SwiperPluginKeyboardControl,
     SwiperPluginMousewheel,
     SwiperPluginNavigation,
-    SwiperPluginBreakpoints
+    SwiperPluginBreakpoints,
+    SwiperPluginAutoPlay
 ]
 
 Swiper.use(plugins as Array<SwiperPlugin>)
